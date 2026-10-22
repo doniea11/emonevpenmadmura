@@ -818,8 +818,8 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    // URL Web App Google Apps Script (Ganti dengan link /exec Anda)
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbyL0tdCbJWvxrXVQtyWg0Z0hP2azBDgtrlq4eOPyj2g6DHAvHOdVcV75EW2PGl5WE6z0w/exec";
+    // URL Web App Google Apps Script (Ganti dengan link /exec yang valid dari deployment Apps Script Anda)
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbyIeDmau3zNmiyLfihKte4C6yxNXSyEMSKxlh_1Ixwvk9FZTKVXNyH3qrT5nOklB9e-Fw/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -886,7 +886,6 @@
         else if (action === 'saveModuleAccessSettings') runner.saveModuleAccessSettings(payload);
         else if (action === 'generatePdfById') runner.generatePdfById(payload.moduleName, payload.idMonev);
       } else {
-        // Vercel / External Fetch Mode
         var targetUrl = GAS_API_URL + "?action=" + action;
         fetch(targetUrl, {
           method: "POST",
