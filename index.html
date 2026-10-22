@@ -129,7 +129,6 @@
     .modal-card { background: #ffffff; border: 1px solid #ced4da; border-radius: var(--radius-lg); width: 100%; max-width: 1100px; max-height: 94vh; overflow-y: auto; padding: 20px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); }
     .modal-card-sm { max-width: 440px; }
     
-    /* Split View Container for Code & Live Preview */
     .split-preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
     @media (max-width: 768px) { .split-preview-grid { grid-template-columns: 1fr; } }
     .preview-box-side { background: #f1f3f5; border: 1px solid #ced4da; border-radius: var(--radius-md); padding: 14px; max-height: 60vh; overflow-y: auto; }
@@ -148,7 +147,7 @@
     .lazy-loader-box { text-align: center; padding: 14px; }
     .hidden { display: none !important; }
     .pdf-paper-preview { background: #ffffff; color: #000000; padding: 20px; border-radius: 6px; font-family: 'Times New Roman', Times, serif; font-size: 0.85rem; line-height: 1.4; border: 1px solid #adb5bd; }
-    .access-toggle-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px; }
+    .access-toggle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 14px; }
     .access-card { background: #f8f9fa; border: 1px solid #ced4da; border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
   </style>
 </head>
@@ -632,21 +631,57 @@
       <section id="pengaturanModuleSection" class="hidden">
         <div class="glass-panel">
           <div class="panel-header">
-            <div class="panel-title"><span class="accent-bar"></span><span>⚙️ Pengaturan Akses &amp; URL GAS Backend</span></div>
+            <div class="panel-title"><span class="accent-bar"></span><span>⚙️ Pengaturan Aktivasi Menu &amp; Endpoint Backend</span></div>
             <button type="button" class="btn btn-ghost btn-sm" onclick="lockAdminSession()">🔒 Kunci Pengaturan</button>
           </div>
+
           <form id="formAccessSettings" onsubmit="event.preventDefault(); handleSaveAccessSettings();">
             <div class="access-toggle-grid">
               <div class="access-card">
-                <label class="form-label">Google Apps Script Web App URL (Endpoint Backend)</label>
+                <label class="form-label">1. Google Apps Script Web App URL</label>
                 <input type="text" id="inpGasApiUrl" class="input-control" placeholder="https://script.google.com/macros/s/.../exec" required>
+              </div>
+              <div class="access-card">
+                <label class="form-label">2. Modul Monev TKA</label>
+                <select id="menuToggleTKA" class="select-control">
+                  <option value="AKTIF">🟢 AKTIF</option>
+                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
+                </select>
+              </div>
+              <div class="access-card">
+                <label class="form-label">3. Modul Monev Dana BOS</label>
+                <select id="menuToggleBOS" class="select-control">
+                  <option value="AKTIF">🟢 AKTIF</option>
+                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
+                </select>
+              </div>
+              <div class="access-card">
+                <label class="form-label">4. Modul Monev Ujian Akhir</label>
+                <select id="menuToggleUjian" class="select-control">
+                  <option value="AKTIF">🟢 AKTIF</option>
+                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
+                </select>
+              </div>
+              <div class="access-card">
+                <label class="form-label">5. Menu Data Madrasah</label>
+                <select id="menuToggleMadrasah" class="select-control">
+                  <option value="AKTIF">🟢 AKTIF</option>
+                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
+                </select>
+              </div>
+              <div class="access-card">
+                <label class="form-label">6. Menu Tim Monev</label>
+                <select id="menuToggleTim" class="select-control">
+                  <option value="AKTIF">🟢 AKTIF</option>
+                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
+                </select>
               </div>
               <div class="access-card">
                 <label class="form-label">Ganti Password Admin</label>
                 <input type="text" id="setNewAdminPass" class="input-control" placeholder="Kosongkan jika tetap">
               </div>
             </div>
-            <div style="text-align:right;"><button type="submit" class="btn btn-neon btn-sm">💾 Simpan Konfigurasi</button></div>
+            <div style="text-align:right;"><button type="submit" class="btn btn-neon btn-sm">💾 Simpan Konfigurasi Pengaturan</button></div>
           </form>
         </div>
       </section>
@@ -677,7 +712,6 @@
     </div>
   </div>
 
-  <!-- PDF Modal dengan Tampilan Side-by-Side (Sebelah Kiri Kode/Info, Sebelah Kanan Pratinjau Live) -->
   <div class="modal-backdrop" id="pdfModal">
     <div class="modal-card">
       <div class="panel-header">
@@ -721,6 +755,7 @@
     var APP_STATE = {
       currentModule: 'TKA',
       adminUnlocked: false,
+      menuAccess: { TKA: true, BOS: true, UjianAkhir: true, Madrasah: true, Tim: true },
       madrasah: [], pegawai: [], timMonev: [], roomRowCount: 0,
       stats: { totalMonev: 0, totalTKA: 0, totalBOS: 0, totalUjian: 0, totalPegawai: 0, totalTim: 0, totalMadrasah: 0, breakdown: { totalMadrasah:{MA:0,MTs:0,MI:0}, tujuanMonev:{MA:0,MTs:0,MI:0}, sudahMonev:{MA:0,MTs:0,MI:0}, belumMonev:{MA:0,MTs:0,MI:0} } },
       pagination: { limit: 8, offset: 0, total: 0, hasMore: false, items: [] },
@@ -867,12 +902,44 @@
           APP_STATE.pegawai = res.pegawai || [];
           APP_STATE.timMonev = res.timMonev || [];
           APP_STATE.stats = res.stats || APP_STATE.stats;
+          if (res.menuAccess) {
+            APP_STATE.menuAccess = res.menuAccess;
+            syncAccessSelectControls();
+            applyMenuVisibility();
+          }
           renderStatsAndDropdowns();
           renderMadrasahTable();
           renderAdminTables();
           resetAndLoadMonev();
         }
       });
+    }
+
+    function syncAccessSelectControls() {
+      var tka = document.getElementById('menuToggleTKA');
+      var bos = document.getElementById('menuToggleBOS');
+      var ujian = document.getElementById('menuToggleUjian');
+      var mad = document.getElementById('menuToggleMadrasah');
+      var tim = document.getElementById('menuToggleTim');
+
+      if (tka) tka.value = APP_STATE.menuAccess.TKA !== false ? 'AKTIF' : 'NONAKTIF';
+      if (bos) bos.value = APP_STATE.menuAccess.BOS !== false ? 'AKTIF' : 'NONAKTIF';
+      if (ujian) ujian.value = APP_STATE.menuAccess.UjianAkhir !== false ? 'AKTIF' : 'NONAKTIF';
+      if (mad) mad.value = APP_STATE.menuAccess.Madrasah !== false ? 'AKTIF' : 'NONAKTIF';
+      if (tim) tim.value = APP_STATE.menuAccess.Tim !== false ? 'AKTIF' : 'NONAKTIF';
+    }
+
+    function applyMenuVisibility() {
+      var menus = ['TKA', 'BOS', 'UjianAkhir', 'Madrasah', 'Tim'];
+      for (var i = 0; i < menus.length; i++) {
+        var m = menus[i];
+        var isAllowed = APP_STATE.menuAccess[m] !== false;
+        var liEl = document.getElementById('menuItem-' + m);
+        if (liEl) {
+          if (isAllowed) liEl.classList.remove('hidden');
+          else liEl.classList.add('hidden');
+        }
+      }
     }
 
     function renderStatsAndDropdowns() {
@@ -1068,7 +1135,7 @@
     function openPdfModal(b64, filename) {
       APP_STATE.activePdf = { base64: b64, fileName: filename };
       document.getElementById('pdfInfoFileName').textContent = filename;
-      document.getElementById('pdfPaperContainer').innerHTML = '<div style="text-align:center; padding:30px;"><h4>Pratinjau Dokumen PDF Aktif</h4><p>' + filename + '</p></div>';
+      document.getElementById('pdfPaperContainer').innerHTML = '<iframe width="100%" height="100%" src="data:application/pdf;base64,' + b64 + '" style="border:none;"></iframe>';
       document.getElementById('pdfModal').classList.add('show');
     }
     function closePdfModal() { document.getElementById('pdfModal').classList.remove('show'); }
@@ -1093,8 +1160,28 @@
       if (newUrl) {
         GAS_API_URL = newUrl;
         localStorage.setItem('VERCEL_GAS_API_URL', newUrl);
-        showToast('URL Backend GAS berhasil diperbarui!', 'success');
       }
+
+      var payload = {
+        AKSES_TKA: document.getElementById('menuToggleTKA').value,
+        AKSES_BOS: document.getElementById('menuToggleBOS').value,
+        AKSES_UJIAN: document.getElementById('menuToggleUjian').value,
+        AKSES_MADRASAH: document.getElementById('menuToggleMadrasah').value,
+        AKSES_TIM: document.getElementById('menuToggleTim').value,
+        NEW_ADMIN_PASS: document.getElementById('setNewAdminPass').value.trim()
+      };
+
+      document.getElementById('setNewAdminPass').value = '';
+
+      callGasApi('saveModuleAccessSettings', payload, function(res) {
+        if (res && res.status === 'success') {
+          if (res.menuAccess) {
+            APP_STATE.menuAccess = res.menuAccess;
+            applyMenuVisibility();
+          }
+          showToast(res.message, 'success');
+        }
+      });
     }
 
     function requestSwitchToPengaturan() {
