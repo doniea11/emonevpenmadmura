@@ -701,20 +701,22 @@
             <div class="panel-title"><span class="accent-bar"></span><span>⚠️ Pembatalan / Reset Hasil Input Monev (Salah Input)</span></div>
           </div>
           <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">
-            Gunakan fitur ini jika terjadi kesalahan input atau salah pemilihan madrasah pada rekam jejak monev. Masukkan ID Monev yang tercatat pada laporan/tabel untuk menghapusnya dari database.
+            Gunakan fitur ini jika terjadi kesalahan input atau salah pemilihan madrasah pada rekam jejak monev. Pilih modul dan pilih data madrasah/ID Monev yang tercatat untuk menghapusnya dari database.
           </div>
           <div class="form-grid" style="align-items:flex-end;">
             <div class="form-group">
               <label class="form-label">Pilih Modul Target</label>
-              <select id="cancelMonevModule" class="select-control">
+              <select id="cancelMonevModule" class="select-control" onchange="loadMonevDropdownForCancellation()">
                 <option value="TKA">Monev TKA Madrasah</option>
                 <option value="BOS">Monev Dana BOS</option>
                 <option value="UjianAkhir">Monev Ujian Akhir</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Masukkan ID Monev (Contoh: MNEV-0001)</label>
-              <input type="text" id="cancelMonevIdInput" class="input-control" placeholder="MNEV-XXXX">
+              <label class="form-label">Pilih Data Madrasah &amp; ID Monev</label>
+              <select id="cancelMonevIdDropdown" class="select-control">
+                <option value="">-- Pilih Rekam Jejak Monev --</option>
+              </select>
             </div>
             <div class="form-group">
               <button type="button" class="btn btn-locked" onclick="handleCancelMonevRecord()">🗑️ Batalkan / Hapus Data Monev</button>
@@ -776,7 +778,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbz70ajKUaMCQm_9V_yQPrVXc34ZgNP54Z8lVnhLjuriAEhGM7CSq2jXelptosT2-PvTyQ/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbziOjxvYm6oi-rWxAv3k9WrHKaCoVZlgF6CuVAh5-MKq6aX-Wq9P1FOB8TGauft138f/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -1094,6 +1096,7 @@
           updateTimPegawaiSlotOptions();
           updateMonevTimDropdowns();
           resetAndLoadMonev();
+          loadMonevDropdownForCancellation();
         }
       });
     }
@@ -1114,6 +1117,24 @@
       }
       selTim.innerHTML = html;
       handleAutoFillPetugasFromTim();
+    }
+
+    function loadMonevDropdownForCancellation() {
+      var mod = document.getElementById('cancelMonevModule').value;
+      callGasApi('getMonevListForDropdown', { moduleName: mod }, function(res) {
+        var sel = document.getElementById('cancelMonevIdDropdown');
+        if (!sel) return;
+        if (res && res.status === 'success') {
+          var html = '<option value="">-- Pilih Rekam Jejak Monev --</option>';
+          var items = res.items || [];
+          for (var i = 0; i < items.length; i++) {
+            html += '<option value="' + escapeAttr(items[i].idMonev) + '">' + escapeText(items[i].namaMadrasah + ' (' + items[i].idMonev + ')') + '</option>';
+          }
+          sel.innerHTML = html;
+        } else {
+          sel.innerHTML = '<option value="">-- Gagal Memuat Data --</option>';
+        }
+      });
     }
 
     function syncAccessSelectControls() {
@@ -1548,17 +1569,19 @@
           showToast(res.message, 'success');
           toggleFormPanel();
           openPdfModal(res.pdfBase64, res.pdfFileName);
-          resetAndLoadMonev();
+          initializeAppData();
+        } else {
+          showToast(res && res.message ? res.message : 'Gagal menyimpan data.', 'error');
         }
       });
     }
 
     function handleCancelMonevRecord() {
       var mod = document.getElementById('cancelMonevModule').value;
-      var idMonev = String(document.getElementById('cancelMonevIdInput').value || '').trim();
+      var idMonev = String(document.getElementById('cancelMonevIdDropdown').value || '').trim();
 
       if (!idMonev) {
-        showToast('Masukkan ID Monev yang ingin dibatalkan!', 'error');
+        showToast('Pilih rekam jejak Monev yang ingin dibatalkan!', 'error');
         return;
       }
 
@@ -1569,7 +1592,6 @@
       callGasApi('deleteMonevRecord', { module: mod, idMonev: idMonev }, function(res) {
         if (res && res.status === 'success') {
           showToast(res.message, 'success');
-          document.getElementById('cancelMonevIdInput').value = '';
           initializeAppData();
         } else {
           showToast(res && res.message ? res.message : 'Gagal menghapus data monev.', 'error');
