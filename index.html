@@ -103,7 +103,6 @@
     .room-fields-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
     @media (max-width: 480px) { .room-fields-grid { grid-template-columns: 1fr; } }
     .tka-mobile-card { background: #ffffff; border: 1px solid #ced4da; border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); }
-    .tka-mobile-card-header { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px; }
     .tka-radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-left: 4px; }
     .tka-radio-pill { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fdfdfd; border: 1px solid #dee2e6; border-radius: var(--radius-sm); font-size: 0.85rem; cursor: pointer; user-select: none; min-height: 44px; }
     .tka-radio-pill input { width: 20px; height: 20px; accent-color: var(--tka-blue); flex-shrink: 0; }
@@ -123,161 +122,6 @@
     .split-preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
     @media (max-width: 768px) { .split-preview-grid { grid-template-columns: 1fr; } }
     .preview-box-side { background: #f1f3f5; border: 1px solid #ced4da; border-radius: var(--radius-md); padding: 14px; max-height: 60vh; overflow-y: auto; }
-    .bicyc-loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.88); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
-    .bicyc-stage { width: 240px; height: 90px; position: relative; overflow: hidden; }
-    .bicyc-road { position: absolute; bottom: 10px; left: 0; width: 100%; height: 3px; background: #0d6efd; border-radius: 2px; }
-    .bicyc-icon { position: absolute; bottom: 12px; left: 250px; font-size: 2.8rem; animation: rideBikeBackward 1.6s linear infinite; }
-    @keyframes rideBikeBackward { 0% { left: 250px; transform: scaleX(-1); } 100% { left: -50px; transform: scaleX(-1); } }
-    .bicyc-text { font-size: 0.Berikut adalah file **`index.html`** secara utuh dan terbaru untuk memastikan seluruh form input modul (TKA, Dana BOS, dan Ujian Akhir) terpisah dan tampil secara dinamis, serta rekapitulasi data tampil dengan normal.
-
-### Langkah Implementasi:
-1. Salin kode di bawah ini dan perbarui file **`index.html`** di editor Vercel / proyek Anda.
-2. `code.gs` dan `setup.gs` tidak mengalami perubahan.
-
----
-
-### Apa yang saya rubah:
-- **`index.html`**: Menyempurnakan penanganan event tombol tambah/hapus form, pemisahan elemen DOM form input per modul (TKA, BOS, dan Ujian Akhir), serta kestabilan pemuatan tabel rekapitulasi data.
-
----
-
-### index.html
-```html:index.html
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sistem Monitoring &amp; Evaluasi PENMAD - Kemenag Musi Rawas</title>
-  <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-  <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-  <link href="[https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap](https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap)" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg-deep: #f8f9fa;
-      --bg-panel: #ffffff;
-      --tka-blue: #0d6efd;
-      --tka-blue-hover: #0b5ed7;
-      --tka-blue-icon: #1c84ee;
-      --tka-green: #28a745;
-      --tka-table-head: #5c636a;
-      --tka-table-zebra: #f2f2f2;
-      --accent-amber: #d97706;
-      --accent-danger: #dc3545;
-      --text-primary: #212529;
-      --text-secondary: #495057;
-      --text-muted: #6c757d;
-      --border-glass: #dee2e6;
-      --border-active: #343a40;
-      --radius-lg: 12px;
-      --radius-md: 8px;
-      --radius-sm: 6px;
-      --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background-color: var(--bg-deep); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; line-height: 1.5; }
-    .app-shell { display: flex; min-height: 100vh; position: relative; }
-    .sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); padding: 16px; display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000; box-shadow: 4px 0 20px rgba(0,0,0,0.08); transition: transform var(--transition-fast); overflow-y: auto; }
-    @media (max-width: 960px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } }
-    .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; backdrop-filter: blur(2px); }
-    .sidebar-backdrop.show { display: block; }
-    .brand-box { display: flex; align-items: center; gap: 12px; padding: 6px 4px 14px; border-bottom: 1px solid var(--border-glass); margin-bottom: 12px; }
-    .brand-logo { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #0d6efd, #0043a8); color: #ffffff; font-weight: 800; font-size: 1.15rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(13, 110, 253, 0.25); flex-shrink: 0; }
-    .brand-title h1 { font-size: 0.88rem; font-weight: 800; color: var(--text-primary); line-height: 1.25; text-transform: uppercase; }
-    .brand-title span { font-size: 0.65rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-top: 2px; }
-    .nav-section-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); padding: 8px 10px 4px; font-weight: 700; }
-    .nav-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .nav-btn { width: 100%; background: transparent; border: 1px solid transparent; color: var(--text-secondary); padding: 12px 14px; border-radius: var(--radius-md); font-family: inherit; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 12px; cursor: pointer; text-align: left; transition: all var(--transition-fast); min-height: 44px; }
-    .nav-btn:hover, .nav-btn:active { background: #f1f5f9; color: var(--tka-blue); }
-    .nav-btn.active { background: #e7f1ff; border: 1.5px solid var(--tka-blue); color: var(--tka-blue); font-weight: 700; }
-    .nav-badge { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; background: #e9ecef; color: var(--text-secondary); font-weight: 700; }
-    .nav-btn.active .nav-badge { background: var(--tka-blue); color: #ffffff; }
-    .main-area { flex: 1; margin-left: 280px; padding: 20px 24px 60px; max-width: 100%; transition: margin var(--transition-fast); }
-    @media (max-width: 960px) { .main-area { margin-left: 0; padding: 14px 12px 50px; } }
-    .topbar { background: #ffffff; border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-    .mobile-toggle { display: none; background: #ffffff; border: 1px solid var(--border-glass); color: var(--text-primary); padding: 10px 14px; border-radius: var(--radius-md); font-size: 1.2rem; cursor: pointer; min-height: 44px; }
-    @media (max-width: 960px) { .mobile-toggle { display: inline-flex; align-items: center; justify-content: center; } }
-    .page-heading h2 { font-size: 1.15rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em; }
-    .page-heading p { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
-    .topbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .rekap-section-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 18px; background: #ffffff; border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-    .stat-card { display: flex; align-items: flex-start; gap: 12px; padding: 6px; }
-    .stat-icon-box { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 1.1rem; flex-shrink: 0; }
-    .stat-icon-blue { background-color: var(--tka-blue-icon); }
-    .stat-icon-green { background-color: var(--tka-green); }
-    .stat-info { display: flex; flex-direction: column; width: 100%; }
-    .stat-card .stat-label { font-size: 0.78rem; color: var(--text-primary); font-weight: 700; margin-bottom: 4px; border-bottom: 1px dashed #dee2e6; padding-bottom: 2px; }
-    .stat-table { width: 100%; font-size: 0.95rem; font-weight: 800; border-collapse: collapse; }
-    .stat-table td { padding: 1px 0; }
-    .stat-table td.col-key { width: 45px; }
-    .stat-table td.col-sep { width: 12px; text-align: center; }
-    .stat-table td.col-val { text-align: left; }
-    .glass-panel { background: var(--bg-panel); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-    @media (max-width: 600px) { .glass-panel { padding: 14px; } }
-    .panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border-glass); flex-wrap: wrap; }
-    .panel-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
-    .panel-title span.accent-bar { width: 4px; height: 16px; background: var(--tka-blue); border-radius: 4px; display: inline-block; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: var(--radius-md); font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all var(--transition-fast); text-decoration: none; min-height: 44px; }
-    @media (max-width: 600px) { .btn { width: 100%; } .topbar-actions .btn { width: auto; } }
-    .btn:disabled { opacity: 0.65; cursor: not-allowed; }
-    .btn-neon { background: var(--tka-blue); color: #ffffff; box-shadow: 0 2px 6px rgba(13, 110, 253, 0.25); }
-    .btn-neon:hover:not(:disabled) { background: var(--tka-blue-hover); }
-    .btn-locked { background: var(--accent-danger); color: #ffffff; }
-    .btn-wa { background: #25d366; color: #ffffff; box-shadow: 0 2px 6px rgba(37, 211, 102, 0.28); }
-    .btn-ghost { background: #ffffff; border-color: #ced4da; color: var(--text-primary); }
-    .btn-ghost:hover { border-color: var(--tka-blue); color: var(--tka-blue); background: #f8f9fa; }
-    .btn-sm { padding: 8px 14px; font-size: 0.82rem; min-height: 40px; }
-    .filter-bar { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 16px; background: #fdfdfd; border: 1px solid #dcdcdc; padding: 12px; border-radius: var(--radius-md); }
-    @media (max-width: 768px) { .filter-bar { grid-template-columns: 1fr; } }
-    .input-control, .select-control, .textarea-control { width: 100%; background: #ffffff; border: 1px solid #ced4da; color: var(--text-primary); padding: 12px 14px; border-radius: var(--radius-md); font-family: inherit; font-size: 1rem; outline: none; transition: all var(--transition-fast); min-height: 48px; }
-    .input-control[readonly] { background-color: #e9ecef; color: #495057; font-weight: 700; cursor: not-allowed; border-color: #adb5bd; }
-    .input-control:focus:not([readonly]), .select-control:focus, .textarea-control:focus { border-color: var(--tka-blue); box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15); }
-    .input-mini { width: 100%; text-align: center; padding: 8px 6px; font-size: 1rem; border: 1px solid #ced4da; border-radius: var(--radius-sm); height: 44px; font-family: 'JetBrains Mono', monospace; }
-    .textarea-control { min-height: 90px; resize: vertical; }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group.full-width { grid-column: 1 / -1; }
-    .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
-    .form-label span.req { color: var(--accent-danger); }
-    .sub-card-box { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: var(--radius-md); padding: 14px; margin-top: 14px; }
-    .room-mobile-card { background: #ffffff; border: 1px solid #ced4da; border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); }
-    .room-mobile-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed #dee2e6; }
-    .room-fields-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
-    @media (max-width: 480px) { .room-fields-grid { grid-template-columns: 1fr; } }
-    .tka-mobile-card { background: #ffffff; border: 1px solid #ced4da; border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); }
-    .tka-mobile-card-header { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px; }
-    .tka-radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-left: 4px; }
-    .tka-radio-pill { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fdfdfd; border: 1px solid #dee2e6; border-radius: var(--radius-sm); font-size: 0.85rem; cursor: pointer; user-select: none; min-height: 44px; }
-    .tka-radio-pill input { width: 20px; height: 20px; accent-color: var(--tka-blue); flex-shrink: 0; }
-    .checklist-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 6px; }
-    .check-pill { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--radius-sm); background: #ffffff; border: 1px solid #ced4da; cursor: pointer; font-size: 0.88rem; color: var(--text-primary); user-select: none; min-height: 48px; }
-    .check-pill input { width: 20px; height: 20px; accent-color: var(--tka-blue); }
-    .table-wrapper { width: 100%; overflow-x: auto; border: 1px solid #ced4da; border-radius: var(--radius-md); -webkit-overflow-scrolling: touch; }
-    table.masdonie-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.86rem; white-space: nowrap; }
-    table.masdonie-table th { background: var(--tka-table-head); color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 12px 14px; border: 1px solid #737b82; text-align: center; }
-    table.masdonie-table td { padding: 11px 14px; border: 1px solid #dee2e6; vertical-align: middle; color: var(--text-primary); }
-    table.masdonie-table tbody tr:nth-child(odd) { background-color: var(--tka-table-zebra); }
-    table.masdonie-table tbody tr:nth-child(even) { background-color: #ffffff; }
-    .mono-id { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 600; color: var(--tka-blue); background: #e7f1ff; border: 1px solid #b6d4fe; padding: 3px 8px; border-radius: 4px; display: inline-block; }
-    .badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 4px; font-size: 0.76rem; font-weight: 700; }
-    .badge-success { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
-    .badge-warning { background: #fff3cd; color: #664d03; border: 1px solid #ffecb5; }
-    .badge-danger { background: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
-    .badge-info { background: #cfe2ff; color: #084298; border: 1px solid #b6d4fe; }
-    .progress-wrap { width: 110px; background: #dee2e6; height: 9px; border-radius: 99px; overflow: hidden; margin-top: 4px; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--tka-blue), var(--tka-green)); border-radius: 99px; }
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(33, 37, 41, 0.6); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 1100; padding: 12px; }
-    .modal-backdrop.show { display: flex; }
-    .modal-card { background: #ffffff; border: 1px solid #ced4da; border-radius: var(--radius-lg); width: 100%; max-width: 1100px; max-height: 94vh; overflow-y: auto; padding: 20px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); }
-    .modal-card-sm { max-width: 440px; }
-    
-    .split-preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
-    @media (max-width: 768px) { .split-preview-grid { grid-template-columns: 1fr; } }
-    .preview-box-side { background: #f1f3f5; border: 1px solid #ced4da; border-radius: var(--radius-md); padding: 14px; max-height: 60vh; overflow-y: auto; }
-    
     .bicyc-loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.88); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
     .bicyc-stage { width: 240px; height: 90px; position: relative; overflow: hidden; }
     .bicyc-road { position: absolute; bottom: 10px; left: 0; width: 100%; height: 3px; background: #0d6efd; border-radius: 2px; }
@@ -552,7 +396,7 @@
             </div>
             <div class="form-group">
               <label class="form-label">Skor Kepatuhan (0-100)</label>
-              <input type="number" id="inpSkorKepatuhan" class="input-control" placeholder="92" min="0" max="100" value="95">
+              <input type="number" id="inpSkorKepatuhan" class="input-control" placeholder="95" min="0" max="100" value="95">
             </div>
             <div class="form-group">
               <label class="form-label">Status Verifikasi BOS</label>
@@ -562,6 +406,10 @@
                 <option value="Pending">Pending Verifikasi</option>
               </select>
             </div>
+            <div class="form-group full-width">
+              <label class="form-label">Kelengkapan Administrasi &amp; Dokumen BOS</label>
+              <textarea id="inpChecklistDokumen" class="textarea-control">RKAM, Buku Kas Umum, Nota Pembelanjaan, dan LPJ tersusun lengkap.</textarea>
+            </div>
           </div>
 
           <div id="fields-UjianAkhir" class="form-grid hidden" style="margin-top:14px;">
@@ -570,6 +418,7 @@
               <select id="inpJenisUjian" class="select-control">
                 <option value="Asesmen Madrasah Berbasis Komputer (AMBK)">AMBK</option>
                 <option value="Asesmen Madrasah Kertas Pensil (AMKP)">AMKP</option>
+                <option value="Ujian Akhir Madrasah Berstandar Nasional (UAMBN)">UAMBN</option>
               </select>
             </div>
             <div class="form-group">
@@ -577,23 +426,24 @@
               <input type="number" id="inpPesertaHadir" class="input-control" placeholder="0" min="0" value="50">
             </div>
             <div class="form-group">
-              <label class="form-label">Peserta Tidak Hadir</label>
+              <label class="form-label">Peserta Tidak Hadir (Absen)</label>
               <input type="number" id="inpPesertaAbsen" class="input-control" placeholder="0" min="0" value="0">
             </div>
             <div class="form-group">
-              <label class="form-label">Status Pelaksanaan</label>
+              <label class="form-label">Status Pelaksanaan Ujian</label>
               <select id="inpStatusPelaksanaan" class="select-control">
                 <option value="Berjalan Lancar">Berjalan Lancar &amp; Tertib</option>
                 <option value="Terkendali">Ada Kendala (Terkendali)</option>
+                <option value="Gangguan Teknis">Gangguan Teknis Jaringan / Listrik</option>
               </select>
             </div>
             <div class="form-group full-width">
               <label class="form-label">Kendala Lapangan</label>
-              <textarea id="inpKendalaLapangan" class="textarea-control">Tidak ada kendala berarti.</textarea>
+              <textarea id="inpKendalaLapangan" class="textarea-control">Tidak ada kendala berarti selama pelaksanaan.</textarea>
             </div>
             <div class="form-group full-width">
               <label class="form-label">Solusi &amp; Tindak Lanjut</label>
-              <textarea id="inpTindakLanjut" class="textarea-control">Pertahankan kedisiplinan.</textarea>
+              <textarea id="inpTindakLanjut" class="textarea-control">Mempertahankan prosedur pengawasan silang antar madrasah.</textarea>
             </div>
           </div>
 
@@ -923,7 +773,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbzt-m0UUbuFQA9b0r3ncvAmlXiuTTXlxd8sl79-4nvYtEkAxuiCI10zsurIafaSQ5oRcg/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbwoYT8Ayop-GuZtFGSL1zToy7gQSgrVY6WIBCqm0KeDkThFh3lgYZVIbw0YFuII6hFULg/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -1471,22 +1321,61 @@
       });
     }
     function renderMonevTableRows() {
+      var thead = document.getElementById('monevTableHead');
       var tbody = document.getElementById('monevTableBody');
       var items = APP_STATE.pagination.items;
-      if (!tbody) return;
+      if (!tbody || !thead) return;
+
+      var mod = APP_STATE.currentModule;
+      var headHtml = '';
+      if (mod === 'TKA') {
+        headHtml = '<tr><th>ID Monev</th><th>Nama Madrasah</th><th>Tim Monev</th><th>Jumlah Peserta</th><th>Status</th><th>Aksi</th></tr>';
+      } else if (mod === 'BOS') {
+        headHtml = '<tr><th>ID Monev</th><th>Nama Madrasah</th><th>Tim Monev</th><th>Tahap BOS</th><th>Skor Kepatuhan</th><th>Status</th><th>Aksi</th></tr>';
+      } else if (mod === 'UjianAkhir') {
+        headHtml = '<tr><th>ID Monev</th><th>Nama Madrasah</th><th>Tim Monev</th><th>Jenis Ujian</th><th>Hadir / Absen</th><th>Status</th><th>Aksi</th></tr>';
+      }
+      thead.innerHTML = headHtml;
+
       if (items.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">Belum ada data.</td></tr>';
+        var colSpanNum = (mod === 'BOS' || mod === 'UjianAkhir') ? 7 : 6;
+        tbody.innerHTML = '<tr><td colspan="' + colSpanNum + '" style="text-align:center; padding:20px;">Belum ada data rekapitulasi.</td></tr>';
         return;
       }
+
       var html = '';
       for (var i = 0; i < items.length; i++) {
         var r = items[i];
-        html += '<tr><td><span class="mono-id">' + escapeText(r.ID_Monev) + '</span></td>' +
-          '<td><strong>' + escapeText(r.Nama_Madrasah) + '</strong></td>' +
-          '<td>' + escapeText(r.ID_Tim || '-') + '</td>' +
-          '<td>' + escapeText(r.Jumlah_Peserta || r.Skor_Kepatuhan || '-') + '</td>' +
-          '<td><span class="badge badge-success">' + escapeText(r.Status_Monev || r.Status_Verifikasi || 'Selesai') + '</span></td>' +
-          '<td><button type="button" class="btn btn-ghost btn-sm" onclick="handleOpenPdfById(\'' + APP_STATE.currentModule + '\', \'' + r.ID_Monev + '\')">📄 PDF</button></td></tr>';
+        if (mod === 'TKA') {
+          html += '<tr>' +
+            '<td><span class="mono-id">' + escapeText(r.ID_Monev) + '</span></td>' +
+            '<td><strong>' + escapeText(r.Nama_Madrasah) + '</strong></td>' +
+            '<td>' + escapeText(r.ID_Tim || '-') + '</td>' +
+            '<td>' + escapeText(r.Jumlah_Peserta || '0') + ' Siswa</td>' +
+            '<td><span class="badge badge-success">' + escapeText(r.Status_Monev || 'Selesai') + '</span></td>' +
+            '<td><button type="button" class="btn btn-ghost btn-sm" onclick="handleOpenPdfById(\'TKA\', \'' + r.ID_Monev + '\')">📄 PDF</button></td>' +
+            '</tr>';
+        } else if (mod === 'BOS') {
+          html += '<tr>' +
+            '<td><span class="mono-id">' + escapeText(r.ID_Monev) + '</span></td>' +
+            '<td><strong>' + escapeText(r.Nama_Madrasah) + '</strong></td>' +
+            '<td>' + escapeText(r.ID_Tim || '-') + '</td>' +
+            '<td>' + escapeText(r.Tahap_BOS || '-') + '</td>' +
+            '<td><strong>' + escapeText(r.Skor_Kepatuhan || '0') + ' / 100</strong></td>' +
+            '<td><span class="badge badge-success">' + escapeText(r.Status_Verifikasi || 'Terverifikasi') + '</span></td>' +
+            '<td><button type="button" class="btn btn-ghost btn-sm" onclick="handleOpenPdfById(\'BOS\', \'' + r.ID_Monev + '\')">📄 PDF</button></td>' +
+            '</tr>';
+        } else if (mod === 'UjianAkhir') {
+          html += '<tr>' +
+            '<td><span class="mono-id">' + escapeText(r.ID_Monev) + '</span></td>' +
+            '<td><strong>' + escapeText(r.Nama_Madrasah) + '</strong></td>' +
+            '<td>' + escapeText(r.ID_Tim || '-') + '</td>' +
+            '<td>' + escapeText(r.Jenis_Ujian || '-') + '</td>' +
+            '<td>Hadir: ' + escapeText(r.Peserta_Hadir || '0') + ' | Absen: ' + escapeText(r.Peserta_Absen || '0') + '</td>' +
+            '<td><span class="badge badge-success">' + escapeText(r.Status_Pelaksanaan || 'Berjalan Lancar') + '</span></td>' +
+            '<td><button type="button" class="btn btn-ghost btn-sm" onclick="handleOpenPdfById(\'UjianAkhir\', \'' + r.ID_Monev + '\')">📄 PDF</button></td>' +
+            '</tr>';
+        }
       }
       tbody.innerHTML = html;
     }
@@ -1722,6 +1611,7 @@
         payload.Tahap_BOS = document.getElementById('inpTahapBOS').value;
         payload.Skor_Kepatuhan = document.getElementById('inpSkorKepatuhan').value;
         payload.Status_Verifikasi = document.getElementById('inpStatusVerifikasi').value;
+        payload.Checklist_Dokumen = document.getElementById('inpChecklistDokumen').value;
         payload.Catatan_Temuan = document.getElementById('inpCatatanTemuan').value;
         payload.Rekomendasi = document.getElementById('inpRekomendasi').value;
       } else if (mod === 'UjianAkhir') {
@@ -1731,6 +1621,9 @@
         payload.Status_Pelaksanaan = document.getElementById('inpStatusPelaksanaan').value;
         payload.Kendala_Lapangan = document.getElementById('inpKendalaLapangan').value;
         payload.Tindak_Lanjut = document.getElementById('inpTindakLanjut').value;
+        payload.Catatan_Temuan = document.getElementById('inpCatatanTemuan').value;
+        payload.Kesimpulan = document.getElementById('inpKesimpulan').value;
+        payload.Rekomendasi = document.getElementById('inpRekomendasi').value;
       }
 
       callGasApi('saveMonevRecord', payload, function(res) {
@@ -1796,7 +1689,7 @@
 
     function sharePdfToWhatsApp() {
       triggerDirectPdfDownload();
-      window.open('[https://api.whatsapp.com/send?text=](https://api.whatsapp.com/send?text=)' + encodeURIComponent('Berikut Laporan Monev Kemenag Musi Rawas'), '_blank');
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent('Berikut Laporan Monev Kemenag Musi Rawas'), '_blank');
     }
 
     function handleSaveAccessSettings() {
