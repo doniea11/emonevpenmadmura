@@ -126,9 +126,14 @@
     .progress-fill { height: 100%; background: linear-gradient(90deg, var(--tka-blue), var(--tka-green)); border-radius: 99px; }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(33, 37, 41, 0.6); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 1100; padding: 12px; }
     .modal-backdrop.show { display: flex; }
-    .modal-card { background: #ffffff; border: 1px solid #ced4da; border-radius: var(--radius-lg); width: 100%; max-width: 880px; max-height: 94vh; overflow-y: auto; padding: 20px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); }
+    .modal-card { background: #ffffff; border: 1px solid #ced4da; border-radius: var(--radius-lg); width: 100%; max-width: 1100px; max-height: 94vh; overflow-y: auto; padding: 20px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); }
     .modal-card-sm { max-width: 440px; }
-    @media (max-width: 600px) { .modal-backdrop { padding: 0; align-items: flex-end; } .modal-card { max-height: 94vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0; padding: 16px; } }
+    
+    /* Split View Container for Code & Live Preview */
+    .split-preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
+    @media (max-width: 768px) { .split-preview-grid { grid-template-columns: 1fr; } }
+    .preview-box-side { background: #f1f3f5; border: 1px solid #ced4da; border-radius: var(--radius-md); padding: 14px; max-height: 60vh; overflow-y: auto; }
+    
     .bicyc-loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.88); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
     .bicyc-stage { width: 240px; height: 90px; position: relative; overflow: hidden; }
     .bicyc-road { position: absolute; bottom: 10px; left: 0; width: 100%; height: 3px; background: #0d6efd; border-radius: 2px; }
@@ -142,7 +147,7 @@
     .toast-item.error { border-left-color: var(--accent-danger); }
     .lazy-loader-box { text-align: center; padding: 14px; }
     .hidden { display: none !important; }
-    .pdf-paper-preview { background: #ffffff; color: #000000; padding: 20px; border-radius: 6px; font-family: 'Times New Roman', Times, serif; font-size: 0.85rem; line-height: 1.4; margin: 10px 0; max-height: 56vh; overflow-y: auto; border: 1px solid #adb5bd; }
+    .pdf-paper-preview { background: #ffffff; color: #000000; padding: 20px; border-radius: 6px; font-family: 'Times New Roman', Times, serif; font-size: 0.85rem; line-height: 1.4; border: 1px solid #adb5bd; }
     .access-toggle-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px; }
     .access-card { background: #f8f9fa; border: 1px solid #ced4da; border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
   </style>
@@ -420,14 +425,6 @@
                 <option value="Pending">Pending Verifikasi</option>
               </select>
             </div>
-            <div class="form-group full-width">
-              <label class="form-label">Checklist Dokumen Wajib BOS</label>
-              <div class="checklist-grid">
-                <label class="check-pill"><input type="checkbox" class="bos-doc-check" value="Dokumen RKAM / e-RKAM" checked> <span>RKAM / e-RKAM</span></label>
-                <label class="check-pill"><input type="checkbox" class="bos-doc-check" value="Buku Kas Umum (BKU)" checked> <span>Buku Kas Umum (BKU)</span></label>
-                <label class="check-pill"><input type="checkbox" class="bos-doc-check" value="LPJ Tahap Sebelumnya" checked> <span>LPJ Sebelumnya</span></label>
-              </div>
-            </div>
           </div>
 
           <div id="fields-UjianAkhir" class="form-grid hidden" style="margin-top:14px;">
@@ -663,7 +660,7 @@
         <input type="password" id="inpAdminPassPrompt" class="input-control" placeholder="Password" required>
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
           <button type="button" class="btn btn-ghost" onclick="closeAdminAuthModal()">Batal</button>
-          <button type="submit" class="btn btn-neon">🔓 Masuk</button>
+          <button type="submit" class="btn btn-neon" id="btnVerifyAdminPass">🔓 Masuk</button>
         </div>
       </form>
     </div>
@@ -680,16 +677,27 @@
     </div>
   </div>
 
+  <!-- PDF Modal dengan Tampilan Side-by-Side (Sebelah Kiri Kode/Info, Sebelah Kanan Pratinjau Live) -->
   <div class="modal-backdrop" id="pdfModal">
     <div class="modal-card">
       <div class="panel-header">
-        <div class="panel-title"><span class="accent-bar"></span><span>Pratinjau PDF Sesuai Tim</span></div>
+        <div class="panel-title"><span class="accent-bar"></span><span>Pratinjau Dokumen PDF Sesuai Tim</span></div>
         <button type="button" class="btn btn-ghost btn-sm" onclick="closePdfModal()">✕ Tutup</button>
       </div>
-      <div class="pdf-paper-preview" id="pdfPaperContainer"></div>
-      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px;">
-        <button type="button" class="btn btn-wa btn-sm" onclick="sharePdfToWhatsApp()">📲 WhatsApp</button>
-        <button type="button" class="btn btn-neon btn-sm" onclick="triggerDirectPdfDownload()">⬇️ Download PDF</button>
+      
+      <div class="split-preview-grid">
+        <div class="preview-box-side" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+          <div style="font-size:2.5rem; margin-bottom:10px;">📄</div>
+          <h4 id="pdfInfoFileName" style="font-size:0.95rem; font-weight:700; margin-bottom:6px;">Monev.pdf</h4>
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:14px;">Dokumen PDF resmi berhasil di-generate secara otomatis sesuai jumlah petugas dalam Tim Monev.</p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+            <button type="button" class="btn btn-wa btn-sm" onclick="sharePdfToWhatsApp()">📲 WhatsApp</button>
+            <button type="button" class="btn btn-neon btn-sm" onclick="triggerDirectPdfDownload()">⬇️ Download PDF</button>
+          </div>
+        </div>
+        <div class="preview-box-side" style="padding:0; background:#fff;">
+          <div class="pdf-paper-preview" id="pdfPaperContainer" style="height:100%; max-height:54vh; border:none; border-radius:0;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -908,10 +916,27 @@
         var btn = document.getElementById('nav-' + m);
         if (btn) btn.classList.toggle('active', m === mod);
       });
+
       document.getElementById('monevListPanel').classList.toggle('hidden', ['Madrasah', 'Tim', 'Pengaturan'].indexOf(mod) !== -1);
       document.getElementById('madrasahModuleSection').classList.toggle('hidden', mod !== 'Madrasah');
       document.getElementById('timModuleSection').classList.toggle('hidden', mod !== 'Tim');
       document.getElementById('pengaturanModuleSection').classList.toggle('hidden', mod !== 'Pengaturan');
+
+      document.getElementById('fields-TKA').classList.toggle('hidden', mod !== 'TKA');
+      document.getElementById('fields-BOS').classList.toggle('hidden', mod !== 'BOS');
+      document.getElementById('fields-UjianAkhir').classList.toggle('hidden', mod !== 'UjianAkhir');
+
+      if (mod === 'TKA') {
+        document.getElementById('moduleHeading').textContent = 'Monev Tes Kemampuan Akademik (TKA)';
+        document.getElementById('moduleSubheading').textContent = 'Instrumen Monitoring & Evaluasi Pelaksanaan TKA Kemenag Kab. Musi Rawas';
+      } else if (mod === 'BOS') {
+        document.getElementById('moduleHeading').textContent = 'Monev Dana BOS';
+        document.getElementById('moduleSubheading').textContent = 'Instrumen Monitoring & Evaluasi Penatausahaan Dana BOS';
+      } else if (mod === 'UjianAkhir') {
+        document.getElementById('moduleHeading').textContent = 'Monev Ujian Akhir Madrasah';
+        document.getElementById('moduleSubheading').textContent = 'Instrumen Monitoring & Evaluasi Ujian Akhir Madrasah';
+      }
+
       if (['Madrasah', 'Tim', 'Pengaturan'].indexOf(mod) === -1) resetAndLoadMonev();
     }
 
@@ -1042,7 +1067,8 @@
 
     function openPdfModal(b64, filename) {
       APP_STATE.activePdf = { base64: b64, fileName: filename };
-      document.getElementById('pdfPaperContainer').innerHTML = '<div style="text-align:center; padding:30px;"><h4>PDF Sesuai Tim Siap Diunduh</h4><p>' + filename + '</p></div>';
+      document.getElementById('pdfInfoFileName').textContent = filename;
+      document.getElementById('pdfPaperContainer').innerHTML = '<div style="text-align:center; padding:30px;"><h4>Pratinjau Dokumen PDF Aktif</h4><p>' + filename + '</p></div>';
       document.getElementById('pdfModal').classList.add('show');
     }
     function closePdfModal() { document.getElementById('pdfModal').classList.remove('show'); }
@@ -1073,18 +1099,45 @@
 
     function requestSwitchToPengaturan() {
       if (APP_STATE.adminUnlocked) { switchModule('Pengaturan'); return; }
+      var passInput = document.getElementById('inpAdminPassPrompt');
+      if (passInput) passInput.value = '';
       document.getElementById('adminAuthModal').classList.add('show');
+      setTimeout(function() { if (passInput) passInput.focus(); }, 100);
     }
     function closeAdminAuthModal() { document.getElementById('adminAuthModal').classList.remove('show'); }
+
     function submitAdminPassword() {
-      if (document.getElementById('inpAdminPassPrompt').value === '123456') {
-        APP_STATE.adminUnlocked = true;
-        closeAdminAuthModal();
-        switchModule('Pengaturan');
-      } else {
-        showToast('Password salah!', 'error');
+      var passInput = document.getElementById('inpAdminPassPrompt');
+      var pass = String(passInput.value || '').trim();
+      var btn = document.getElementById('btnVerifyAdminPass');
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Memeriksa...';
       }
+
+      callGasApi('verifyAdminPassword', { password: pass }, function(res) {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '🔓 Masuk';
+        }
+        if (res && res.authenticated) {
+          APP_STATE.adminUnlocked = true;
+          closeAdminAuthModal();
+          switchModule('Pengaturan');
+          showToast(res.message, 'success');
+        } else {
+          showToast(res && res.message ? res.message : 'Password salah!', 'error');
+        }
+      }, function(err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '🔓 Masuk';
+        }
+        showToast('Koneksi verifikasi gagal: ' + err.message, 'error');
+      });
     }
+
     function lockAdminSession() { APP_STATE.adminUnlocked = false; switchModule('TKA'); }
 
     function showToast(msg, type) {
