@@ -695,6 +695,32 @@
             <div style="text-align:right;"><button type="submit" class="btn btn-neon btn-sm">💾 Simpan Konfigurasi Pengaturan</button></div>
           </form>
         </div>
+
+        <div class="glass-panel" style="margin-top:18px;">
+          <div class="panel-header">
+            <div class="panel-title"><span class="accent-bar"></span><span>⚠️ Pembatalan / Reset Hasil Input Monev (Salah Input)</span></div>
+          </div>
+          <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">
+            Gunakan fitur ini jika terjadi kesalahan input atau salah pemilihan madrasah pada rekam jejak monev. Masukkan ID Monev yang tercatat pada laporan/tabel untuk menghapusnya dari database.
+          </div>
+          <div class="form-grid" style="align-items:flex-end;">
+            <div class="form-group">
+              <label class="form-label">Pilih Modul Target</label>
+              <select id="cancelMonevModule" class="select-control">
+                <option value="TKA">Monev TKA Madrasah</option>
+                <option value="BOS">Monev Dana BOS</option>
+                <option value="UjianAkhir">Monev Ujian Akhir</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Masukkan ID Monev (Contoh: MNEV-0001)</label>
+              <input type="text" id="cancelMonevIdInput" class="input-control" placeholder="MNEV-XXXX">
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-locked" onclick="handleCancelMonevRecord()">🗑️ Batalkan / Hapus Data Monev</button>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
@@ -750,7 +776,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbzmrawY8U9eqQy5_BBPSf5ZTUuo2J8x1mt8Sic9_dFt9wUi673PNIhmFlOktlntw30DFQ/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbya_HUgKvjtw03Y2InOMgzOtSFvdb-ek_HLzesTyxbo5SDJaJmssnFLkHHKzXeF5XIboA/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -767,7 +793,7 @@
       currentModule: 'TKA',
       adminUnlocked: false,
       menuAccess: { TKA: true, BOS: true, UjianAkhir: true, Madrasah: true, Tim: true },
-      madrasah: [], pegawai: [], timMonev: [], roomRowCount: 0,
+      madrasah: [], pegawai: [], timMonev: [], assignedMadrasahNames: [], roomRowCount: 0,
       stats: { totalMonev: 0, totalTKA: 0, totalBOS: 0, totalUjian: 0, totalPegawai: 0, totalTim: 0, totalMadrasah: 0, breakdown: { totalMadrasah:{MA:0,MTs:0,MI:0}, tujuanMonev:{MA:0,MTs:0,MI:0}, sudahMonev:{MA:0,MTs:0,MI:0}, belumMonev:{MA:0,MTs:0,MI:0} } },
       pagination: { limit: 8, offset: 0, total: 0, hasMore: false, items: [] },
       activePdf: { base64: '', fileName: 'Monev.pdf', record: null }
@@ -1055,6 +1081,7 @@
           APP_STATE.madrasah = res.madrasah || [];
           APP_STATE.pegawai = res.pegawai || [];
           APP_STATE.timMonev = res.timMonev || [];
+          APP_STATE.assignedMadrasahNames = res.assignedMadrasahNames || [];
           APP_STATE.stats = res.stats || APP_STATE.stats;
           if (res.menuAccess) {
             APP_STATE.menuAccess = res.menuAccess;
@@ -1145,7 +1172,13 @@
       if (selMad) {
         var html = '<option value="">-- Pilih Madrasah Sasaran --</option>';
         for (var i = 0; i < APP_STATE.madrasah.length; i++) {
-          html += '<option value="' + escapeAttr(APP_STATE.madrasah[i].ID_Madrasah) + '">' + escapeText(APP_STATE.madrasah[i].Nama_Madrasah) + '</option>';
+          var m = APP_STATE.madrasah[i];
+          var mName = String(m.Nama_Madrasah || '').trim();
+          var isAlreadyMonev = (APP_STATE.assignedMadrasahNames.indexOf(mName) !== -1);
+          
+          if (!isAlreadyMonev) {
+            html += '<option value="' + escapeAttr(m.ID_Madrasah) + '">' + escapeText(m.Nama_Madrasah) + '</option>';
+          }
         }
         selMad.innerHTML = html;
       }
@@ -1516,6 +1549,30 @@
           toggleFormPanel();
           openPdfModal(res.pdfBase64, res.pdfFileName);
           resetAndLoadMonev();
+        }
+      });
+    }
+
+    function handleCancelMonevRecord() {
+      var mod = document.getElementById('cancelMonevModule').value;
+      var idMonev = String(document.getElementById('cancelMonevIdInput').value || '').trim();
+
+      if (!idMonev) {
+        showToast('Masukkan ID Monev yang ingin dibatalkan!', 'error');
+        return;
+      }
+
+      if (!confirm('Apakah Anda yakin ingin membatalkan/menghapus data Monev dengan ID ' + idMonev + ' dari modul ' + mod + '?')) {
+        return;
+      }
+
+      callGasApi('deleteMonevRecord', { module: mod, idMonev: idMonev }, function(res) {
+        if (res && res.status === 'success') {
+          showToast(res.message, 'success');
+          document.getElementById('cancelMonevIdInput').value = '';
+          initializeAppData();
+        } else {
+          showToast(res && res.message ? res.message : 'Gagal menghapus data monev.', 'error');
         }
       });
     }
