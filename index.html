@@ -618,11 +618,21 @@
         </div>
 
         <div class="glass-panel">
-          <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>Daftar Tim &amp; Pegawai</span></div></div>
+          <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>Daftar Tim Monev Aktif</span></div></div>
           <div class="table-wrapper">
             <table class="masdonie-table">
               <thead><tr><th>ID Tim</th><th>Nama Tim</th><th>Anggota</th><th>Status</th></tr></thead>
               <tbody id="timTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="margin-top:18px;">
+          <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>Database Pegawai Terdaftar</span></div></div>
+          <div class="table-wrapper">
+            <table class="masdonie-table">
+              <thead><tr><th>ID</th><th>NIP</th><th>Nama Pegawai</th><th>Jabatan</th><th>Status</th></tr></thead>
+              <tbody id="pegawaiTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -886,7 +896,42 @@
     function initTimPegawaiSlots() {
       var container = document.getElementById('timPegawaiSlotsContainer');
       if (!container) return;
-      container.innerHTML = '<select id="timPegSlot_1" class="select-control"><option value="">-- Pilih Pegawai --</option></select>';
+      var html = '';
+      for (var s = 1; s <= 5; s++) {
+        html += '<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">' +
+          '<span style="font-size:0.75rem; font-weight:700; width:60px;">Pegawai ' + s + ':</span>' +
+          '<select id="timPegSlot_' + s + '" class="select-control tim-slot-select" style="padding:6px; font-size:0.85rem; height:38px;" onchange="updateTimPegawaiSlotOptions()">' +
+          '<option value="">-- Pilih Pegawai --</option></select></div>';
+      }
+      container.innerHTML = html;
+    }
+
+    function getSelectedEmployeeNames() {
+      var selected = [];
+      for (var s = 1; s <= 5; s++) {
+        var el = document.getElementById('timPegSlot_' + s);
+        if (el && el.value) selected.push(el.value);
+      }
+      return selected;
+    }
+
+    function updateTimPegawaiSlotOptions() {
+      var selectedNames = getSelectedEmployeeNames();
+      for (var s = 1; s <= 5; s++) {
+        var selectEl = document.getElementById('timPegSlot_' + s);
+        if (!selectEl) continue;
+        var currentVal = selectEl.value;
+        var html = '<option value="">-- Pilih Pegawai --</option>';
+        for (var j = 0; j < APP_STATE.pegawai.length; j++) {
+          var p = APP_STATE.pegawai[j];
+          var name = p.Nama_Pegawai;
+          if (selectedNames.indexOf(name) === -1 || name === currentVal) {
+            html += '<option value="' + escapeAttr(name) + '">' + escapeText(name) + ' (' + escapeText(p.NIP) + ')</option>';
+          }
+        }
+        selectEl.innerHTML = html;
+        selectEl.value = currentVal;
+      }
     }
 
     function initializeAppData() {
@@ -904,6 +949,7 @@
           renderStatsAndDropdowns();
           renderMadrasahTable();
           renderAdminTables();
+          updateTimPegawaiSlotOptions();
           resetAndLoadMonev();
         }
       });
@@ -973,7 +1019,7 @@
 
     function switchModule(mod) {
       if (mod === 'Pengaturan') {
-        APP_STATE.adminUnlocked = false; // Setiap klik Pengaturan wajib verifikasi ulang password
+        APP_STATE.adminUnlocked = false;
         var passInput = document.getElementById('inpAdminPassPrompt');
         if (passInput) passInput.value = '';
         document.getElementById('adminAuthModal').classList.add('show');
@@ -1078,6 +1124,42 @@
       });
     }
 
+    function handleSavePegawai() {
+      callGasApi('saveAdminRecord', {
+        type: 'Pegawai',
+        NIP: document.getElementById('pegNIP').value,
+        Nama_Pegawai: document.getElementById('pegNama').value,
+        Jabatan: document.getElementById('pegJabatan').value,
+        Status: document.getElementById('pegStatus').value
+      }, function(res) {
+        if (res && res.status === 'success') {
+          showToast(res.message, 'success');
+          document.getElementById('formPegawai').reset();
+          initializeAppData();
+        }
+      });
+    }
+
+    function handleSaveTimMonev() {
+      var members = getSelectedEmployeeNames();
+      if (members.length === 0) {
+        showToast('Pilih minimal 1 pegawai untuk Tim Monev.', 'error');
+        return;
+      }
+      callGasApi('saveAdminRecord', {
+        type: 'TimMonev',
+        Nama_Tim: document.getElementById('timNama').value,
+        Anggota_Tim: members.join(' | '),
+        Wilayah_Sasaran: 'Kab. Musi Rawas'
+      }, function(res) {
+        if (res && res.status === 'success') {
+          showToast(res.message, 'success');
+          document.getElementById('formTimMonev').reset();
+          initializeAppData();
+        }
+      });
+    }
+
     function renderMadrasahTable() {
       var tbody = document.getElementById('madrasahTableBody');
       if (!tbody) return;
@@ -1090,14 +1172,33 @@
     }
 
     function renderAdminTables() {
-      var tbody = document.getElementById('timTableBody');
-      if (!tbody) return;
-      var html = '';
-      for (var i = 0; i < APP_STATE.timMonev.length; i++) {
-        var t = APP_STATE.timMonev[i];
-        html += '<tr><td>' + t.ID_Tim + '</td><td>' + t.Nama_Tim + '</td><td>' + t.Anggota_Tim + '</td><td>' + t.Status_Tim + '</td></tr>';
+      var tTbody = document.getElementById('timTableBody');
+      if (tTbody) {
+        if (APP_STATE.timMonev.length === 0) {
+          tTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:16px;">Belum ada Tim Monev.</td></tr>';
+        } else {
+          var tHtml = '';
+          for (var j = 0; j < APP_STATE.timMonev.length; j++) {
+            var t = APP_STATE.timMonev[j];
+            tHtml += '<tr><td><span class="mono-id">' + escapeText(t.ID_Tim) + '</span></td><td><strong>' + escapeText(t.Nama_Tim) + '</strong></td><td>' + escapeText(t.Anggota_Tim) + '</td><td><span class="badge badge-success">' + escapeText(t.Status_Tim || 'Aktif') + '</span></td></tr>';
+          }
+          tTbody.innerHTML = tHtml;
+        }
       }
-      tbody.innerHTML = html;
+
+      var pTbody = document.getElementById('pegawaiTableBody');
+      if (pTbody) {
+        if (APP_STATE.pegawai.length === 0) {
+          pTbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:16px;">Belum ada pegawai terdaftar.</td></tr>';
+        } else {
+          var pHtml = '';
+          for (var p = 0; p < APP_STATE.pegawai.length; p++) {
+            var item = APP_STATE.pegawai[p];
+            pHtml += '<tr><td><span class="mono-id">' + escapeText(item.ID_Pegawai) + '</span></td><td style="font-family:monospace;">' + escapeText(item.NIP) + '</td><td><strong>' + escapeText(item.Nama_Pegawai) + '</strong></td><td>' + escapeText(item.Jabatan) + '</td><td><span class="badge badge-success">' + escapeText(item.Status || 'Aktif') + '</span></td></tr>';
+          }
+          pTbody.innerHTML = pHtml;
+        }
+      }
     }
 
     function handleSaveMonev() {
@@ -1202,7 +1303,6 @@
           APP_STATE.adminUnlocked = true;
           closeAdminAuthModal();
           
-          // Lanjutkan proses masuk ke menu Pengaturan
           APP_STATE.currentModule = 'Pengaturan';
           ['TKA', 'BOS', 'UjianAkhir', 'Madrasah', 'Tim', 'Pengaturan'].forEach(function(m) {
             var b = document.getElementById('nav-' + m);
