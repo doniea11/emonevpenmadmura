@@ -158,7 +158,7 @@
       <div class="bicyc-icon">🚴</div>
       <div class="bicyc-road"></div>
     </div>
-    <div class="bicyc-text" id="bicycLoaderText">Loading...</div>
+    <div class="bicyc-text" id="bicycLoaderText">Memproses Data &amp; PDF...</div>
   </div>
 
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar()"></div>
@@ -226,7 +226,7 @@
       <div class="sidebar-footer" style="margin-top:auto; padding-top:14px; border-top:1px solid var(--border-glass); text-align:center;">
         <div style="font-size:0.75rem; color:var(--text-secondary); display:flex; align-items:center; justify-content:center; gap:6px;">
           <span class="online-pulse-dot"></span>
-          <strong>Online &bull; Vercel Ready</strong>
+          <strong>Online</strong>
         </div>
         <div style="margin-top:8px; padding-top:8px; border-top:1px dashed #ced4da; font-size:0.73rem; font-weight:700; color:var(--text-secondary); text-align:center;">
           @2026 design by masdonie
@@ -808,7 +808,7 @@
     });
 
     function callGasApi(action, payload, successCallback, failureCallback) {
-      showBicycLoader('Menghubungkan ke GAS Backend...');
+      showBicycLoader('Memproses Data ke Database...');
       var targetUrl = GAS_API_URL + "?action=" + action;
       fetch(targetUrl, {
         method: "POST",
