@@ -1611,6 +1611,7 @@
           document.getElementById('moduleHeading').textContent = 'Pengaturan Aktivasi Menu & Keamanan';
           document.getElementById('moduleSubheading').textContent = 'Kelola status menu aplikasi dan ubah password admin';
 
+          showToast(res.message, 'success');
         } else {
           showToast(res && res.message ? res.message : 'Password salah!', 'error');
         }
