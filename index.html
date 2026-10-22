@@ -600,7 +600,6 @@
                 <div class="form-group"><label class="form-label">Status</label><select id="pegStatus" class="select-control"><option value="Aktif">Aktif</option></select></div>
               </div>
               <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:8px;">
-                <button type="button" id="btnCancelEditPegawai" class="btn btn-ghost btn-sm hidden" onclick="cancelEditPegawai()">Batal</button>
                 <button type="submit" class="btn btn-neon btn-sm" id="btnSubmitPegawai">+ Simpan / Perbarui Pegawai</button>
               </div>
             </form>
@@ -624,7 +623,6 @@
                 </div>
               </div>
               <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:8px;">
-                <button type="button" id="btnCancelEditTim" class="btn btn-ghost btn-sm hidden" onclick="cancelEditTim()">Batal</button>
                 <button type="submit" class="btn btn-neon btn-sm" id="btnSubmitTim">🛡️ Terbitkan / Perbarui Tim</button>
               </div>
             </form>
@@ -1058,6 +1056,28 @@
       }
     }
 
+    function handleAutoFillPetugasFromTim() {
+      var selectedTim = document.getElementById('inpIdTim').value;
+      var petugasField = document.getElementById('inpNamaPetugas');
+      var labelPetugas = document.getElementById('labelPetugasBox');
+      
+      if (labelPetugas) labelPetugas.innerHTML = '<strong>Petugas Monitoring ' + selectedTim + '</strong>';
+
+      var members = [];
+      for (var i = 0; i < APP_STATE.timMonev.length; i++) {
+        var t = APP_STATE.timMonev[i];
+        if (String(t.Nama_Tim) === selectedTim || String(t.ID_Tim) === selectedTim) {
+          if (t.Anggota_Tim && t.Anggota_Tim !== '-') {
+            members.push(t.Anggota_Tim);
+          }
+        }
+      }
+
+      if (petugasField) {
+        petugasField.value = members.length > 0 ? members.join(' | ') : 'Belum ada petugas terdaftar pada tim ini.';
+      }
+    }
+
     function switchModule(mod) {
       if (mod === 'Pengaturan') {
         APP_STATE.adminUnlocked = false;
@@ -1100,6 +1120,9 @@
     function toggleFormPanel() {
       var p = document.getElementById('monevFormPanel');
       p.classList.toggle('hidden');
+      if (!p.classList.contains('hidden')) {
+        handleAutoFillPetugasFromTim();
+      }
     }
     function toggleMobileSidebar() {
       document.getElementById('sidebarNav').classList.toggle('open');
@@ -1469,4 +1492,3 @@
   </script>
 </body>
 </html>
-```eof
