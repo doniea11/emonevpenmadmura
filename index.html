@@ -369,19 +369,14 @@
               <label class="form-label">Alamat Kecamatan <span class="req">*</span></label>
               <input type="text" id="inpAlamatKecamatan" class="input-control" placeholder="Contoh: Kec. Muara Beliti" readonly required>
             </div>
-            <div class="form-group">
-              <label class="form-label">Status Evaluasi</label>
-              <select id="inpStatusMonev" class="select-control">
-                <option value="Selesai">Selesai (Memenuhi Standar)</option>
-                <option value="Tindak Lanjut">Perlu Tindak Lanjut Teknis</option>
-                <option value="Pendampingan">Butuh Pendampingan Khusus</option>
-              </select>
-            </div>
           </div>
 
           <div id="fields-TKA">
             <div class="sub-card-box">
-              <strong style="font-size:0.9rem;">A. Tabel Rekapitulasi Peserta TKA Per Ruang (L / P)</strong>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <strong style="font-size:0.9rem;">A. Tabel Rekapitulasi Peserta TKA Per Ruang (L / P)</strong>
+                <button type="button" class="btn btn-neon btn-sm" onclick="addExtraTkaRoomRow()">+ Tambah Ruang</button>
+              </div>
               <div id="tkaRoomCardsContainer" style="margin-top:10px;"></div>
               <div style="background:#e9ecef; border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px; display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:0.9rem;">
                 <span>Total Seluruh Ruang:</span>
@@ -849,23 +844,50 @@
       toggleFormPanel();
     }
     function initTkaRoomCards() { buildExactTkaRoomCards(1); }
+    
     function buildExactTkaRoomCards(count) {
       var container = document.getElementById('tkaRoomCardsContainer');
       if (!container) return;
       container.innerHTML = '';
+      APP_STATE.roomRowCount = 0;
       for (var i = 1; i <= count; i++) {
-        var card = document.createElement('div');
-        card.className = 'room-mobile-card';
-        card.setAttribute('data-room-idx', String(i));
-        card.innerHTML = '<div class="room-mobile-card-header"><span class="rm-no" data-val="' + i + '">Ruang ' + i + '</span></div>' +
-          '<div class="room-fields-grid">' +
-          '<div><label>L</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label>P</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label>Total</label><div class="input-mini" id="rm-pJml-' + i + '">0</div></div>' +
-          '</div>';
-        container.appendChild(card);
+        addTkaRoomRowExplicit(i);
       }
       recalculateTkaRoomTotals();
+    }
+
+    function addTkaRoomRowExplicit(idx) {
+      APP_STATE.roomRowCount = idx;
+      var container = document.getElementById('tkaRoomCardsContainer');
+      if (!container) return;
+
+      var card = document.createElement('div');
+      card.className = 'room-mobile-card';
+      card.setAttribute('data-room-idx', String(idx));
+      card.innerHTML = '<div class="room-mobile-card-header">' +
+          '<span class="rm-no" data-val="' + idx + '" style="font-weight:800; color:var(--tka-blue);">Ruang ' + idx + '</span>' +
+          (idx > 1 ? '<button type="button" class="btn btn-ghost btn-sm" style="padding:2px 8px; font-size:0.75rem; color:var(--accent-danger);" onclick="removeTkaRoomRow(this)">Hapus</button>' : '') +
+        '</div>' +
+        '<div class="room-fields-grid">' +
+        '<div><label style="font-size:0.75rem;">L</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+        '<div><label style="font-size:0.75rem;">P</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+        '<div><label style="font-size:0.75rem;">Total</label><div class="input-mini" id="rm-pJml-' + idx + '" style="background:#e9ecef; font-weight:bold; display:flex; align-items:center; justify-content:center;">0</div></div>' +
+        '</div>';
+      container.appendChild(card);
+    }
+
+    function addExtraTkaRoomRow() {
+      APP_STATE.roomRowCount++;
+      addTkaRoomRowExplicit(APP_STATE.roomRowCount);
+      recalculateTkaRoomTotals();
+    }
+
+    function removeTkaRoomRow(btn) {
+      var card = btn.closest('.room-mobile-card');
+      if (card) {
+        card.remove();
+        recalculateTkaRoomTotals();
+      }
     }
 
     function cleanLeadingZero(inputEl) {
@@ -1423,7 +1445,7 @@
         NIP_Kepala: document.getElementById('inpNIPKepala').value,
         Alamat_Desa: document.getElementById('inpAlamatDesa').value,
         Alamat_Kecamatan: document.getElementById('inpAlamatKecamatan').value,
-        Status_Monev: document.getElementById('inpStatusMonev').value,
+        Status_Monev: 'Selesai',
         Jumlah_Peserta: document.getElementById('totPJml').textContent
       }, function(res) {
         if (res && res.status === 'success') {
