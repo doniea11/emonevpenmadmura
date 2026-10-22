@@ -601,19 +601,23 @@
           </div>
 
           <div class="glass-panel">
-            <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>2. Bentuk / Perbarui Tim Monev</span></div></div>
+            <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span id="timFormTitle">2. Bentuk / Perbarui Tim Monev</span></div></div>
             <form id="formTimMonev" onsubmit="event.preventDefault(); handleSaveTimMonev();">
+              <input type="hidden" id="editTimId" value="">
               <div class="form-grid">
                 <div class="form-group full-width">
                   <label class="form-label">Nama Tim</label>
                   <select id="timNama" class="select-control"><option value="Tim 1">Tim 1</option><option value="Tim 2">Tim 2</option><option value="Tim 3">Tim 3</option></select>
                 </div>
                 <div class="form-group full-width">
-                  <label class="form-label">Petugas / Anggota Tim</label>
+                  <label class="form-label">Petugas / Anggota Tim <span style="font-size:0.75rem; color:var(--accent-danger); font-weight:normal;">(Pegawai yang sudah di tim lain tidak dapat dipilih)</span></label>
                   <div id="timPegawaiSlotsContainer"></div>
                 </div>
               </div>
-              <div style="margin-top:14px; text-align:right;"><button type="submit" class="btn btn-neon btn-sm">🛡️ Terbitkan / Perbarui Tim</button></div>
+              <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:8px;">
+                <button type="button" id="btnCancelEditTim" class="btn btn-ghost btn-sm hidden" onclick="cancelEditTim()">Batal</button>
+                <button type="submit" class="btn btn-neon btn-sm" id="btnSubmitTim">🛡️ Terbitkan / Perbarui Tim</button>
+              </div>
             </form>
           </div>
         </div>
@@ -622,7 +626,7 @@
           <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>Daftar Tim Monev Aktif</span></div></div>
           <div class="table-wrapper">
             <table class="masdonie-table">
-              <thead><tr><th>ID Tim</th><th>Nama Tim</th><th>Anggota &amp; Jabatan</th><th>Status</th></tr></thead>
+              <thead><tr><th>ID Tim</th><th>Nama Tim</th><th>Anggota &amp; Jabatan</th><th>Status</th><th>Aksi</th></tr></thead>
               <tbody id="timTableBody"></tbody>
             </table>
           </div>
@@ -906,19 +910,45 @@
       return selected;
     }
 
+    function getAssignedEmployeesInOtherTeams(currentEditingId) {
+      var assigned = [];
+      for (var i = 0; i < APP_STATE.timMonev.length; i++) {
+        var t = APP_STATE.timMonev[i];
+        if (currentEditingId && String(t.ID_Tim) === String(currentEditingId)) continue;
+        var members = String(t.Anggota_Tim || '').split(/\s*\|\s*|\s*;\s*|\n+/);
+        for (var m = 0; m < members.length; m++) {
+          var cleanName = members[m].trim();
+          if (cleanName && assigned.indexOf(cleanName) === -1) {
+            assigned.push(cleanName);
+          }
+        }
+      }
+      return assigned;
+    }
+
     function updateTimPegawaiSlotOptions() {
-      var selectedNames = getSelectedEmployeeNames();
+      var selectedInCurrentForm = getSelectedEmployeeNames();
+      var editingId = document.getElementById('editTimId').value;
+      var assignedElsewhere = getAssignedEmployeesInOtherTeams(editingId);
+
       for (var s = 1; s <= 5; s++) {
         var selectEl = document.getElementById('timPegSlot_' + s);
         if (!selectEl) continue;
         var currentVal = selectEl.value;
         var html = '<option value="">-- Pilih Pegawai --</option>';
+
         for (var j = 0; j < APP_STATE.pegawai.length; j++) {
           var p = APP_STATE.pegawai[j];
           var name = p.Nama_Pegawai;
           var jabatan = p.Jabatan ? ' (' + p.Jabatan + ')' : '';
-          if (selectedNames.indexOf(name) === -1 || name === currentVal) {
+
+          var isSelectedInOtherSlot = (selectedInCurrentForm.indexOf(name) !== -1 && name !== currentVal);
+          var isAssignedInOtherTeam = (assignedElsewhere.indexOf(name) !== -1);
+
+          if (!isSelectedInOtherSlot && !isAssignedInOtherTeam) {
             html += '<option value="' + escapeAttr(name) + '">' + escapeText(name + jabatan) + '</option>';
+          } else if (name === currentVal) {
+            html += '<option value="' + escapeAttr(name) + '" selected>' + escapeText(name + jabatan) + '</option>';
           }
         }
         selectEl.innerHTML = html;
@@ -1117,23 +1147,26 @@
     }
 
     function handleSavePegawai() {
-      var nip = document.getElementById('pegNIP').value.trim();
-      var nama = document.getElementById('pegNama').value.trim();
-      var jabatan = document.getElementById('pegJabatan').value.trim();
-      
+      var editId = document.getElementById('editPegawaiId').value;
       callGasApi('saveAdminRecord', {
         type: 'Pegawai',
-        NIP: nip,
-        Nama_Pegawai: nama,
-        Jabatan: jabatan,
+        ID_Pegawai: editId,
+        NIP: document.getElementById('pegNIP').value.trim(),
+        Nama_Pegawai: document.getElementById('pegNama').value.trim(),
+        Jabatan: document.getElementById('pegJabatan').value.trim(),
         Status: document.getElementById('pegStatus').value
       }, function(res) {
         if (res && res.status === 'success') {
           showToast(res.message, 'success');
-          document.getElementById('formPegawai').reset();
+          cancelEditPegawai();
           initializeAppData();
         }
       });
+    }
+
+    function cancelEditPegawai() {
+      document.getElementById('editPegawaiId').value = '';
+      document.getElementById('formPegawai').reset();
     }
 
     function handleSaveTimMonev() {
@@ -1142,21 +1175,55 @@
         showToast('Pilih minimal 1 pegawai untuk Tim Monev.', 'error');
         return;
       }
+      var editId = document.getElementById('editTimId').value;
       var namaTim = document.getElementById('timNama').value;
 
       callGasApi('saveAdminRecord', {
         type: 'TimMonev',
+        ID_Tim: editId,
         Nama_Tim: namaTim,
         Anggota_Tim: members.join(' | '),
         Wilayah_Sasaran: 'Kab. Musi Rawas'
       }, function(res) {
         if (res && res.status === 'success') {
           showToast(res.message, 'success');
-          document.getElementById('formTimMonev').reset();
-          initTimPegawaiSlots();
+          cancelEditTim();
           initializeAppData();
         }
       });
+    }
+
+    function editTim(idTim) {
+      var t = null;
+      for (var i = 0; i < APP_STATE.timMonev.length; i++) {
+        if (String(APP_STATE.timMonev[i].ID_Tim) === String(idTim)) {
+          t = APP_STATE.timMonev[i];
+          break;
+        }
+      }
+      if (!t) return;
+
+      document.getElementById('editTimId').value = t.ID_Tim;
+      document.getElementById('timNama').value = t.Nama_Tim || 'Tim 1';
+      document.getElementById('timFormTitle').textContent = '2. Update Tim Monev (' + t.ID_Tim + ')';
+      document.getElementById('btnCancelEditTim').classList.remove('hidden');
+
+      var members = String(t.Anggota_Tim || '').split(/\s*\|\s*|\s*;\s*|\n+/);
+      for (var s = 1; s <= 5; s++) {
+        var el = document.getElementById('timPegSlot_' + s);
+        if (el) el.value = members[s - 1] || '';
+      }
+      updateTimPegawaiSlotOptions();
+      document.getElementById('formTimMonev').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function cancelEditTim() {
+      document.getElementById('editTimId').value = '';
+      document.getElementById('formTimMonev').reset();
+      initTimPegawaiSlots();
+      updateTimPegawaiSlotOptions();
+      document.getElementById('timFormTitle').textContent = '2. Bentuk / Perbarui Tim Monev';
+      document.getElementById('btnCancelEditTim').classList.add('hidden');
     }
 
     function renderMadrasahTable() {
@@ -1174,16 +1241,22 @@
       var tTbody = document.getElementById('timTableBody');
       if (tTbody) {
         if (APP_STATE.timMonev.length === 0) {
-          tTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:16px;">Belum ada Tim Monev.</td></tr>';
+          tTbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:16px;">Belum ada Tim Monev.</td></tr>';
         } else {
           var tHtml = '';
           var seenTim = {};
           for (var j = 0; j < APP_STATE.timMonev.length; j++) {
             var t = APP_STATE.timMonev[j];
-            var key = (t.Nama_Tim || '') + '_' + (t.Anggota_Tim || '');
+            var key = (t.ID_Tim || '') + '_' + (t.Nama_Tim || '') + '_' + (t.Anggota_Tim || '');
             if (seenTim[key]) continue;
             seenTim[key] = true;
-            tHtml += '<tr><td><span class="mono-id">' + escapeText(t.ID_Tim) + '</span></td><td><strong>' + escapeText(t.Nama_Tim) + '</strong></td><td>' + escapeText(t.Anggota_Tim) + '</td><td><span class="badge badge-success">' + escapeText(t.Status_Tim || 'Aktif') + '</span></td></tr>';
+            tHtml += '<tr>' +
+              '<td><span class="mono-id">' + escapeText(t.ID_Tim) + '</span></td>' +
+              '<td><strong>' + escapeText(t.Nama_Tim) + '</strong></td>' +
+              '<td>' + escapeText(t.Anggota_Tim) + '</td>' +
+              '<td><span class="badge badge-success">' + escapeText(t.Status_Tim || 'Aktif') + '</span></td>' +
+              '<td style="text-align:center;"><button type="button" class="btn btn-ghost btn-sm" style="padding:4px 8px; font-size:0.75rem;" onclick="editTim(\'' + escapeAttr(t.ID_Tim) + '\')">✏️ Update Tim</button></td>' +
+              '</tr>';
           }
           tTbody.innerHTML = tHtml;
         }
