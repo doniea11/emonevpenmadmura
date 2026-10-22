@@ -868,11 +868,25 @@
           '<span class="rm-no" data-val="' + idx + '" style="font-weight:800; color:var(--tka-blue);">Ruang ' + idx + '</span>' +
           (idx > 1 ? '<button type="button" class="btn btn-ghost btn-sm" style="padding:2px 8px; font-size:0.75rem; color:var(--accent-danger);" onclick="removeTkaRoomRow(this)">Hapus</button>' : '') +
         '</div>' +
-        '<div class="room-fields-grid">' +
+        '<div style="font-weight:700; font-size:0.8rem; color:var(--text-secondary); margin-bottom:4px;">1. Total Siswa</div>' +
+        '<div class="room-fields-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:8px;">' +
         '<div><label style="font-size:0.75rem;">L</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
         '<div><label style="font-size:0.75rem;">P</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-        '<div><label style="font-size:0.75rem;">Total</label><div class="input-mini" id="rm-pJml-' + idx + '" style="background:#e9ecef; font-weight:bold; display:flex; align-items:center; justify-content:center;">0</div></div>' +
-        '</div>';
+        '<div><label style="font-size:0.75rem;">Jumlah</label><div class="input-mini" id="rm-pJml-' + idx + '" style="background:#e9ecef; font-weight:bold; display:flex; align-items:center; justify-content:center;">0</div></div>' +
+        '</div>' +
+        '<div style="font-weight:700; font-size:0.8rem; color:var(--text-secondary); margin-bottom:4px;">2. Total Siswa Hadir</div>' +
+        '<div class="room-fields-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:8px;">' +
+        '<div><label style="font-size:0.75rem;">L</label><input type="number" class="input-mini rm-hL" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+        '<div><label style="font-size:0.75rem;">P</label><input type="number" class="input-mini rm-hP" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+        '<div><label style="font-size:0.75rem;">Jumlah</label><div class="input-mini" id="rm-hJml-' + idx + '" style="background:#e9ecef; font-weight:bold; display:flex; align-items:center; justify-content:center;">0</div></div>' +
+        '</div>' +
+        '<div style="font-weight:700; font-size:0.8rem; color:var(--text-secondary); margin-bottom:4px;">3. Total Siswa Tidak Hadir</div>' +
+        '<div class="room-fields-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:8px;">' +
+        '<div><label style="font-size:0.75rem;">L</label><input type="number" class="input-mini rm-tL" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+        '<div><label style="font-size:0.75rem;">P</label><input type="number" class="input-mini rm-tP" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+        '<div><label style="font-size:0.75rem;">Jumlah</label><div class="input-mini" id="rm-tJml-' + idx + '" style="background:#e9ecef; font-weight:bold; display:flex; align-items:center; justify-content:center;">0</div></div>' +
+        '</div>' +
+        '<div><label style="font-size:0.75rem; font-weight:600;">Alasan / Keterangan Tidak Hadir</label><input type="text" class="input-control rm-ket" placeholder="Contoh: Sakit / Izin" style="padding:8px 12px; font-size:0.9rem; min-height:38px; margin-top:2px;"></div>';
       container.appendChild(card);
     }
 
@@ -898,7 +912,7 @@
 
     function recalculateTkaRoomTotals() {
       var cards = document.querySelectorAll('.room-mobile-card');
-      var totPJml = 0;
+      var totPJml = 0, totHJml = 0, totTJml = 0;
 
       for (var i = 0; i < cards.length; i++) {
         var card = cards[i];
@@ -907,14 +921,32 @@
         var pP = parseInt(card.querySelector('.rm-pP').value, 10) || 0;
         var pJml = pL + pP;
 
+        var hL = parseInt(card.querySelector('.rm-hL').value, 10) || 0;
+        var hP = parseInt(card.querySelector('.rm-hP').value, 10) || 0;
+        var hJml = hL + hP;
+
+        var tL = parseInt(card.querySelector('.rm-tL').value, 10) || 0;
+        var tP = parseInt(card.querySelector('.rm-tP').value, 10) || 0;
+        var tJml = tL + tP;
+
         var elPJml = document.getElementById('rm-pJml-' + idx);
         if (elPJml) elPJml.textContent = String(pJml);
+        var elHJml = document.getElementById('rm-hJml-' + idx);
+        if (elHJml) elHJml.textContent = String(hJml);
+        var elTJml = document.getElementById('rm-tJml-' + idx);
+        if (elTJml) elTJml.textContent = String(tJml);
 
         totPJml += pJml;
+        totHJml += hJml;
+        totTJml += tJml;
       }
 
       var elTotP = document.getElementById('totPJml');
       if (elTotP) elTotP.textContent = String(totPJml);
+      var elTotH = document.getElementById('totHJml');
+      if (elTotH) elTotH.textContent = String(totHJml);
+      var elTotT = document.getElementById('totTJml');
+      if (elTotT) elTotT.textContent = String(totTJml);
     }
 
     function renderTkaChecklistFormTable() {
@@ -1432,6 +1464,35 @@
 
     function handleSaveMonev() {
       var mod = APP_STATE.currentModule;
+      var roomsData = [];
+      var cards = document.querySelectorAll('.room-mobile-card');
+      for (var rc = 0; rc < cards.length; rc++) {
+        var c = cards[rc];
+        roomsData.push({
+          ruang: String(rc + 1),
+          pL: c.querySelector('.rm-pL').value,
+          pP: c.querySelector('.rm-pP').value,
+          hL: c.querySelector('.rm-hL').value,
+          hP: c.querySelector('.rm-hP').value,
+          tL: c.querySelector('.rm-tL').value,
+          tP: c.querySelector('.rm-tP').value,
+          ket: c.querySelector('.rm-ket').value
+        });
+      }
+
+      var checklistData = [];
+      for (var i = 1; i <= 21; i++) {
+        var radios = document.getElementsByName('tka_chk_' + i);
+        var val = '1';
+        for (var r = 0; r < radios.length; r++) {
+          if (radios[r].checked) {
+            val = radios[r].value;
+            break;
+          }
+        }
+        checklistData.push({ no: i, status: val, ket: '' });
+      }
+
       callGasApi('saveMonevRecord', {
         module: mod,
         Tanggal: document.getElementById('inpTanggal').value,
@@ -1446,7 +1507,9 @@
         Alamat_Desa: document.getElementById('inpAlamatDesa').value,
         Alamat_Kecamatan: document.getElementById('inpAlamatKecamatan').value,
         Status_Monev: 'Selesai',
-        Jumlah_Peserta: document.getElementById('totPJml').textContent
+        Jumlah_Peserta: document.getElementById('totPJml').textContent,
+        Detail_Ruang_JSON: JSON.stringify(roomsData),
+        Checklist_TKA_JSON: JSON.stringify(checklistData)
       }, function(res) {
         if (res && res.status === 'success') {
           showToast(res.message, 'success');
@@ -1548,7 +1611,6 @@
           document.getElementById('moduleHeading').textContent = 'Pengaturan Aktivasi Menu & Keamanan';
           document.getElementById('moduleSubheading').textContent = 'Kelola status menu aplikasi dan ubah password admin';
 
-          showToast(res.message, 'success');
         } else {
           showToast(res && res.message ? res.message : 'Password salah!', 'error');
         }
