@@ -215,7 +215,7 @@
           </button>
         </li>
         <li id="menuItem-Pengaturan">
-          <button type="button" class="nav-btn" id="nav-Pengaturan" onclick="requestSwitchToPengaturan()">
+          <button type="button" class="nav-btn" id="nav-Pengaturan" onclick="switchModule('Pengaturan')">
             <span>🔒</span>
             <span>Pengaturan</span>
             <span class="nav-badge" id="badge-Pengaturan">⚙️</span>
@@ -631,46 +631,42 @@
       <section id="pengaturanModuleSection" class="hidden">
         <div class="glass-panel">
           <div class="panel-header">
-            <div class="panel-title"><span class="accent-bar"></span><span>⚙️ Pengaturan Aktivasi Menu &amp; Endpoint Backend</span></div>
+            <div class="panel-title"><span class="accent-bar"></span><span>⚙️ Pengaturan Aktivasi Menu &amp; Keamanan</span></div>
             <button type="button" class="btn btn-ghost btn-sm" onclick="lockAdminSession()">🔒 Kunci Pengaturan</button>
           </div>
 
           <form id="formAccessSettings" onsubmit="event.preventDefault(); handleSaveAccessSettings();">
             <div class="access-toggle-grid">
               <div class="access-card">
-                <label class="form-label">1. Google Apps Script Web App URL</label>
-                <input type="text" id="inpGasApiUrl" class="input-control" placeholder="https://script.google.com/macros/s/.../exec" required>
-              </div>
-              <div class="access-card">
-                <label class="form-label">2. Modul Monev TKA</label>
+                <label class="form-label">1. Modul Monev TKA</label>
                 <select id="menuToggleTKA" class="select-control">
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
                 </select>
               </div>
               <div class="access-card">
-                <label class="form-label">3. Modul Monev Dana BOS</label>
+                <label class="form-label">2. Modul Monev Dana BOS</label>
                 <select id="menuToggleBOS" class="select-control">
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
                 </select>
               </div>
               <div class="access-card">
-                <label class="form-label">4. Modul Monev Ujian Akhir</label>
+                <label class="form-label">3. Modul Monev Ujian Akhir</label>
                 <select id="menuToggleUjian" class="select-control">
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
                 </select>
               </div>
               <div class="access-card">
-                <label class="form-label">5. Menu Data Madrasah</label>
+                <label class="form-label">4. Menu Data Madrasah</label>
                 <select id="menuToggleMadrasah" class="select-control">
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
                 </select>
               </div>
               <div class="access-card">
-                <label class="form-label">6. Menu Tim Monev</label>
+                <label class="form-label">5. Menu Tim Monev</label>
                 <select id="menuToggleTim" class="select-control">
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
@@ -739,7 +735,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = localStorage.getItem('VERCEL_GAS_API_URL') || "https://script.google.com/macros/s/AKfycbwQTDmTxTS2HGa2S7dpLZWW3_fXKAqggo1W4tu0aGP6gUV4uyDRysXjtCGirzak0Zu-LA/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycby_kidvSU53tNM3DxHT1zvJDKBTBb8M2BU8x5ttxkxXyhRbJ5fnbC55CvMb91oW9yQ/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -763,8 +759,6 @@
     };
 
     window.addEventListener('DOMContentLoaded', function() {
-      var urlInput = document.getElementById('inpGasApiUrl');
-      if (urlInput) urlInput.value = GAS_API_URL;
       setDefaultDates();
       initTkaRoomCards();
       renderTkaChecklistFormTable();
@@ -978,8 +972,12 @@
     }
 
     function switchModule(mod) {
-      if (mod === 'Pengaturan' && !APP_STATE.adminUnlocked) {
-        requestSwitchToPengaturan();
+      if (mod === 'Pengaturan') {
+        APP_STATE.adminUnlocked = false; // Setiap klik Pengaturan wajib verifikasi ulang password
+        var passInput = document.getElementById('inpAdminPassPrompt');
+        if (passInput) passInput.value = '';
+        document.getElementById('adminAuthModal').classList.add('show');
+        setTimeout(function() { if (passInput) passInput.focus(); }, 100);
         return;
       }
 
@@ -1161,12 +1159,6 @@
     }
 
     function handleSaveAccessSettings() {
-      var newUrl = document.getElementById('inpGasApiUrl').value.trim();
-      if (newUrl) {
-        GAS_API_URL = newUrl;
-        localStorage.setItem('VERCEL_GAS_API_URL', newUrl);
-      }
-
       var payload = {
         AKSES_TKA: document.getElementById('menuToggleTKA').value,
         AKSES_BOS: document.getElementById('menuToggleBOS').value,
@@ -1189,13 +1181,6 @@
       });
     }
 
-    function requestSwitchToPengaturan() {
-      if (APP_STATE.adminUnlocked) { switchModule('Pengaturan'); return; }
-      var passInput = document.getElementById('inpAdminPassPrompt');
-      if (passInput) passInput.value = '';
-      document.getElementById('adminAuthModal').classList.add('show');
-      setTimeout(function() { if (passInput) passInput.focus(); }, 100);
-    }
     function closeAdminAuthModal() { document.getElementById('adminAuthModal').classList.remove('show'); }
 
     function submitAdminPassword() {
@@ -1216,7 +1201,24 @@
         if (res && res.authenticated) {
           APP_STATE.adminUnlocked = true;
           closeAdminAuthModal();
-          switchModule('Pengaturan');
+          
+          // Lanjutkan proses masuk ke menu Pengaturan
+          APP_STATE.currentModule = 'Pengaturan';
+          ['TKA', 'BOS', 'UjianAkhir', 'Madrasah', 'Tim', 'Pengaturan'].forEach(function(m) {
+            var b = document.getElementById('nav-' + m);
+            if (b) b.classList.toggle('active', m === 'Pengaturan');
+          });
+
+          document.getElementById('monevListPanel').classList.add('hidden');
+          document.getElementById('madrasahModuleSection').classList.add('hidden');
+          document.getElementById('timModuleSection').classList.add('hidden');
+          document.getElementById('pengaturanModuleSection').classList.remove('hidden');
+          document.getElementById('fields-TKA').classList.add('hidden');
+          document.getElementById('fields-BOS').classList.add('hidden');
+          document.getElementById('fields-UjianAkhir').classList.add('hidden');
+          document.getElementById('moduleHeading').textContent = 'Pengaturan Aktivasi Menu & Keamanan';
+          document.getElementById('moduleSubheading').textContent = 'Kelola status menu aplikasi dan ubah password admin';
+
           showToast(res.message, 'success');
         } else {
           showToast(res && res.message ? res.message : 'Password salah!', 'error');
