@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <!-- STREAMING_CHUNK:Defining document metadata... -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Sistem Monitoring &amp; Evaluasi PENMAD - Kemenag Musi Rawas</title>
@@ -9,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 
   <style>
+    /* STREAMING_CHUNK:Styling the layout components... */
     :root {
       --bg-deep: #f8f9fa;
       --bg-panel: #ffffff;
@@ -913,6 +915,9 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
+    // Konfigurasi URL Web App Google Apps Script Anda (Masukkan link GAS Anda di sini jika dibuka via Vercel)
+    var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzyhlA3iS25HEzBOWVXpKwJ2JbS96LDV6dsdUvJHLRXeGgh8vdaycC7nanxwI9xaW6qWQ/exec';
+
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
       { no: 2, text: 'SK Kepanitiaan' },
@@ -954,6 +959,30 @@
       customLogoBase64: '',
       searchTimer: null
     };
+
+    // Helper bridge untuk Vercel / fetch API ke GAS
+    function callBackend(functionName, payload, successCallback, failureCallback) {
+      if (APP_STATE.isGasEnv) {
+        google.script.run.withSuccessHandler(successCallback).withFailureHandler(failureCallback)[functionName](payload);
+      } else {
+        if (!GAS_API_URL || GAS_API_URL.indexOf('MASUKKAN') !== -1) {
+          console.warn('GAS_API_URL belum diatur! Menggunakan simulasi lokal.');
+          if (failureCallback) failureCallback(new Error('GAS_API_URL belum diatur di index.html (Baris 517).'));
+          return;
+        }
+        fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ fn: functionName, data: payload })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(res) {
+          if (successCallback) successCallback(res);
+        })
+        .catch(function(err) {
+          if (failureCallback) failureCallback(err);
+        });
+      }
+    }
 
     window.addEventListener('DOMContentLoaded', function() {
       setDefaultDates();
@@ -1313,42 +1342,20 @@
 
     function initializeAppData() {
       showBicycLoader('Loading...');
-      if (APP_STATE.isGasEnv) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            hideBicycLoader();
-            if (res && res.status === 'success') {
-              APP_STATE.madrasah = res.madrasah || [];
-              APP_STATE.pegawai = res.pegawai || [];
-              APP_STATE.timMonev = res.timMonev || [];
-              APP_STATE.stats = res.stats || APP_STATE.stats;
-              if (res.menuAccess) APP_STATE.menuAccess = res.menuAccess;
-              if (res.customLogo) {
-                APP_STATE.customLogoBase64 = res.customLogo;
-                document.getElementById('inpCustomLogoBase64').value = res.customLogo;
-                var previewBox = document.getElementById('logoPreviewContainer');
-                previewBox.innerHTML = '<img src="' + res.customLogo + '" width="80" height="75" style="object-fit:contain; border:1px solid #ccc; padding:2px; background:#fff; border-radius:4px;" /><div style="font-size:0.72rem; color:var(--tka-green); font-weight:700; margin-top:2px;">Logo aktif tersimpan</div>';
-              }
-              syncAccessSelectControls();
-              renderStatsAndDropdowns();
-              applyMenuVisibility();
-              renderMadrasahTable();
-              renderAdminTables();
-              populateTimPegawaiSlotsOptions();
-              renderTimMadrasahDropdowns();
-              resetAndLoadMonev();
-            } else {
-              showToast(res ? res.message : 'Gagal memuat data awal.', 'error');
-            }
-          })
-          .withFailureHandler(function(err) {
-            hideBicycLoader();
-            showToast('Error koneksi: ' + err.message, 'error');
-          })
-          .getInitialAppState();
-      } else {
-        setTimeout(function() {
-          hideBicycLoader();
+      callBackend('getInitialAppState', {}, function(res) {
+        hideBicycLoader();
+        if (res && res.status === 'success') {
+          APP_STATE.madrasah = res.madrasah || [];
+          APP_STATE.pegawai = res.pegawai || [];
+          APP_STATE.timMonev = res.timMonev || [];
+          APP_STATE.stats = res.stats || APP_STATE.stats;
+          if (res.menuAccess) APP_STATE.menuAccess = res.menuAccess;
+          if (res.customLogo) {
+            APP_STATE.customLogoBase64 = res.customLogo;
+            document.getElementById('inpCustomLogoBase64').value = res.customLogo;
+            var previewBox = document.getElementById('logoPreviewContainer');
+            previewBox.innerHTML = '<img src="' + res.customLogo + '" width="80" height="75" style="object-fit:contain; border:1px solid #ccc; padding:2px; background:#fff; border-radius:4px;" /><div style="font-size:0.72rem; color:var(--tka-green); font-weight:700; margin-top:2px;">Logo aktif tersimpan</div>';
+          }
           syncAccessSelectControls();
           renderStatsAndDropdowns();
           applyMenuVisibility();
@@ -1357,8 +1364,13 @@
           populateTimPegawaiSlotsOptions();
           renderTimMadrasahDropdowns();
           resetAndLoadMonev();
-        }, 400);
-      }
+        } else {
+          showToast(res ? res.message : 'Gagal memuat data awal.', 'error');
+        }
+      }, function(err) {
+        hideBicycLoader();
+        showToast('Error koneksi: ' + err.message, 'error');
+      });
     }
 
     function syncAccessSelectControls() {
@@ -1589,38 +1601,22 @@
       btn.disabled = true;
       btn.textContent = 'Memeriksa...';
 
-      if (APP_STATE.isGasEnv) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            btn.disabled = false;
-            btn.textContent = '🔓 Masuk';
-            if (res && res.authenticated) {
-              APP_STATE.adminUnlocked = true;
-              closeAdminAuthModal();
-              switchModule('Pengaturan');
-              showToast(res.message, 'success');
-            } else {
-              showToast(res ? res.message : 'Password salah!', 'error');
-            }
-          })
-          .withFailureHandler(function(err) {
-            btn.disabled = false;
-            btn.textContent = '🔓 Masuk';
-            showToast('Error: ' + err.message, 'error');
-          })
-          .verifyAdminPassword(pass);
-      } else {
+      callBackend('verifyAdminPassword', pass, function(res) {
         btn.disabled = false;
         btn.textContent = '🔓 Masuk';
-        if (pass === APP_STATE.localAdminPass) {
+        if (res && res.authenticated) {
           APP_STATE.adminUnlocked = true;
           closeAdminAuthModal();
           switchModule('Pengaturan');
-          showToast('Akses Pengaturan dibuka.', 'success');
+          showToast(res.message, 'success');
         } else {
-          showToast('Password salah!', 'error');
+          showToast(res ? res.message : 'Password salah!', 'error');
         }
-      }
+      }, function(err) {
+        btn.disabled = false;
+        btn.textContent = '🔓 Masuk';
+        showToast('Error: ' + err.message, 'error');
+      });
     }
 
     function lockAdminSession() {
@@ -1652,29 +1648,19 @@
       applyMenuVisibility();
 
       showBicycLoader('Loading...');
-      if (APP_STATE.isGasEnv) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            hideBicycLoader();
-            if (res && res.status === 'success') {
-              if (res.menuAccess) APP_STATE.menuAccess = res.menuAccess;
-              applyMenuVisibility();
-              showToast(res.message, 'success');
-            } else {
-              showToast(res ? res.message : 'Gagal menyimpan.', 'error');
-            }
-          })
-          .withFailureHandler(function(err) {
-            hideBicycLoader();
-            showToast('Gagal menyimpan: ' + err.message, 'error');
-          })
-          .saveModuleAccessSettings(payload);
-      } else {
-        setTimeout(function() {
-          hideBicycLoader();
-          showToast('Pengaturan menu berhasil disimpan!', 'success');
-        }, 300);
-      }
+      callBackend('saveModuleAccessSettings', payload, function(res) {
+        hideBicycLoader();
+        if (res && res.status === 'success') {
+          if (res.menuAccess) APP_STATE.menuAccess = res.menuAccess;
+          applyMenuVisibility();
+          showToast(res.message, 'success');
+        } else {
+          showToast(res ? res.message : 'Gagal menyimpan.', 'error');
+        }
+      }, function(err) {
+        hideBicycLoader();
+        showToast('Gagal menyimpan: ' + err.message, 'error');
+      });
     }
 
     function switchModule(modName) {
@@ -1809,27 +1795,19 @@
         offset: APP_STATE.pagination.offset
       };
 
-      if (APP_STATE.isGasEnv) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            if (res && res.status === 'success') {
-              APP_STATE.pagination.total = res.total;
-              APP_STATE.pagination.hasMore = res.hasMore;
-              var rawItems = res.items || [];
-              
-              if (isAppend) APP_STATE.pagination.items = APP_STATE.pagination.items.concat(rawItems);
-              else APP_STATE.pagination.items = rawItems;
-              renderMonevTableRows();
-            }
-          })
-          .getPaginatedData(params);
-      } else {
-        var list = APP_STATE.localPreviewStore[mod] || [];
-        APP_STATE.pagination.total = list.length;
-        APP_STATE.pagination.hasMore = false;
-        APP_STATE.pagination.items = list;
-        renderMonevTableRows();
-      }
+      callBackend('getPaginatedData', params, function(res) {
+        if (res && res.status === 'success') {
+          APP_STATE.pagination.total = res.total;
+          APP_STATE.pagination.hasMore = res.hasMore;
+          var rawItems = res.items || [];
+          
+          if (isAppend) APP_STATE.pagination.items = APP_STATE.pagination.items.concat(rawItems);
+          else APP_STATE.pagination.items = rawItems;
+          renderMonevTableRows();
+        }
+      }, function(err) {
+        console.error(err);
+      });
     }
 
     function initLazyLoadObserver() {
@@ -1930,54 +1908,30 @@
       }
 
       showBicycLoader('Loading...');
-      if (APP_STATE.isGasEnv) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            hideBicycLoader();
-            if (res && res.status === 'success') {
-              if (editId) {
-                for (var i = 0; i < APP_STATE.madrasah.length; i++) {
-                  if (String(APP_STATE.madrasah[i].ID_Madrasah) === String(editId)) {
-                    APP_STATE.madrasah[i] = res.record;
-                    break;
-                  }
-                }
-              } else {
-                APP_STATE.madrasah.unshift(res.record);
-              }
-              renderStatsAndDropdowns();
-              renderMadrasahTable();
-              cancelEditMadrasah();
-              showToast(res.message, 'success');
-            } else {
-              showToast(res ? res.message : 'Gagal menyimpan.', 'error');
-            }
-          })
-          .withFailureHandler(function(err) {
-            hideBicycLoader();
-            showToast('Gagal menyimpan: ' + err.message, 'error');
-          })
-          .saveMadrasahRecord(payload);
-      } else {
-        setTimeout(function() {
-          hideBicycLoader();
+      callBackend('saveMadrasahRecord', payload, function(res) {
+        hideBicycLoader();
+        if (res && res.status === 'success') {
           if (editId) {
             for (var i = 0; i < APP_STATE.madrasah.length; i++) {
               if (String(APP_STATE.madrasah[i].ID_Madrasah) === String(editId)) {
-                APP_STATE.madrasah[i] = Object.assign({ ID_Madrasah: editId }, payload);
+                APP_STATE.madrasah[i] = res.record;
                 break;
               }
             }
           } else {
-            var rec = Object.assign({ ID_Madrasah: 'MAD-' + Math.floor(Math.random()*9000+1000) }, payload);
-            APP_STATE.madrasah.unshift(rec);
+            APP_STATE.madrasah.unshift(res.record);
           }
           renderStatsAndDropdowns();
           renderMadrasahTable();
           cancelEditMadrasah();
-          showToast('Master Madrasah berhasil disimpan (Preview Mode).', 'success');
-        }, 300);
-      }
+          showToast(res.message, 'success');
+        } else {
+          showToast(res ? res.message : 'Gagal menyimpan.', 'error');
+        }
+      }, function(err) {
+        hideBicycLoader();
+        showToast('Gagal menyimpan: ' + err.message, 'error');
+      });
     }
 
     function editMadrasah(id) {
@@ -2080,56 +2034,31 @@
       }
 
       showBicycLoader('Loading...');
-      if (APP_STATE.isGasEnv) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            hideBicycLoader();
-            if (res && res.status === 'success') {
-              if (editId) {
-                for (var i = 0; i < APP_STATE.pegawai.length; i++) {
-                  if (String(APP_STATE.pegawai[i].ID_Pegawai) === String(editId)) {
-                    APP_STATE.pegawai[i] = res.record;
-                    break;
-                  }
-                }
-              } else {
-                APP_STATE.pegawai.unshift(res.record);
-              }
-              renderStatsAndDropdowns();
-              renderAdminTables();
-              populateTimPegawaiSlotsOptions();
-              cancelEditPegawai();
-              showToast(res.message, 'success');
-            } else {
-              showToast(res ? res.message : 'Gagal.', 'error');
-            }
-          })
-          .withFailureHandler(function(err) {
-            hideBicycLoader();
-            showToast('Gagal: ' + err.message, 'error');
-          })
-          .saveAdminRecord(payload);
-      } else {
-        setTimeout(function() {
-          hideBicycLoader();
+      callBackend('saveAdminRecord', payload, function(res) {
+        hideBicycLoader();
+        if (res && res.status === 'success') {
           if (editId) {
             for (var i = 0; i < APP_STATE.pegawai.length; i++) {
               if (String(APP_STATE.pegawai[i].ID_Pegawai) === String(editId)) {
-                APP_STATE.pegawai[i] = Object.assign({ ID_Pegawai: editId }, payload);
+                APP_STATE.pegawai[i] = res.record;
                 break;
               }
             }
           } else {
-            var rec = Object.assign({ ID_Pegawai: 'PEG-' + Math.floor(Math.random()*9000+1000) }, payload);
-            APP_STATE.pegawai.unshift(rec);
+            APP_STATE.pegawai.unshift(res.record);
           }
           renderStatsAndDropdowns();
           renderAdminTables();
           populateTimPegawaiSlotsOptions();
           cancelEditPegawai();
-          showToast('Pegawai disimpan (Preview Mode).', 'success');
-        }, 300);
-      }
+          showToast(res.message, 'success');
+        } else {
+          showToast(res ? res.message : 'Gagal.', 'error');
+        }
+      }, function(err) {
+        hideBicycLoader();
+        showToast('Gagal: ' + err.message, 'error');
+      });
     }
 
     function editPegawai(id) {
@@ -2192,56 +2121,31 @@
       };
 
       showBicycLoader('Loading...');
-      if (APP_STATE.isGasEnv) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            hideBicycLoader();
-            if (res && res.status === 'success') {
-              if (editId) {
-                for (var i = 0; i < APP_STATE.timMonev.length; i++) {
-                  if (String(APP_STATE.timMonev[i].ID_Tim) === String(editId)) {
-                    APP_STATE.timMonev[i] = res.record;
-                    break;
-                  }
-                }
-              } else {
-                APP_STATE.timMonev.unshift(res.record);
-              }
-              renderStatsAndDropdowns();
-              renderAdminTables();
-              populateTimPegawaiSlotsOptions();
-              cancelEditTim();
-              showToast(res.message, 'success');
-            } else {
-              showToast(res ? res.message : 'Gagal.', 'error');
-            }
-          })
-          .withFailureHandler(function(err) {
-            hideBicycLoader();
-            showToast('Gagal: ' + err.message, 'error');
-          })
-          .saveAdminRecord(payload);
-      } else {
-        setTimeout(function() {
-          hideBicycLoader();
+      callBackend('saveAdminRecord', payload, function(res) {
+        hideBicycLoader();
+        if (res && res.status === 'success') {
           if (editId) {
             for (var i = 0; i < APP_STATE.timMonev.length; i++) {
               if (String(APP_STATE.timMonev[i].ID_Tim) === String(editId)) {
-                APP_STATE.timMonev[i] = Object.assign({ ID_Tim: editId }, payload);
+                APP_STATE.timMonev[i] = res.record;
                 break;
               }
             }
           } else {
-            var rec = Object.assign({ ID_Tim: 'TIM-' + Math.floor(Math.random()*9000+1000) }, payload);
-            APP_STATE.timMonev.unshift(rec);
+            APP_STATE.timMonev.unshift(res.record);
           }
           renderStatsAndDropdowns();
           renderAdminTables();
           populateTimPegawaiSlotsOptions();
           cancelEditTim();
-          showToast('Tim Monev diterbitkan (Preview Mode).', 'success');
-        }, 300);
-      }
+          showToast(res.message, 'success');
+        } else {
+          showToast(res ? res.message : 'Gagal.', 'error');
+        }
+      }, function(err) {
+        hideBicycLoader();
+        showToast('Gagal: ' + err.message, 'error');
+      });
     }
 
     function editTim(id) {
@@ -2412,64 +2316,37 @@
       }
 
       showBicycLoader('Loading...');
-      if (APP_STATE.isGasEnv) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            hideBicycLoader();
-            if (res && res.status === 'success') {
-              showToast(res.message, 'success');
-              toggleFormPanel();
-              APP_STATE.activePdf = { base64: res.pdfBase64, fileName: res.pdfFileName, record: res.record };
-              openPdfModal(res.pdfBase64, res.pdfFileName);
-              resetAndLoadMonev();
-            } else {
-              showToast(res ? res.message : 'Gagal menyimpan.', 'error');
-            }
-          })
-          .withFailureHandler(function(err) {
-            hideBicycLoader();
-            showToast('Gagal: ' + err.message, 'error');
-          })
-          .saveMonevRecord(payload);
-      } else {
-        setTimeout(function() {
-          hideBicycLoader();
-          var mockRec = Object.assign({ ID_Monev: 'MNEV-' + Math.floor(Math.random()*9000+1000) }, payload);
-          APP_STATE.localPreviewStore[mod].unshift(mockRec);
-          APP_STATE.stats.totalMonev += 1;
-          if (mod === 'TKA') APP_STATE.stats.totalTKA += 1;
-          else if (mod === 'BOS') APP_STATE.stats.totalBOS += 1;
-          else if (mod === 'UjianAkhir') APP_STATE.stats.totalUjian += 1;
-          renderStatsAndDropdowns();
+      callBackend('saveMonevRecord', payload, function(res) {
+        hideBicycLoader();
+        if (res && res.status === 'success') {
+          showToast(res.message, 'success');
           toggleFormPanel();
-          showToast('Monev disimpan (Preview Mode).', 'success');
+          APP_STATE.activePdf = { base64: res.pdfBase64, fileName: res.pdfFileName, record: res.record };
+          openPdfModal(res.pdfBase64, res.pdfFileName);
           resetAndLoadMonev();
-        }, 300);
-      }
+        } else {
+          showToast(res ? res.message : 'Gagal menyimpan.', 'error');
+        }
+      }, function(err) {
+        hideBicycLoader();
+        showToast('Gagal: ' + err.message, 'error');
+      });
     }
 
     function handleOpenPdfById(mod, idMonev) {
       showBicycLoader('Loading...');
-      if (APP_STATE.isGasEnv) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            hideBicycLoader();
-            if (res && res.status === 'success') {
-              APP_STATE.activePdf = { base64: res.pdfBase64, fileName: res.pdfFileName, record: res.record };
-              openPdfModal(res.pdfBase64, res.pdfFileName);
-            } else {
-              showToast('Gagal memuat PDF.', 'error');
-            }
-          })
-          .withFailureHandler(function(err) {
-            hideBicycLoader();
-            showToast('Gagal memuat PDF: ' + err.message, 'error');
-          })
-          .generatePdfById(mod, idMonev);
-      } else {
+      callBackend('generatePdfById', { 0: mod, 1: idMonev }, function(res) {
         hideBicycLoader();
-        showToast('Fitur download PDF aktif pada Google Apps Script.', 'success');
-      }
+        if (res && res.status === 'success') {
+          APP_STATE.activePdf = { base64: res.pdfBase64, fileName: res.pdfFileName, record: res.record };
+          openPdfModal(res.pdfBase64, res.pdfFileName);
+        } else {
+          showToast('Gagal memuat PDF.', 'error');
+        }
+      }, function(err) {
+        hideBicycLoader();
+        showToast('Gagal memuat PDF: ' + err.message, 'error');
+      });
     }
 
     function openPdfModal(b64, fileName) {
@@ -2540,3 +2417,12 @@
   </script>
 </body>
 </html>
+```eof
+
+### Catatan Tambahan Penting untuk Vercel:
+1. Pada **baris ke-517** di atas, ganti teks `'MASUKKAN_LINK_WEB_APP_GAS_ANDA_DISINI'` dengan URL Web App Google Apps Script Anda (misalnya: `'[https://script.google.com/macros/s/AKfycby.../exec](https://script.google.com/macros/s/AKfycby.../exec)'`).
+2. Agar Vercel bisa menerima request dari luar (CORS), pastikan file `code.gs` di Google Sheets Anda sudah menangani fungsi `doPost(e)` yang menerima payload JSON dari Vercel.
+
+🚀 ZettBOT Idea:
+1. **Modular Check**: Apakah Anda ingin kita tambahkan handler `doPost(e)` di `code.gs` agar komunikasi antara Vercel dan Google Sheets berjalan lancar tanpa error CORS?
+2. **ZettBOT Feature**: Menambahkan mekanisme *Caching* lokal di frontend Vercel untuk mempercepat pemuatan daftar madrasah dan data rekapitulasi.
