@@ -761,11 +761,11 @@
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
       { no: 2, text: 'SK Kepanitiaan' }, { no: 3, text: 'Kesiapan Perangkat' }, { no: 4, text: 'Kesiapan Surat Pernyataan Orangtua/Wali' },
       { no: 5, text: 'Kesiapan DNS dan DNT Peserta' }, { no: 6, text: 'Pakta Integritas' }, { no: 7, text: 'SPTJM Kepala Madrasah' },
-      { group: 'II', groupTitle: 'Pelaksanaan Tes Kemampuan Akademik (TKA)', no: 8, text: 'Jadwal TKA tertulis rinci dan jelas' },
-      { no: 9, text: 'Tata tertib peserta TKA' }, { no: 10, text: 'Denah tempat duduk peserta' }, { no: 11, text: 'Nomor peserta meja/PC' },
-      { no: 12, text: 'Kartu peserta' }, { no: 13, text: 'Berita Acara tersedia' }, { no: 14, text: 'Daftar hadir peserta' },
-      { no: 15, text: 'Daftar hadir pengawas' }, { no: 16, text: 'Daftar hadir panitia' }, { no: 17, text: 'Pengumuman larangan masuk' },
-      { no: 18, text: '1 pengawas per ruang' }, { no: 19, text: 'Pengumuman TKA berlangsung' }, { no: 20, text: 'Keberadaan Kepala Madrasah' }, { no: 21, text: 'Petugas kesehatan / UKS' }
+      { group: 'II', groupTitle: 'Pelaksanaan Tes Kemampuan Akademik (TKA)', no: 8, text: 'Jadwal TKA Tertulis Rinci Dan Jelas' },
+      { no: 9, text: 'Tata Tertib Peserta TKA Ditempel Pada Dinding/Dibacakan' }, { no: 10, text: 'Setiap Ruang TKA Disediakan Denah Tempat Duduk Peserta' }, { no: 11, text: 'Setiap Meja/PC Dalam Ruang Diberi Nomor Peserta TKA' },
+      { no: 12, text: 'Setiap Peserta Memiliki Kartu Peserta' }, { no: 13, text: 'Berita Acara Tersedia Dan Diisi' }, { no: 14, text: 'Semua Peserta TKA Mengisi Daftar Hadir' },
+      { no: 15, text: 'Semua Pengawas Ruang Mengisi Daftar Hadir' }, { no: 16, text: 'Semua Panitia TKA Mengisi Daftar Hadir' }, { no: 17, text: 'Tiap Ruang Ditempelkan Pengumuman Yang Bertuliskan "DILARANG MASUK SELAIN PESERTA, PENGAWAS, PROKTOR, DAN TEKNISI"' },
+      { no: 18, text: 'Tiap Ruang 1 (Satu) Orang Pengawas' }, { no: 19, text: 'Di Lokasi Asesmen Dipasang Pengumuman "TES KEMAMPUAN AKADEMIK SEDANG BERLANGSUNG"' }, { no: 20, text: 'Keberadaan Kepala Madrasah' }, { no: 21, text: 'Petugas Kesehatan (Tim UKS)' }
     ];
 
     var APP_STATE = {
@@ -902,12 +902,20 @@
       for (var i = 0; i < TKA_MASTER_ITEMS.length; i++) {
         var item = TKA_MASTER_ITEMS[i];
         if (item.group) html += '<div style="background:#e7f1ff; font-weight:800; padding:8px; margin:8px 0;">' + item.group + '. ' + item.groupTitle + '</div>';
+        
+        var isTwoOptions = (item.no === 20 || item.no === 21);
+        var radioHtml = '';
+        if (isTwoOptions) {
+          radioHtml = '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="1" checked> <span>1. Ada</span></label>' +
+                      '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="3"> <span>2. Tidak Ada</span></label>';
+        } else {
+          radioHtml = '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="1" checked> <span>1. Ada</span></label>' +
+                      '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="2"> <span>2. Tidak Lengkap</span></label>' +
+                      '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="3"> <span>3. Tidak Ada</span></label>';
+        }
+
         html += '<div class="tka-mobile-card"><div><strong>#' + item.no + '</strong> ' + escapeText(item.text) + '</div>' +
-          '<div class="tka-radio-group">' +
-          '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="1" checked> <span>1. Ada</span></label>' +
-          '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="2"> <span>2. Tidak Lengkap</span></label>' +
-          '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="3"> <span>3. Tidak Ada</span></label>' +
-          '</div></div>';
+          '<div class="tka-radio-group">' + radioHtml + '</div></div>';
       }
       container.innerHTML = html;
     }
