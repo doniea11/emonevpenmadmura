@@ -587,20 +587,21 @@
       <section id="timModuleSection" class="hidden">
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
           <div class="glass-panel">
-            <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>1. Input Data Pegawai</span></div></div>
+            <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>1. Input Data Pegawai &amp; Perbarui Jabatan</span></div></div>
             <form id="formPegawai" onsubmit="event.preventDefault(); handleSavePegawai();">
+              <input type="hidden" id="editPegawaiId" value="">
               <div class="form-grid">
                 <div class="form-group"><label class="form-label">NIP</label><input type="text" id="pegNIP" class="input-control" required></div>
                 <div class="form-group"><label class="form-label">Nama Pegawai &amp; Gelar</label><input type="text" id="pegNama" class="input-control" required></div>
-                <div class="form-group"><label class="form-label">Jabatan</label><input type="text" id="pegJabatan" class="input-control" required></div>
+                <div class="form-group"><label class="form-label">Jabatan / Posisi</label><input type="text" id="pegJabatan" class="input-control" placeholder="Pengawas / Analis" required></div>
                 <div class="form-group"><label class="form-label">Status</label><select id="pegStatus" class="select-control"><option value="Aktif">Aktif</option></select></div>
               </div>
-              <div style="margin-top:14px; text-align:right;"><button type="submit" class="btn btn-neon btn-sm">+ Simpan Pegawai</button></div>
+              <div style="margin-top:14px; text-align:right;"><button type="submit" class="btn btn-neon btn-sm">+ Simpan / Perbarui Pegawai</button></div>
             </form>
           </div>
 
           <div class="glass-panel">
-            <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>2. Bentuk Tim Monev</span></div></div>
+            <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>2. Bentuk / Perbarui Tim Monev</span></div></div>
             <form id="formTimMonev" onsubmit="event.preventDefault(); handleSaveTimMonev();">
               <div class="form-grid">
                 <div class="form-group full-width">
@@ -612,7 +613,7 @@
                   <div id="timPegawaiSlotsContainer"></div>
                 </div>
               </div>
-              <div style="margin-top:14px; text-align:right;"><button type="submit" class="btn btn-neon btn-sm">🛡️ Terbitkan Tim</button></div>
+              <div style="margin-top:14px; text-align:right;"><button type="submit" class="btn btn-neon btn-sm">🛡️ Terbitkan / Perbarui Tim</button></div>
             </form>
           </div>
         </div>
@@ -621,18 +622,8 @@
           <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>Daftar Tim Monev Aktif</span></div></div>
           <div class="table-wrapper">
             <table class="masdonie-table">
-              <thead><tr><th>ID Tim</th><th>Nama Tim</th><th>Anggota</th><th>Status</th></tr></thead>
+              <thead><tr><th>ID Tim</th><th>Nama Tim</th><th>Anggota &amp; Jabatan</th><th>Status</th></tr></thead>
               <tbody id="timTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="glass-panel" style="margin-top:18px;">
-          <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>Database Pegawai Terdaftar</span></div></div>
-          <div class="table-wrapper">
-            <table class="masdonie-table">
-              <thead><tr><th>ID</th><th>NIP</th><th>Nama Pegawai</th><th>Jabatan</th><th>Status</th></tr></thead>
-              <tbody id="pegawaiTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -925,8 +916,9 @@
         for (var j = 0; j < APP_STATE.pegawai.length; j++) {
           var p = APP_STATE.pegawai[j];
           var name = p.Nama_Pegawai;
+          var jabatan = p.Jabatan ? ' (' + p.Jabatan + ')' : '';
           if (selectedNames.indexOf(name) === -1 || name === currentVal) {
-            html += '<option value="' + escapeAttr(name) + '">' + escapeText(name) + ' (' + escapeText(p.NIP) + ')</option>';
+            html += '<option value="' + escapeAttr(name) + '">' + escapeText(name + jabatan) + '</option>';
           }
         }
         selectEl.innerHTML = html;
@@ -1125,11 +1117,15 @@
     }
 
     function handleSavePegawai() {
+      var nip = document.getElementById('pegNIP').value.trim();
+      var nama = document.getElementById('pegNama').value.trim();
+      var jabatan = document.getElementById('pegJabatan').value.trim();
+      
       callGasApi('saveAdminRecord', {
         type: 'Pegawai',
-        NIP: document.getElementById('pegNIP').value,
-        Nama_Pegawai: document.getElementById('pegNama').value,
-        Jabatan: document.getElementById('pegJabatan').value,
+        NIP: nip,
+        Nama_Pegawai: nama,
+        Jabatan: jabatan,
         Status: document.getElementById('pegStatus').value
       }, function(res) {
         if (res && res.status === 'success') {
@@ -1146,15 +1142,18 @@
         showToast('Pilih minimal 1 pegawai untuk Tim Monev.', 'error');
         return;
       }
+      var namaTim = document.getElementById('timNama').value;
+
       callGasApi('saveAdminRecord', {
         type: 'TimMonev',
-        Nama_Tim: document.getElementById('timNama').value,
+        Nama_Tim: namaTim,
         Anggota_Tim: members.join(' | '),
         Wilayah_Sasaran: 'Kab. Musi Rawas'
       }, function(res) {
         if (res && res.status === 'success') {
           showToast(res.message, 'success');
           document.getElementById('formTimMonev').reset();
+          initTimPegawaiSlots();
           initializeAppData();
         }
       });
@@ -1178,25 +1177,15 @@
           tTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:16px;">Belum ada Tim Monev.</td></tr>';
         } else {
           var tHtml = '';
+          var seenTim = {};
           for (var j = 0; j < APP_STATE.timMonev.length; j++) {
             var t = APP_STATE.timMonev[j];
+            var key = (t.Nama_Tim || '') + '_' + (t.Anggota_Tim || '');
+            if (seenTim[key]) continue;
+            seenTim[key] = true;
             tHtml += '<tr><td><span class="mono-id">' + escapeText(t.ID_Tim) + '</span></td><td><strong>' + escapeText(t.Nama_Tim) + '</strong></td><td>' + escapeText(t.Anggota_Tim) + '</td><td><span class="badge badge-success">' + escapeText(t.Status_Tim || 'Aktif') + '</span></td></tr>';
           }
           tTbody.innerHTML = tHtml;
-        }
-      }
-
-      var pTbody = document.getElementById('pegawaiTableBody');
-      if (pTbody) {
-        if (APP_STATE.pegawai.length === 0) {
-          pTbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:16px;">Belum ada pegawai terdaftar.</td></tr>';
-        } else {
-          var pHtml = '';
-          for (var p = 0; p < APP_STATE.pegawai.length; p++) {
-            var item = APP_STATE.pegawai[p];
-            pHtml += '<tr><td><span class="mono-id">' + escapeText(item.ID_Pegawai) + '</span></td><td style="font-family:monospace;">' + escapeText(item.NIP) + '</td><td><strong>' + escapeText(item.Nama_Pegawai) + '</strong></td><td>' + escapeText(item.Jabatan) + '</td><td><span class="badge badge-success">' + escapeText(item.Status || 'Aktif') + '</span></td></tr>';
-          }
-          pTbody.innerHTML = pHtml;
         }
       }
     }
