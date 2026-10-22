@@ -257,9 +257,9 @@
           <div class="stat-info">
             <div class="stat-label">Total Madrasah</div>
             <table class="stat-table" id="statTotalMadrasah">
-              <tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
-              <tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
-              <tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
+              <tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val" id="statTotMa">0</td></tr>
+              <tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val" id="statTotMts">0</td></tr>
+              <tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val" id="statTotMi">0</td></tr>
             </table>
           </div>
         </div>
@@ -268,9 +268,9 @@
           <div class="stat-info">
             <div class="stat-label">Madrasah Tujuan Monev</div>
             <table class="stat-table" id="statTujuanMonev">
-              <tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
-              <tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
-              <tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
+              <tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val" id="statTujMa">0</td></tr>
+              <tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val" id="statTujMts">0</td></tr>
+              <tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val" id="statTujMi">0</td></tr>
             </table>
           </div>
         </div>
@@ -279,9 +279,9 @@
           <div class="stat-info">
             <div class="stat-label">Madrasah yang sudah di Monev</div>
             <table class="stat-table" id="statSudahMonev">
-              <tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
-              <tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
-              <tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
+              <tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val" id="statSudMa">0</td></tr>
+              <tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val" id="statSudMts">0</td></tr>
+              <tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val" id="statSudMi">0</td></tr>
             </table>
           </div>
         </div>
@@ -290,9 +290,9 @@
           <div class="stat-info">
             <div class="stat-label">Madrasah yang belum di monev</div>
             <table class="stat-table" id="statBelumMonev">
-              <tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
-              <tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
-              <tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val">0</td></tr>
+              <tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val" id="statBelMa">0</td></tr>
+              <tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val" id="statBelMts">0</td></tr>
+              <tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val" id="statBelMi">0</td></tr>
             </table>
           </div>
         </div>
@@ -755,7 +755,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbzZWJvvSAEBfTuK32uafGhxaVo9dQ6yoqeSS4WEA3j_GIyBWUwNCuaoQfG7dR2yV1J3sg/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbxN3lw0QXEu3dqpMQ59HwXYqQtBPAbJWbBsqq14baNvrLRQCykHaP8gLzFMAG46vKSvrA/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -1063,6 +1063,24 @@
     }
 
     function renderStatsAndDropdowns() {
+      var bd = APP_STATE.stats.breakdown || { totalMadrasah:{MA:0,MTs:0,MI:0}, tujuanMonev:{MA:0,MTs:0,MI:0}, sudahMonev:{MA:0,MTs:0,MI:0}, belumMonev:{MA:0,MTs:0,MI:0} };
+
+      document.getElementById('statTotMa').textContent = bd.totalMadrasah.MA;
+      document.getElementById('statTotMts').textContent = bd.totalMadrasah.MTs;
+      document.getElementById('statTotMi').textContent = bd.totalMadrasah.MI;
+
+      document.getElementById('statTujMa').textContent = bd.tujuanMonev.MA;
+      document.getElementById('statTujMts').textContent = bd.tujuanMonev.MTs;
+      document.getElementById('statTujMi').textContent = bd.tujuanMonev.MI;
+
+      document.getElementById('statSudMa').textContent = bd.sudahMonev.MA;
+      document.getElementById('statSudMts').textContent = bd.sudahMonev.MTs;
+      document.getElementById('statSudMi').textContent = bd.sudahMonev.MI;
+
+      document.getElementById('statBelMa').textContent = bd.belumMonev.MA;
+      document.getElementById('statBelMts').textContent = bd.belumMonev.MTs;
+      document.getElementById('statBelMi').textContent = bd.belumMonev.MI;
+
       document.getElementById('badge-TKA').textContent = String(APP_STATE.stats.totalTKA || 0);
       document.getElementById('badge-BOS').textContent = String(APP_STATE.stats.totalBOS || 0);
       document.getElementById('badge-UjianAkhir').textContent = String(APP_STATE.stats.totalUjian || 0);
