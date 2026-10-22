@@ -1,4 +1,3 @@
-index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -223,9 +222,9 @@ index.html
       <div class="sidebar-footer" style="margin-top:auto; padding-top:14px; border-top:1px solid var(--border-glass); text-align:center;">
         <div style="font-size:0.75rem; color:var(--text-secondary); display:flex; align-items:center; justify-content:center; gap:6px;">
           <span class="online-pulse-dot"></span>
-          <strong>Online &bull; Siap Tugas</strong>
+          <strong>Online &bull; Vercel Ready</strong>
         </div>
-        <div style="margin-top:8px; padding-top:8px; border-top:1px dashed #ced4da; font-size:0.73rem; font-weight:700; color:var(--text-secondary); text-align:center; letter-spacing:0.02em;">
+        <div style="margin-top:8px; padding-top:8px; border-top:1px dashed #ced4da; font-size:0.73rem; font-weight:700; color:var(--text-secondary); text-align:center;">
           @2026 design by masdonie
         </div>
       </div>
@@ -342,31 +341,31 @@ index.html
             </div>
             <div class="form-group">
               <label class="form-label">Nama Madrasah Penyelenggara <span class="req">*</span></label>
-              <input type="text" id="inpNamaMadrasah" class="input-control" placeholder="Contoh: MIN 1 Musi Rawas" readonly required>
+              <input type="text" id="inpNamaMadrasah" class="input-control" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Nomor Statistik Madrasah (NSM) <span class="req">*</span></label>
-              <input type="text" id="inpNSM" class="input-control" placeholder="12 Digit NSM" readonly required>
+              <input type="text" id="inpNSM" class="input-control" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Nomor Pokok Sekolah Nasional (NPSN) <span class="req">*</span></label>
-              <input type="text" id="inpNPSN" class="input-control" placeholder="8 Digit NPSN" readonly required>
+              <input type="text" id="inpNPSN" class="input-control" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Nama Kepala Madrasah <span class="req">*</span></label>
-              <input type="text" id="inpKepalaMadrasah" class="input-control" placeholder="Nama lengkap & gelar" readonly required>
+              <input type="text" id="inpKepalaMadrasah" class="input-control" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">NIP Kepala Madrasah <span class="req">*</span></label>
-              <input type="text" id="inpNIPKepala" class="input-control" placeholder="18 Digit NIP atau '-'" readonly required>
+              <input type="text" id="inpNIPKepala" class="input-control" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Alamat Desa / Kelurahan <span class="req">*</span></label>
-              <input type="text" id="inpAlamatDesa" class="input-control" placeholder="Contoh: Desa Muara Beliti Baru" readonly required>
+              <input type="text" id="inpAlamatDesa" class="input-control" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Alamat Kecamatan <span class="req">*</span></label>
-              <input type="text" id="inpAlamatKecamatan" class="input-control" placeholder="Contoh: Kec. Muara Beliti" readonly required>
+              <input type="text" id="inpAlamatKecamatan" class="input-control" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Status Evaluasi</label>
@@ -380,15 +379,8 @@ index.html
 
           <div id="fields-TKA">
             <div class="sub-card-box">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-                <div>
-                  <strong style="font-size:0.9rem;">A. Tabel Rekapitulasi Peserta TKA Per Ruang (L / P)</strong>
-                  <div style="font-size:0.75rem; color:var(--text-secondary);">Jumlah ruang ditentukan otomatis dari awal (wajib terisi konsisten).</div>
-                </div>
-              </div>
-
+              <strong style="font-size:0.9rem;">A. Tabel Rekapitulasi Peserta TKA Per Ruang (L / P)</strong>
               <div id="tkaRoomCardsContainer" style="margin-top:10px;"></div>
-
               <div style="background:#e9ecef; border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px; display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:0.9rem;">
                 <span>Total Seluruh Ruang:</span>
                 <div style="display:flex; gap:16px;">
@@ -400,14 +392,10 @@ index.html
             </div>
 
             <div class="sub-card-box">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-                <div>
-                  <strong style="font-size:0.9rem;">B. Instrumen Kegiatan TKA</strong>
-                  <div style="font-size:0.75rem; color:var(--text-secondary);">Pilih keberadaan komponen untuk checklist PDF.</div>
-                </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <strong style="font-size:0.9rem;">B. Instrumen Kegiatan TKA</strong>
                 <button type="button" class="btn btn-ghost btn-sm" onclick="setAllTkaChecklist('1')">&#10003; Set Semua Lengkap</button>
               </div>
-
               <div id="tkaChecklistStackedContainer" style="margin-top:10px;"></div>
             </div>
           </div>
@@ -438,9 +426,6 @@ index.html
                 <label class="check-pill"><input type="checkbox" class="bos-doc-check" value="Dokumen RKAM / e-RKAM" checked> <span>RKAM / e-RKAM</span></label>
                 <label class="check-pill"><input type="checkbox" class="bos-doc-check" value="Buku Kas Umum (BKU)" checked> <span>Buku Kas Umum (BKU)</span></label>
                 <label class="check-pill"><input type="checkbox" class="bos-doc-check" value="LPJ Tahap Sebelumnya" checked> <span>LPJ Sebelumnya</span></label>
-                <label class="check-pill"><input type="checkbox" class="bos-doc-check" value="Buku Pembantu Pajak & SSP" checked> <span>Buku Pajak &amp; SSP</span></label>
-                <label class="check-pill"><input type="checkbox" class="bos-doc-check" value="Bukti Kwitansi & Faktur Belanja" checked> <span>Kwitansi &amp; Faktur</span></label>
-                <label class="check-pill"><input type="checkbox" class="bos-doc-check" value="Berita Acara Rekonsiliasi Bank"> <span>BA Rekonsiliasi Bank</span></label>
               </div>
             </div>
           </div>
@@ -451,7 +436,6 @@ index.html
               <select id="inpJenisUjian" class="select-control">
                 <option value="Asesmen Madrasah Berbasis Komputer (AMBK)">AMBK</option>
                 <option value="Asesmen Madrasah Kertas Pensil (AMKP)">AMKP</option>
-                <option value="Ujian Praktik Akhir Madrasah">Ujian Praktik</option>
               </select>
             </div>
             <div class="form-group">
@@ -467,37 +451,36 @@ index.html
               <select id="inpStatusPelaksanaan" class="select-control">
                 <option value="Berjalan Lancar">Berjalan Lancar &amp; Tertib</option>
                 <option value="Terkendali">Ada Kendala (Terkendali)</option>
-                <option value="Penjadwalan Ulang">Butuh Susulan</option>
               </select>
             </div>
             <div class="form-group full-width">
               <label class="form-label">Kendala Lapangan</label>
-              <textarea id="inpKendalaLapangan" class="textarea-control" placeholder="Uraikan kendala teknis atau jaringan..."></textarea>
+              <textarea id="inpKendalaLapangan" class="textarea-control"></textarea>
             </div>
             <div class="form-group full-width">
               <label class="form-label">Solusi &amp; Tindak Lanjut</label>
-              <textarea id="inpTindakLanjut" class="textarea-control" placeholder="Tindakan penyelesaian..."></textarea>
+              <textarea id="inpTindakLanjut" class="textarea-control"></textarea>
             </div>
           </div>
 
           <div id="fields-SharedNotes" class="form-grid" style="margin-top:14px;">
             <div class="form-group">
               <label class="form-label">Catatan Monitoring</label>
-              <textarea id="inpCatatanTemuan" class="textarea-control" placeholder="Tuliskan catatan..."></textarea>
+              <textarea id="inpCatatanTemuan" class="textarea-control"></textarea>
             </div>
             <div class="form-group">
               <label class="form-label">Kesimpulan</label>
-              <textarea id="inpKesimpulan" class="textarea-control" placeholder="Tuliskan kesimpulan..."></textarea>
+              <textarea id="inpKesimpulan" class="textarea-control"></textarea>
             </div>
             <div class="form-group full-width">
               <label class="form-label">Saran / Rekomendasi</label>
-              <textarea id="inpRekomendasi" class="textarea-control" placeholder="Tuliskan rekomendasi..."></textarea>
+              <textarea id="inpRekomendasi" class="textarea-control"></textarea>
             </div>
           </div>
 
           <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid var(--border-glass);">
             <button type="button" class="btn btn-ghost" onclick="toggleFormPanel()">Batal</button>
-            <button type="submit" class="btn btn-neon" id="btnSubmitMonev">💾 Simpan &amp; Buat PDF Sesuai Tim</button>
+            <button type="submit" class="btn btn-neon" id="btnSubmitMonev">💾 Simpan &amp; Buat PDF</button>
           </div>
         </form>
       </section>
@@ -512,18 +495,17 @@ index.html
         </div>
 
         <div class="filter-bar">
-          <input type="text" id="searchMonev" class="input-control" placeholder="🔍 Cari madrasah, kepala, petugas, kecamatan..." oninput="debounceFilterMonev()">
+          <input type="text" id="searchMonev" class="input-control" placeholder="🔍 Cari madrasah, kepala, petugas..." oninput="debounceFilterMonev()">
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <select id="filterJenjang" class="select-control" style="width:auto;" onchange="resetAndLoadMonev()">
               <option value="ALL">Semua Jenjang</option>
-              <option value="MA">Jenjang MA</option>
-              <option value="MTs">Jenjang MTs</option>
-              <option value="MI">Jenjang MI</option>
+              <option value="MA">MA</option>
+              <option value="MTs">MTs</option>
+              <option value="MI">MI</option>
             </select>
             <select id="filterStatus" class="select-control" style="width:auto;" onchange="resetAndLoadMonev()">
               <option value="ALL">Semua Status</option>
               <option value="Selesai">Selesai</option>
-              <option value="Belum Selesai">Belum Selesai</option>
             </select>
             <button type="button" class="btn btn-ghost btn-sm" onclick="resetFilterControls()">Reset</button>
           </div>
@@ -553,93 +535,42 @@ index.html
               <div class="form-group">
                 <label class="form-label">Jenjang <span class="req">*</span></label>
                 <select id="madJenjang" class="select-control" required>
-                  <option value="MA">MA (Madrasah Aliyah)</option>
-                  <option value="MTs">MTs (Madrasah Tsanawiyah)</option>
-                  <option value="MI">MI (Madrasah Ibtidaiyah)</option>
+                  <option value="MA">MA</option>
+                  <option value="MTs">MTs</option>
+                  <option value="MI">MI</option>
                 </select>
               </div>
               <div class="form-group">
                 <label class="form-label">Nama Madrasah <span class="req">*</span></label>
-                <input type="text" id="madNama" class="input-control" placeholder="Contoh: MIN 1 Musi Rawas" required>
+                <input type="text" id="madNama" class="input-control" required>
               </div>
               <div class="form-group">
-                <label class="form-label">NSM (Hanya Angka) <span class="req">*</span></label>
-                <input type="text" id="madNSM" class="input-control" placeholder="12 Digit NSM" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                <label class="form-label">NSM <span class="req">*</span></label>
+                <input type="text" id="madNSM" class="input-control" required>
               </div>
               <div class="form-group">
-                <label class="form-label">NPSN (Hanya Angka) <span class="req">*</span></label>
-                <input type="text" id="madNPSN" class="input-control" placeholder="8 Digit NPSN" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                <label class="form-label">NPSN <span class="req">*</span></label>
+                <input type="text" id="madNPSN" class="input-control" required>
               </div>
               <div class="form-group">
-                <label class="form-label">Nama Kepala Madrasah <span class="req">*</span></label>
-                <input type="text" id="madKepala" class="input-control" placeholder="Contoh: Drs. H. Lukman Hakim, M.Pd" required>
+                <label class="form-label">Kepala Madrasah <span class="req">*</span></label>
+                <input type="text" id="madKepala" class="input-control" required>
               </div>
               <div class="form-group">
-                <label class="form-label">NIP Kepala (Hanya Angka atau '-') <span class="req">*</span></label>
-                <input type="text" id="madNIP" class="input-control" placeholder="18 Digit NIP atau '-'" required>
+                <label class="form-label">NIP Kepala <span class="req">*</span></label>
+                <input type="text" id="madNIP" class="input-control" required>
               </div>
               <div class="form-group">
-                <label class="form-label">Alamat Desa / Kelurahan <span class="req">*</span></label>
-                <input type="text" id="madDesa" class="input-control" placeholder="Desa Muara Beliti Baru" required>
+                <label class="form-label">Desa / Kelurahan <span class="req">*</span></label>
+                <input type="text" id="madDesa" class="input-control" required>
               </div>
               <div class="form-group">
-                <label class="form-label">Alamat Kecamatan <span class="req">*</span></label>
-                <input type="text" id="madKecamatan" class="input-control" placeholder="Kec. Muara Beliti" required>
-              </div>
-            </div>
-            <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
-              <button type="submit" class="btn btn-neon btn-sm" id="btnSubmitMadrasah">+ Simpan Master Madrasah</button>
-            </div>
-          </form>
-        </div>
-
-        <div class="glass-panel">
-          <div class="panel-header">
-            <div class="panel-title"><span class="accent-bar"></span><span>Input Madrasah Sasaran Tujuan</span></div>
-          </div>
-          <form id="formMadrasahSasaran" onsubmit="event.preventDefault(); handleSaveMadrasahSasaran();">
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <label class="form-label">Pilih dari Master Data Madrasah <span class="req">*</span></label>
-                <select id="sasaranMasterId" class="select-control" onchange="handleAutoFillSasaran()" required>
-                  <option value="">-- Pilih Madrasah Terdaftar --</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Nama Madrasah Sasaran</label>
-                <input type="text" id="sasaranNama" class="input-control" readonly required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Jenjang</label>
-                <input type="text" id="sasaranJenjang" class="input-control" readonly required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">NSM</label>
-                <input type="text" id="sasaranNSM" class="input-control" readonly required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">NPSN</label>
-                <input type="text" id="sasaranNPSN" class="input-control" readonly required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Kepala Madrasah</label>
-                <input type="text" id="sasaranKepala" class="input-control" readonly required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">NIP Kepala</label>
-                <input type="text" id="sasaranNIP" class="input-control" readonly required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Desa / Kelurahan</label>
-                <input type="text" id="sasaranDesa" class="input-control" readonly required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Kecamatan</label>
-                <input type="text" id="sasaranKecamatan" class="input-control" readonly required>
+                <label class="form-label">Kecamatan <span class="req">*</span></label>
+                <input type="text" id="madKecamatan" class="input-control" required>
               </div>
             </div>
             <div style="margin-top:16px; text-align:right;">
-              <button type="submit" class="btn btn-neon btn-sm">🎯 Tetapkan sebagai Sasaran Monev</button>
+              <button type="submit" class="btn btn-neon btn-sm" id="btnSubmitMadrasah">+ Simpan Master Madrasah</button>
             </div>
           </form>
         </div>
@@ -649,18 +580,7 @@ index.html
           <div class="table-wrapper">
             <table class="masdonie-table">
               <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Jenjang</th>
-                  <th>Nama Madrasah</th>
-                  <th>NSM</th>
-                  <th>NPSN</th>
-                  <th>Kepala Madrasah</th>
-                  <th>NIP</th>
-                  <th>Desa</th>
-                  <th>Kecamatan</th>
-                  <th>Aksi</th>
-                </tr>
+                <tr><th>ID</th><th>Jenjang</th><th>Nama Madrasah</th><th>NSM</th><th>NPSN</th><th>Kepala</th><th>NIP</th><th>Desa</th><th>Kecamatan</th><th>Aksi</th></tr>
               </thead>
               <tbody id="madrasahTableBody"></tbody>
             </table>
@@ -671,116 +591,42 @@ index.html
       <section id="timModuleSection" class="hidden">
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:18px;">
           <div class="glass-panel">
-            <div class="panel-header">
-              <div class="panel-title"><span class="accent-bar"></span><span id="pegawaiFormTitle">1. Input Data Pegawai</span></div>
-              <button type="button" id="btnCancelEditPegawai" class="btn btn-ghost btn-sm hidden" onclick="cancelEditPegawai()">Batal</button>
-            </div>
+            <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>1. Input Data Pegawai</span></div></div>
             <form id="formPegawai" onsubmit="event.preventDefault(); handleSavePegawai();">
-              <input type="hidden" id="editPegawaiId" value="">
               <div class="form-grid">
-                <div class="form-group">
-                  <label class="form-label">NIP (Hanya Angka) <span class="req">*</span></label>
-                  <input type="text" id="pegNIP" class="input-control" placeholder="18 Digit NIP" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Nama Lengkap &amp; Gelar <span class="req">*</span></label>
-                  <input type="text" id="pegNama" class="input-control" placeholder="Nama lengkap & gelar" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Jabatan <span class="req">*</span></label>
-                  <input type="text" id="pegJabatan" class="input-control" placeholder="Pengawas Madrasah" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Status</label>
-                  <select id="pegStatus" class="select-control">
-                    <option value="Aktif">Aktif</option>
-                    <option value="Cuti">Cuti / Dinas Luar</option>
-                  </select>
-                </div>
+                <div class="form-group"><label class="form-label">NIP</label><input type="text" id="pegNIP" class="input-control" required></div>
+                <div class="form-group"><label class="form-label">Nama Pegawai &amp; Gelar</label><input type="text" id="pegNama" class="input-control" required></div>
+                <div class="form-group"><label class="form-label">Jabatan</label><input type="text" id="pegJabatan" class="input-control" required></div>
+                <div class="form-group"><label class="form-label">Status</label><select id="pegStatus" class="select-control"><option value="Aktif">Aktif</option></select></div>
               </div>
-              <div style="margin-top:14px; text-align:right;">
-                <button type="submit" class="btn btn-neon btn-sm" id="btnSubmitPegawai">+ Simpan Pegawai</button>
-              </div>
+              <div style="margin-top:14px; text-align:right;"><button type="submit" class="btn btn-neon btn-sm">+ Simpan Pegawai</button></div>
             </form>
           </div>
 
           <div class="glass-panel">
-            <div class="panel-header">
-              <div class="panel-title"><span class="accent-bar"></span><span id="timFormTitle">2. Bentuk Tim Monev (Hingga 10 Anggota)</span></div>
-              <button type="button" id="btnCancelEditTim" class="btn btn-ghost btn-sm hidden" onclick="cancelEditTim()">Batal</button>
-            </div>
+            <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>2. Bentuk Tim Monev</span></div></div>
             <form id="formTimMonev" onsubmit="event.preventDefault(); handleSaveTimMonev();">
-              <input type="hidden" id="editTimId" value="">
               <div class="form-grid">
                 <div class="form-group full-width">
-                  <label class="form-label">Nama Tim (Tim 1, Tim 2, Tim 3) <span class="req">*</span></label>
-                  <select id="timNama" class="select-control" required>
-                    <option value="Tim 1">Tim 1</option>
-                    <option value="Tim 2">Tim 2</option>
-                    <option value="Tim 3">Tim 3</option>
-                  </select>
+                  <label class="form-label">Nama Tim</label>
+                  <select id="timNama" class="select-control"><option value="Tim 1">Tim 1</option><option value="Tim 2">Tim 2</option><option value="Tim 3">Tim 3</option></select>
                 </div>
-
                 <div class="form-group full-width">
-                  <label class="form-label">Pilih Jenjang Madrasah Sasaran</label>
-                  <select id="timFilterJenjang" class="select-control" onchange="renderTimMadrasahDropdowns()">
-                    <option value="MA">MA</option>
-                    <option value="MTs">MTs</option>
-                    <option value="MI">MI</option>
-                  </select>
-                </div>
-
-                <div class="form-group full-width">
-                  <label class="form-label">Madrasah Sasaran Monev <span class="req">*</span></label>
-                  <select id="timMadrasahSasaran" class="select-control" required></select>
-                </div>
-
-                <div class="form-group full-width">
-                  <label class="form-label">Daftar Pegawai Anggota Tim (Hingga 10 Anggota)</label>
-                  <div id="timPegawaiSlotsContainer" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; padding:4px; border:1px solid #ced4da; border-radius:var(--radius-sm);"></div>
+                  <label class="form-label">Petugas / Anggota Tim</label>
+                  <div id="timPegawaiSlotsContainer"></div>
                 </div>
               </div>
-              <div style="margin-top:14px; text-align:right;">
-                <button type="submit" class="btn btn-neon btn-sm" id="btnSubmitTim">🛡️ Terbitkan Tim</button>
-              </div>
+              <div style="margin-top:14px; text-align:right;"><button type="submit" class="btn btn-neon btn-sm">🛡️ Terbitkan Tim</button></div>
             </form>
           </div>
         </div>
 
         <div class="glass-panel">
-          <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>Daftar Tim Monev Aktif</span></div></div>
+          <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>Daftar Tim &amp; Pegawai</span></div></div>
           <div class="table-wrapper">
             <table class="masdonie-table">
-              <thead>
-                <tr>
-                  <th>ID Tim</th>
-                  <th>Nama Tim</th>
-                  <th>Petugas / Anggota Tim</th>
-                  <th>Madrasah Sasaran</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
+              <thead><tr><th>ID Tim</th><th>Nama Tim</th><th>Anggota</th><th>Status</th></tr></thead>
               <tbody id="timTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="glass-panel">
-          <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>Database Pegawai Terdaftar</span></div></div>
-          <div class="table-wrapper">
-            <table class="masdonie-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>NIP</th>
-                  <th>Nama Pegawai</th>
-                  <th>Jabatan</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="pegawaiTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -789,66 +635,21 @@ index.html
       <section id="pengaturanModuleSection" class="hidden">
         <div class="glass-panel">
           <div class="panel-header">
-            <div class="panel-title"><span class="accent-bar"></span><span>⚙️ Pengaturan Akses Menu &amp; Logo Instansi</span></div>
+            <div class="panel-title"><span class="accent-bar"></span><span>⚙️ Pengaturan Akses &amp; URL GAS Backend</span></div>
             <button type="button" class="btn btn-ghost btn-sm" onclick="lockAdminSession()">🔒 Kunci Pengaturan</button>
           </div>
-
           <form id="formAccessSettings" onsubmit="event.preventDefault(); handleSaveAccessSettings();">
-            <div style="margin-bottom:14px; font-size:0.85rem; color:var(--text-secondary);">
-              Atur aktivasi menu aplikasi, unggah logo instansi untuk PDF, dan ubah password admin:
-            </div>
             <div class="access-toggle-grid">
               <div class="access-card">
-                <label class="form-label">1. Menu / Modul Monev TKA</label>
-                <select id="menuToggleTKA" class="select-control">
-                  <option value="AKTIF">🟢 AKTIF</option>
-                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
-                </select>
-              </div>
-              <div class="access-card">
-                <label class="form-label">2. Menu / Modul Monev Dana BOS</label>
-                <select id="menuToggleBOS" class="select-control">
-                  <option value="AKTIF">🟢 AKTIF</option>
-                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
-                </select>
-              </div>
-              <div class="access-card">
-                <label class="form-label">3. Menu / Modul Monev Ujian Akhir</label>
-                <select id="menuToggleUjian" class="select-control">
-                  <option value="AKTIF">🟢 AKTIF</option>
-                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
-                </select>
-              </div>
-              <div class="access-card">
-                <label class="form-label">4. Menu Data Madrasah</label>
-                <select id="menuToggleMadrasah" class="select-control">
-                  <option value="AKTIF">🟢 AKTIF</option>
-                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
-                </select>
-              </div>
-              <div class="access-card">
-                <label class="form-label">5. Menu Tim Monev</label>
-                <select id="menuToggleTim" class="select-control">
-                  <option value="AKTIF">🟢 AKTIF</option>
-                  <option value="NONAKTIF">🔴 NON-AKTIF</option>
-                </select>
-              </div>
-              <div class="access-card">
-                <label class="form-label">Unggah Logo Instansi (.png / .jpg / .svg)</label>
-                <input type="file" id="inpCustomLogoFile" class="input-control" accept="image/*" onchange="handleLogoFileUpload(this)" style="padding:8px;">
-                <div style="margin-top:6px; text-align:center;" id="logoPreviewContainer">
-                  <span style="font-size:0.75rem; color:var(--text-muted);">Belum ada logo khusus diunggah (Default Kemenag).</span>
-                </div>
-                <input type="hidden" id="inpCustomLogoBase64" value="">
+                <label class="form-label">Google Apps Script Web App URL (Endpoint Backend)</label>
+                <input type="text" id="inpGasApiUrl" class="input-control" placeholder="https://script.google.com/macros/s/.../exec" required>
               </div>
               <div class="access-card">
                 <label class="form-label">Ganti Password Admin</label>
                 <input type="text" id="setNewAdminPass" class="input-control" placeholder="Kosongkan jika tetap">
               </div>
             </div>
-            <div style="text-align:right;">
-              <button type="submit" class="btn btn-neon btn-sm">💾 Simpan Pengaturan Menu</button>
-            </div>
+            <div style="text-align:right;"><button type="submit" class="btn btn-neon btn-sm">💾 Simpan Konfigurasi</button></div>
           </form>
         </div>
       </section>
@@ -857,17 +658,12 @@ index.html
 
   <div class="modal-backdrop" id="adminAuthModal">
     <div class="modal-card modal-card-sm">
-      <div class="panel-header" style="margin-bottom:12px;">
-        <div class="panel-title"><span class="accent-bar"></span><span>SILAHKAN MASUKKAN PASSWORD !</span></div>
-        <button type="button" class="btn btn-ghost btn-sm" onclick="closeAdminAuthModal()">✕</button>
-      </div>
+      <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>MASUKKAN PASSWORD ADMIN</span></div></div>
       <form onsubmit="event.preventDefault(); submitAdminPassword();">
-        <div class="form-group">
-          <input type="password" id="inpAdminPassPrompt" class="input-control" placeholder="SILAHKAN MASUKKAN PASSWORD !" required>
-        </div>
+        <input type="password" id="inpAdminPassPrompt" class="input-control" placeholder="Password" required>
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
           <button type="button" class="btn btn-ghost" onclick="closeAdminAuthModal()">Batal</button>
-          <button type="submit" class="btn btn-neon" id="btnVerifyAdminPass">🔓 Masuk</button>
+          <button type="submit" class="btn btn-neon">🔓 Masuk</button>
         </div>
       </form>
     </div>
@@ -875,15 +671,8 @@ index.html
 
   <div class="modal-backdrop" id="roomPromptModal">
     <div class="modal-card modal-card-sm">
-      <div class="panel-header" style="margin-bottom:12px;">
-        <div class="panel-title"><span class="accent-bar"></span><span>JUMLAH RUANG UJIAN TKA</span></div>
-      </div>
-      <div style="margin-bottom:14px; font-size:0.88rem; color:var(--text-secondary);">
-        Silakan masukkan berapa jumlah ruang ujian yang digunakan pada satuan pendidikan ini:
-      </div>
-      <div class="form-group">
-        <input type="number" id="inpPromptRoomCount" class="input-control" value="0" min="1" max="20" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';" oninput="cleanLeadingZero(this)" style="font-size:1.2rem; text-align:center; font-weight:bold;" required>
-      </div>
+      <div class="panel-header"><div class="panel-title"><span class="accent-bar"></span><span>JUMLAH RUANG UJIAN TKA</span></div></div>
+      <input type="number" id="inpPromptRoomCount" class="input-control" value="1" min="1" max="20" style="font-size:1.2rem; text-align:center; font-weight:bold;">
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
         <button type="button" class="btn btn-ghost" onclick="closeRoomPromptModal()">Batal</button>
         <button type="button" class="btn btn-neon" onclick="confirmRoomCountPrompt()">Lanjutkan ➔</button>
@@ -893,20 +682,14 @@ index.html
 
   <div class="modal-backdrop" id="pdfModal">
     <div class="modal-card">
-      <div class="panel-header" style="margin-bottom:10px;">
-        <div class="panel-title"><span class="accent-bar"></span><span id="pdfModalTitle">Pratinjau PDF Sesuai Jumlah Anggota Tim</span></div>
+      <div class="panel-header">
+        <div class="panel-title"><span class="accent-bar"></span><span>Pratinjau PDF Sesuai Tim</span></div>
         <button type="button" class="btn btn-ghost btn-sm" onclick="closePdfModal()">✕ Tutup</button>
       </div>
-      <p style="font-size:0.8rem; color:var(--text-secondary);">
-        Dokumen PDF terdiri dari jumlah halaman/rangkap sesuai jumlah petugas dalam Tim Monev:
-      </p>
-
       <div class="pdf-paper-preview" id="pdfPaperContainer"></div>
-
-      <div style="display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; margin-top:14px;">
-        <button type="button" class="btn btn-ghost btn-sm" onclick="printPaperReport()">🖨️ Cetak PDF</button>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px;">
         <button type="button" class="btn btn-wa btn-sm" onclick="sharePdfToWhatsApp()">📲 WhatsApp</button>
-        <button type="button" class="btn btn-neon btn-sm" id="btnDirectDownloadPdf" onclick="triggerDirectPdfDownload()">⬇️ Download PDF</button>
+        <button type="button" class="btn btn-neon btn-sm" onclick="triggerDirectPdfDownload()">⬇️ Download PDF</button>
       </div>
     </div>
   </div>
@@ -914,81 +697,56 @@ index.html
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    // MASUKKAN LINK WEB APP GAS ANDA DI BAWAH INI (Contoh: 'https://script.google.com/macros/s/.../exec')
-    var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyk7B15bzNxTYAskUkOxTMXYYKQq-d80--TrkS_48p3wltLGWT8UCFgxBXPOUPwGGf1-A/exec';
+    var GAS_API_URL = localStorage.getItem('VERCEL_GAS_API_URL') || "https://script.google.com/macros/s/AKfycbwQTDmTxTS2HGa2S7dpLZWW3_fXKAqggo1W4tu0aGP6gUV4uyDRysXjtCGirzak0Zu-LA/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
-      { no: 2, text: 'SK Kepanitiaan' },
-      { no: 3, text: 'Kesiapan Perangkat' },
-      { no: 4, text: 'Kesiapan Surat Pernyataan Orangtua/Wali' },
-      { no: 5, text: 'Kesiapan DNS dan DNT Peserta' },
-      { no: 6, text: 'Pakta Integritas Kepala Satuan Pendidikan, Pengawas, Proktor dan Teknisi' },
-      { no: 7, text: 'SPTJM Kepala Madrasah' },
+      { no: 2, text: 'SK Kepanitiaan' }, { no: 3, text: 'Kesiapan Perangkat' }, { no: 4, text: 'Kesiapan Surat Pernyataan Orangtua/Wali' },
+      { no: 5, text: 'Kesiapan DNS dan DNT Peserta' }, { no: 6, text: 'Pakta Integritas' }, { no: 7, text: 'SPTJM Kepala Madrasah' },
       { group: 'II', groupTitle: 'Pelaksanaan Tes Kemampuan Akademik (TKA)', no: 8, text: 'Jadwal TKA tertulis rinci dan jelas' },
-      { no: 9, text: 'Tata tertib peserta TKA ditempel pada dinding/dibacakan' },
-      { no: 10, text: 'Setiap ruang TKA disediakan denah tempat duduk peserta' },
-      { no: 11, text: 'Setiap meja/PC dalam ruang diberi nomor peserta TKA' },
-      { no: 12, text: 'Setiap peserta memiliki kartu peserta' },
-      { no: 13, text: 'Berita Acara tersedia dan diisi' },
-      { no: 14, text: 'Semua peserta TKA mengisi Daftar hadir' },
-      { no: 15, text: 'Semua pengawas ruang mengisi Daftar hadir' },
-      { no: 16, text: 'Semua panitia TKA mengisi Daftar Hadir' },
-      { no: 17, text: 'Tiap ruang ditempelkan pengumuman yang bertuliskan "DILARANG MASUK SELAIN PESERTA, PENGAWAS, PROKTOR, DAN TEKNISI"' },
-      { no: 18, text: 'Tiap ruang 1 (satu) orang pengawas' },
-      { no: 19, text: 'Di lokasi asesmen dipasang pengumuman "TES KEMAMPUAN AKADEMIK SEDANG BERLANGSUNG"' },
-      { no: 20, text: 'Keberadaan Kepala Madrasah' },
-      { no: 21, text: 'Petugas kesehatan di Madrasah ( Standby di Ruang UKS)' }
+      { no: 9, text: 'Tata tertib peserta TKA' }, { no: 10, text: 'Denah tempat duduk peserta' }, { no: 11, text: 'Nomor peserta meja/PC' },
+      { no: 12, text: 'Kartu peserta' }, { no: 13, text: 'Berita Acara tersedia' }, { no: 14, text: 'Daftar hadir peserta' },
+      { no: 15, text: 'Daftar hadir pengawas' }, { no: 16, text: 'Daftar hadir panitia' }, { no: 17, text: 'Pengumuman larangan masuk' },
+      { no: 18, text: '1 pengawas per ruang' }, { no: 19, text: 'Pengumuman TKA berlangsung' }, { no: 20, text: 'Keberadaan Kepala Madrasah' }, { no: 21, text: 'Petugas kesehatan / UKS' }
     ];
 
     var APP_STATE = {
-      isGasEnv: (typeof google !== 'undefined' && google.script && google.script.run),
       currentModule: 'TKA',
       adminUnlocked: false,
-      localAdminPass: '123456',
-      menuAccess: { TKA: true, BOS: true, UjianAkhir: true, Madrasah: true, Tim: true },
-      madrasah: [],
-      pegawai: [],
-      timMonev: [],
-      roomRowCount: 0,
+      madrasah: [], pegawai: [], timMonev: [], roomRowCount: 0,
       stats: { totalMonev: 0, totalTKA: 0, totalBOS: 0, totalUjian: 0, totalPegawai: 0, totalTim: 0, totalMadrasah: 0, breakdown: { totalMadrasah:{MA:0,MTs:0,MI:0}, tujuanMonev:{MA:0,MTs:0,MI:0}, sudahMonev:{MA:0,MTs:0,MI:0}, belumMonev:{MA:0,MTs:0,MI:0} } },
       pagination: { limit: 8, offset: 0, total: 0, hasMore: false, items: [] },
-      localPreviewStore: { TKA: [], BOS: [], UjianAkhir: [] },
-      activePdf: { base64: '', fileName: 'Monev.pdf', record: null },
-      customLogoBase64: '',
-      searchTimer: null
+      activePdf: { base64: '', fileName: 'Monev.pdf', record: null }
     };
 
-    function callBackend(functionName, payload, successCallback, failureCallback) {
-      if (APP_STATE.isGasEnv) {
-        google.script.run.withSuccessHandler(successCallback).withFailureHandler(failureCallback)[functionName](payload);
-      } else {
-        if (!GAS_API_URL || GAS_API_URL.indexOf('MASUKKAN') !== -1) {
-          if (failureCallback) failureCallback(new Error('GAS_API_URL belum diatur di index.html!'));
-          return;
-        }
-        fetch(GAS_API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ fn: functionName, data: payload })
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(res) {
-          if (successCallback) successCallback(res);
-        })
-        .catch(function(err) {
-          if (failureCallback) failureCallback(err);
-        });
-      }
-    }
-
     window.addEventListener('DOMContentLoaded', function() {
+      var urlInput = document.getElementById('inpGasApiUrl');
+      if (urlInput) urlInput.value = GAS_API_URL;
       setDefaultDates();
       initTkaRoomCards();
       renderTkaChecklistFormTable();
       initTimPegawaiSlots();
-      initLazyLoadObserver();
       initializeAppData();
     });
+
+    function callGasApi(action, payload, successCallback, failureCallback) {
+      showBicycLoader('Menghubungkan ke GAS Backend...');
+      var targetUrl = GAS_API_URL + "?action=" + action;
+      fetch(targetUrl, {
+        method: "POST",
+        body: JSON.stringify(payload || {})
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        hideBicycLoader();
+        successCallback(data);
+      })
+      .catch(function(err) {
+        hideBicycLoader();
+        if (failureCallback) failureCallback(err);
+        else showToast('Koneksi Backend Gagal: ' + err.message, 'error');
+      });
+    }
 
     function showBicycLoader(text) {
       var el = document.getElementById('bicycLoaderOverlay');
@@ -996,20 +754,15 @@ index.html
       if (txt && text) txt.textContent = text;
       if (el) el.classList.add('show');
     }
-
     function hideBicycLoader() {
       var el = document.getElementById('bicycLoaderOverlay');
       if (el) el.classList.remove('show');
     }
-
     function escapeText(str) {
-      if (str === null || str === undefined) return '';
+      if (!str) return '';
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
-    
-    function escapeAttr(str) {
-      return escapeText(str);
-    }
+    function escapeAttr(str) { return escapeText(str); }
 
     function setDefaultDates() {
       var todayIso = new Date().toISOString().split('T')[0];
@@ -1017,144 +770,56 @@ index.html
       if (elTgl) elTgl.value = todayIso;
       syncHariTanggalText();
     }
-
     function syncHariTanggalText() {
       var isoStr = String(document.getElementById('inpTanggal').value || '');
       var bulanArr = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
       var d = isoStr ? new Date(isoStr + 'T00:00:00') : new Date();
-      if (isNaN(d.getTime())) d = new Date();
       var text = d.getDate() + ' ' + bulanArr[d.getMonth()] + ' ' + d.getFullYear();
       var inp = document.getElementById('inpHariTanggal');
       if (inp) inp.value = text;
     }
 
     function promptRoomCount() {
-      document.getElementById('inpPromptRoomCount').value = '0';
       document.getElementById('roomPromptModal').classList.add('show');
-      setTimeout(function() {
-        var el = document.getElementById('inpPromptRoomCount');
-        if (el) { el.focus(); el.select(); }
-      }, 100);
     }
-
     function closeRoomPromptModal() {
       document.getElementById('roomPromptModal').classList.remove('show');
     }
-
     function confirmRoomCountPrompt() {
-      var valInput = document.getElementById('inpPromptRoomCount').value;
-      var count = parseInt(valInput, 10) || 0;
-      if (count < 1) {
-        showToast('Jumlah ruang ujian wajib diisi (minimal 1)!', 'error');
-        var el = document.getElementById('inpPromptRoomCount');
-        if (el) { el.focus(); el.select(); }
-        return;
-      }
+      var count = parseInt(document.getElementById('inpPromptRoomCount').value, 10) || 1;
       closeRoomPromptModal();
       buildExactTkaRoomCards(count);
       toggleFormPanel();
     }
-
-    function initTkaRoomCards() {
-      buildExactTkaRoomCards(1);
-    }
-
+    function initTkaRoomCards() { buildExactTkaRoomCards(1); }
     function buildExactTkaRoomCards(count) {
       var container = document.getElementById('tkaRoomCardsContainer');
       if (!container) return;
       container.innerHTML = '';
-      APP_STATE.roomRowCount = 0;
-
       for (var i = 1; i <= count; i++) {
-        addTkaRoomRowExplicit(i);
+        var card = document.createElement('div');
+        card.className = 'room-mobile-card';
+        card.setAttribute('data-room-idx', String(i));
+        card.innerHTML = '<div class="room-mobile-card-header"><span class="rm-no" data-val="' + i + '">Ruang ' + i + '</span></div>' +
+          '<div class="room-fields-grid">' +
+          '<div><label>L</label><input type="number" class="input-mini rm-pL" value="0" oninput="recalculateTkaRoomTotals()"></div>' +
+          '<div><label>P</label><input type="number" class="input-mini rm-pP" value="0" oninput="recalculateTkaRoomTotals()"></div>' +
+          '<div><label>Total</label><div class="input-mini" id="rm-pJml-' + i + '">0</div></div>' +
+          '</div>';
+        container.appendChild(card);
       }
       recalculateTkaRoomTotals();
     }
-
-    function addTkaRoomRowExplicit(idx) {
-      APP_STATE.roomRowCount = idx;
-      var container = document.getElementById('tkaRoomCardsContainer');
-      if (!container) return;
-
-      var card = document.createElement('div');
-      card.className = 'room-mobile-card';
-      card.setAttribute('data-room-idx', String(idx));
-
-      card.innerHTML =
-        '<div class="room-mobile-card-header">' +
-          '<div style="display:flex; align-items:center; gap:8px;">' +
-            '<span class="rm-no" style="background:var(--tka-blue); color:#fff; font-weight:800; font-size:0.8rem; padding:3px 8px; border-radius:4px;" data-val="' + idx + '">Ruang ' + idx + '</span>' +
-          '</div>' +
-        '</div>' +
-        '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Jumlah Peserta (L / P / Jml)</div>' +
-        '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Laki-laki</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Perempuan</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total</label><div class="input-mini" style="background:#e9ecef; font-weight:800; display:flex; align-items:center; justify-content:center;" id="rm-pJml-' + idx + '">0</div></div>' +
-        '</div>' +
-        '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin:8px 0 4px;">Peserta Hadir (L / P / Jml)</div>' +
-        '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir L</label><input type="number" class="input-mini rm-hL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir P</label><input type="number" class="input-mini rm-hP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total Hadir</label><div class="input-mini" style="background:#e9ecef; font-weight:800; color:var(--tka-green); display:flex; align-items:center; justify-content:center;" id="rm-hJml-' + idx + '">0</div></div>' +
-        '</div>' +
-        '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin:8px 0 4px;">Peserta Tidak Hadir (L / P / Jml)</div>' +
-        '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen L</label><input type="number" class="input-mini rm-tL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen P</label><input type="number" class="input-mini rm-tP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total Absen</label><div class="input-mini" style="background:#e9ecef; font-weight:800; color:var(--accent-danger); display:flex; align-items:center; justify-content:center;" id="rm-tJml-' + idx + '">0</div></div>' +
-        '</div>' +
-        '<div style="margin-top:8px;">' +
-          '<input type="text" class="input-control rm-ket" placeholder="Catatan (jika ada)" style="font-size:0.85rem; padding:8px 12px; height:42px;">' +
-        '</div>';
-
-      container.appendChild(card);
-    }
-
-    function cleanLeadingZero(inputEl) {
-      if (inputEl.value.length > 1 && inputEl.value.indexOf('0') === 0 && inputEl.value.indexOf('.') === -1) {
-        inputEl.value = inputEl.value.replace(/^0+/, '');
-      }
-    }
-
     function recalculateTkaRoomTotals() {
       var cards = document.querySelectorAll('.room-mobile-card');
-      var totPJml = 0, totHJml = 0, totTJml = 0;
-
+      var tot = 0;
       for (var i = 0; i < cards.length; i++) {
-        var card = cards[i];
-        var idx = card.getAttribute('data-room-idx');
-        var pL = parseInt(card.querySelector('.rm-pL').value, 10) || 0;
-        var pP = parseInt(card.querySelector('.rm-pP').value, 10) || 0;
-        var pJml = pL + pP;
-
-        var hL = parseInt(card.querySelector('.rm-hL').value, 10) || 0;
-        var hP = parseInt(card.querySelector('.rm-hP').value, 10) || 0;
-        var hJml = hL + hP;
-
-        var tL = parseInt(card.querySelector('.rm-tL').value, 10) || 0;
-        var tP = parseInt(card.querySelector('.rm-tP').value, 10) || 0;
-        var tJml = tL + tP;
-
-        var elPJml = document.getElementById('rm-pJml-' + idx);
-        var elHJml = document.getElementById('rm-hJml-' + idx);
-        var elTJml = document.getElementById('rm-tJml-' + idx);
-
-        if (elPJml) elPJml.textContent = String(pJml);
-        if (elHJml) elHJml.textContent = String(hJml);
-        if (elTJml) elTJml.textContent = String(tJml);
-
-        totPJml += pJml;
-        totHJml += hJml;
-        totTJml += tJml;
+        var pL = parseInt(cards[i].querySelector('.rm-pL').value, 10) || 0;
+        var pP = parseInt(cards[i].querySelector('.rm-pP').value, 10) || 0;
+        tot += (pL + pP);
       }
-
       var elTotP = document.getElementById('totPJml');
-      var elTotH = document.getElementById('totHJml');
-      var elTotT = document.getElementById('totTJml');
-      if (elTotP) elTotP.textContent = String(totPJml);
-      if (elTotH) elTotH.textContent = String(totHJml);
-      if (elTotT) elTotT.textContent = String(totTJml);
+      if (elTotP) elTotP.textContent = String(tot);
     }
 
     function renderTkaChecklistFormTable() {
@@ -1163,692 +828,273 @@ index.html
       var html = '';
       for (var i = 0; i < TKA_MASTER_ITEMS.length; i++) {
         var item = TKA_MASTER_ITEMS[i];
-        if (item.group) {
-          html += '<div style="background:#e7f1ff; font-weight:800; padding:10px 14px; border-radius:var(--radius-sm); margin:12px 0 6px; font-size:0.9rem; color:#084298;">' +
-            item.group + '. ' + escapeText(item.groupTitle) +
-            '</div>';
-        }
-
-        var isSpecialTwoOptions = (item.no === 20 || item.no === 21);
-
-        var dynamicSubInput = '';
-        if (item.no === 3) {
-          dynamicSubInput = '<div id="subInputContainer_3" style="margin-top:8px;">' +
-            '<div id="subInputAda_3" style="display:block;">' +
-              '<label class="form-label" style="font-size:0.8rem; color:var(--tka-blue);">Berapa Unit Perangkat yang tersedia pada setiap ruang?</label>' +
-              '<input type="text" id="tka_sub_ada_3" class="input-control" placeholder="Contoh: Setiap ruang tersedia 20 unit PC/Laptop" style="font-size:0.85rem; padding:8px 12px; height:40px;">' +
-            '</div>' +
-            '<div id="subInputTdk_3" style="display:none; margin-top:6px;">' +
-              '<label class="form-label" style="font-size:0.8rem; color:var(--accent-danger);">Peralatan Perangkat apa yang tidak tersedia?</label>' +
-              '<input type="text" id="tka_sub_tdk_3" class="input-control" placeholder="Contoh: Kabel LAN kurang, Headset tidak lengkap" style="font-size:0.85rem; padding:8px 12px; height:40px;">' +
-            '</div>' +
-          '</div>';
-        }
-
-        var radioHtml = '';
-        if (isSpecialTwoOptions) {
-          radioHtml = '<label class="tka-radio-pill">' +
-            '<input type="radio" name="tka_chk_' + item.no + '" value="1" checked> <span><strong>1. Ada</strong></span>' +
-            '</label>' +
-            '<label class="tka-radio-pill">' +
-            '<input type="radio" name="tka_chk_' + item.no + '" value="2"> <span><strong>2. Tidak ada</strong></span>' +
-            '</label>';
-        } else {
-          radioHtml = '<label class="tka-radio-pill">' +
-            '<input type="radio" name="tka_chk_' + item.no + '" value="1" checked ' + (item.no === 3 ? 'onchange="toggleTkaSubInput(3, 1)"' : '') + '> <span><strong>1. Ada</strong></span>' +
-            '</label>' +
-            '<label class="tka-radio-pill">' +
-            '<input type="radio" name="tka_chk_' + item.no + '" value="2" ' + (item.no === 3 ? 'onchange="toggleTkaSubInput(3, 2)"' : '') + '> <span><strong>2. Ada tetapi tidak lengkap</strong></span>' +
-            '</label>' +
-            '<label class="tka-radio-pill">' +
-            '<input type="radio" name="tka_chk_' + item.no + '" value="3" ' + (item.no === 3 ? 'onchange="toggleTkaSubInput(3, 3)"' : '') + '> <span><strong>3. Tidak ada</strong></span>' +
-            '</label>';
-        }
-
-        html += '<div class="tka-mobile-card">' +
-          '<div class="tka-mobile-card-header">' +
-          '<span style="background:#e9ecef; padding:2px 8px; border-radius:4px; font-family:monospace; font-size:0.8rem; color:#495057;">#' + item.no + '</span>' +
-          '<span>' + escapeText(item.text) + '</span>' +
-          '</div>' +
-          '<div class="tka-radio-group">' + radioHtml + '</div>' +
-          dynamicSubInput +
-          '<div style="margin-top:8px;">' +
-          '<input type="text" id="tka_ket_' + item.no + '" class="input-control" placeholder="Catatan tambahan (jika ada)" style="font-size:0.85rem; padding:8px 12px; height:42px;">' +
-          '</div>' +
-          '</div>';
+        if (item.group) html += '<div style="background:#e7f1ff; font-weight:800; padding:8px; margin:8px 0;">' + item.group + '. ' + item.groupTitle + '</div>';
+        html += '<div class="tka-mobile-card"><div><strong>#' + item.no + '</strong> ' + escapeText(item.text) + '</div>' +
+          '<div class="tka-radio-group">' +
+          '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="1" checked> <span>1. Ada</span></label>' +
+          '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="2"> <span>2. Tidak Lengkap</span></label>' +
+          '<label class="tka-radio-pill"><input type="radio" name="tka_chk_' + item.no + '" value="3"> <span>3. Tidak Ada</span></label>' +
+          '</div></div>';
       }
       container.innerHTML = html;
     }
-
-    function toggleTkaSubInput(itemNo, val) {
-      if (itemNo !== 3) return;
-      var adaBox = document.getElementById('subInputAda_3');
-      var tdkBox = document.getElementById('subInputTdk_3');
-      if (!adaBox || !tdkBox) return;
-
-      if (val === 1) {
-        adaBox.style.display = 'block';
-        tdkBox.style.display = 'none';
-      } else if (val === 2) {
-        adaBox.style.display = 'none';
-        tdkBox.style.display = 'block';
-      } else {
-        adaBox.style.display = 'none';
-        tdkBox.style.display = 'none';
-      }
-    }
-
     function setAllTkaChecklist(val) {
-      for (var i = 0; i < TKA_MASTER_ITEMS.length; i++) {
-        var no = TKA_MASTER_ITEMS[i].no;
-        var radios = document.getElementsByName('tka_chk_' + no);
-        for (var r = 0; r < radios.length; r++) {
-          if (!radios[r].disabled) {
-            radios[r].checked = (radios[r].value === String(val));
-          }
-        }
+      for (var i = 1; i <= 21; i++) {
+        var radios = document.getElementsByName('tka_chk_' + i);
+        for (var r = 0; r < radios.length; r++) if (radios[r].value === String(val)) radios[r].checked = true;
       }
-      if (typeof toggleTkaSubInput === 'function') toggleTkaSubInput(3, parseInt(val, 10));
-      showToast('Seluruh checklist diatur ke Ada.', 'success');
+      showToast('Checklist diatur ke Ada.', 'success');
     }
 
     function initTimPegawaiSlots() {
       var container = document.getElementById('timPegawaiSlotsContainer');
       if (!container) return;
-      var html = '';
-      for (var s = 1; s <= 10; s++) {
-        html += '<div style="display:flex; align-items:center; gap:8px;">' +
-          '<span style="font-size:0.78rem; font-weight:700; width:65px; color:var(--text-secondary);">Petugas ' + s + ':</span>' +
-          '<select id="timPegSlot_' + s + '" class="select-control tim-slot-select" style="padding:6px 10px; font-size:0.85rem; height:38px;" onchange="updateTimPegawaiSlotOptions()">' +
-          '<option value="">-- Pilih Pegawai ' + s + ' --</option>' +
-          '</select>' +
-          '</div>';
-      }
-      container.innerHTML = html;
-    }
-
-    function getSelectedEmployeeNames() {
-      var selected = [];
-      for (var s = 1; s <= 10; s++) {
-        var el = document.getElementById('timPegSlot_' + s);
-        if (el && el.value) {
-          selected.push(el.value);
-        }
-      }
-      return selected;
-    }
-
-    function updateTimPegawaiSlotOptions() {
-      var selectedNames = getSelectedEmployeeNames();
-      for (var s = 1; s <= 10; s++) {
-        var selectEl = document.getElementById('timPegSlot_' + s);
-        if (!selectEl) continue;
-        var currentVal = selectEl.value;
-
-        var html = '<option value="">-- Pilih Pegawai --</option>';
-        for (var j = 0; j < APP_STATE.pegawai.length; j++) {
-          var p = APP_STATE.pegawai[j];
-          var name = p.Nama_Pegawai;
-          if (selectedNames.indexOf(name) === -1 || name === currentVal) {
-            html += '<option value="' + escapeAttr(name) + '">' + escapeText(name) + ' (NIP: ' + escapeText(p.NIP) + ')</option>';
-          }
-        }
-        selectEl.innerHTML = html;
-        selectEl.value = currentVal;
-      }
-    }
-
-    function populateTimPegawaiSlotsOptions() {
-      updateTimPegawaiSlotOptions();
-    }
-
-    function renderTimMadrasahDropdowns() {
-      var jenjangFilter = String(document.getElementById('timFilterJenjang').value || 'MA');
-      var sel = document.getElementById('timMadrasahSasaran');
-      if (!sel) return;
-      var html = '<option value="">-- Pilih Madrasah Sasaran --</option>';
-      for (var i = 0; i < APP_STATE.madrasah.length; i++) {
-        var m = APP_STATE.madrasah[i];
-        if (String(m.Jenjang) === jenjangFilter) {
-          html += '<option value="' + escapeAttr(m.Nama_Madrasah) + '">' + escapeText(m.Nama_Madrasah) + ' (' + escapeText(m.Alamat_Kecamatan) + ')</option>';
-        }
-      }
-      sel.innerHTML = html;
-    }
-
-    function handleLogoFileUpload(fileInput) {
-      if (!fileInput.files || !fileInput.files[0]) return;
-      var file = fileInput.files[0];
-      var reader = new FileReader();
-      showBicycLoader('Loading...');
-      reader.onload = function(e) {
-        hideBicycLoader();
-        var b64Result = e.target.result;
-        APP_STATE.customLogoBase64 = b64Result;
-        document.getElementById('inpCustomLogoBase64').value = b64Result;
-        var previewBox = document.getElementById('logoPreviewContainer');
-        previewBox.innerHTML = '<img src="' + b64Result + '" width="80" height="75" style="object-fit:contain; border:1px solid #ccc; padding:2px; background:#fff; border-radius:4px;" /><div style="font-size:0.72rem; color:var(--tka-green); font-weight:700; margin-top:2px;">Logo berhasil dimuat!</div>';
-        showToast('Logo berhasil dimuat. Klik Simpan Pengaturan.', 'success');
-      };
-      reader.onerror = function() {
-        hideBicycLoader();
-        showToast('Gagal membaca file gambar.', 'error');
-      };
-      reader.readAsDataURL(file);
+      container.innerHTML = '<select id="timPegSlot_1" class="select-control"><option value="">-- Pilih Pegawai --</option></select>';
     }
 
     function initializeAppData() {
-      showBicycLoader('Loading...');
-      callBackend('getInitialAppState', {}, function(res) {
-        hideBicycLoader();
+      callGasApi('getInitialAppState', {}, function(res) {
         if (res && res.status === 'success') {
           APP_STATE.madrasah = res.madrasah || [];
           APP_STATE.pegawai = res.pegawai || [];
           APP_STATE.timMonev = res.timMonev || [];
           APP_STATE.stats = res.stats || APP_STATE.stats;
-          if (res.menuAccess) APP_STATE.menuAccess = res.menuAccess;
-          if (res.customLogo) {
-            APP_STATE.customLogoBase64 = res.customLogo;
-            document.getElementById('inpCustomLogoBase64').value = res.customLogo;
-            var previewBox = document.getElementById('logoPreviewContainer');
-            previewBox.innerHTML = '<img src="' + res.customLogo + '" width="80" height="75" style="object-fit:contain; border:1px solid #ccc; padding:2px; background:#fff; border-radius:4px;" /><div style="font-size:0.72rem; color:var(--tka-green); font-weight:700; margin-top:2px;">Logo aktif tersimpan</div>';
-          }
-          syncAccessSelectControls();
           renderStatsAndDropdowns();
-          applyMenuVisibility();
           renderMadrasahTable();
           renderAdminTables();
-          populateTimPegawaiSlotsOptions();
-          renderTimMadrasahDropdowns();
           resetAndLoadMonev();
-        } else {
-          showToast(res ? res.message : 'Gagal memuat data awal.', 'error');
         }
-      }, function(err) {
-        hideBicycLoader();
-        showToast('Error koneksi: ' + err.message, 'error');
       });
-    }
-
-    function syncAccessSelectControls() {
-      var tka = document.getElementById('menuToggleTKA');
-      var bos = document.getElementById('menuToggleBOS');
-      var ujian = document.getElementById('menuToggleUjian');
-      var mad = document.getElementById('menuToggleMadrasah');
-      var tim = document.getElementById('menuToggleTim');
-
-      if (tka) tka.value = APP_STATE.menuAccess.TKA !== false ? 'AKTIF' : 'NONAKTIF';
-      if (bos) bos.value = APP_STATE.menuAccess.BOS !== false ? 'AKTIF' : 'NONAKTIF';
-      if (ujian) ujian.value = APP_STATE.menuAccess.UjianAkhir !== false ? 'AKTIF' : 'NONAKTIF';
-      if (mad) mad.value = APP_STATE.menuAccess.Madrasah !== false ? 'AKTIF' : 'NONAKTIF';
-      if (tim) tim.value = APP_STATE.menuAccess.Tim !== false ? 'AKTIF' : 'NONAKTIF';
-    }
-
-    function applyMenuVisibility() {
-      var menus = ['TKA', 'BOS', 'UjianAkhir', 'Madrasah', 'Tim'];
-      var anyMonevActive = false;
-      var anyAdminActive = false;
-
-      for (var i = 0; i < menus.length; i++) {
-        var m = menus[i];
-        var isAllowed = APP_STATE.menuAccess[m] !== false;
-        var liEl = document.getElementById('menuItem-' + m);
-        if (liEl) {
-          if (isAllowed) {
-            liEl.classList.remove('hidden');
-            if (m === 'TKA' || m === 'BOS' || m === 'UjianAkhir') anyMonevActive = true;
-            else anyAdminActive = true;
-          } else {
-            liEl.classList.add('hidden');
-          }
-        }
-      }
-
-      var lblMonev = document.getElementById('sectionLabelMonev');
-      var lblAdmin = document.getElementById('sectionLabelAdmin');
-      if (lblMonev) {
-        if (anyMonevActive) lblMonev.classList.remove('hidden');
-        else lblMonev.classList.add('hidden');
-      }
-      if (lblAdmin) {
-        if (anyAdminActive) lblAdmin.classList.remove('hidden');
-        else lblAdmin.classList.add('hidden');
-      }
-
-      if (APP_STATE.menuAccess[APP_STATE.currentModule] === false && APP_STATE.currentModule !== 'Pengaturan') {
-        for (var j = 0; j < menus.length; j++) {
-          if (APP_STATE.menuAccess[menus[j]] !== false) {
-            switchModule(menus[j]);
-            break;
-          }
-        }
-      }
-    }
-
-    function updateModuleAccessUI() {
-      var mod = APP_STATE.currentModule;
-      var badge = document.getElementById('moduleAccessBadge');
-      var btnToggle = document.getElementById('btnToggleForm');
-      var formPanel = document.getElementById('monevFormPanel');
-
-      if (mod === 'Madrasah' || mod === 'Tim' || mod === 'Pengaturan') {
-        badge.classList.add('hidden');
-        return;
-      }
-
-      badge.classList.remove('hidden');
-      var isAllowed = APP_STATE.menuAccess[mod] !== false;
-
-      if (isAllowed) {
-        badge.className = 'badge badge-success';
-        badge.textContent = '🔓 Akses: AKTIF';
-        btnToggle.disabled = false;
-        btnToggle.className = 'btn btn-neon';
-        btnToggle.textContent = '+ Input Monev ▾';
-      } else {
-        badge.className = 'badge badge-danger';
-        badge.textContent = '🔒 Dinonaktifkan Pengaturan';
-        btnToggle.disabled = true;
-        btnToggle.className = 'btn btn-locked';
-        btnToggle.textContent = '🔒 Ditutup Pengaturan';
-        formPanel.classList.add('hidden');
-      }
     }
 
     function renderStatsAndDropdowns() {
-      var b = APP_STATE.stats.breakdown || { totalMadrasah:{MA:0,MTs:0,MI:0}, tujuanMonev:{MA:0,MTs:0,MI:0}, sudahMonev:{MA:0,MTs:0,MI:0}, belumMonev:{MA:0,MTs:0,MI:0} };
-
-      document.getElementById('statTotalMadrasah').innerHTML = '<tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val">' + b.totalMadrasah.MA + '</td></tr>' +
-                                                             '<tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val">' + b.totalMadrasah.MTs + '</td></tr>' +
-                                                             '<tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val">' + b.totalMadrasah.MI + '</td></tr>';
-      
-      document.getElementById('statTujuanMonev').innerHTML = '<tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val">' + b.tujuanMonev.MA + '</td></tr>' +
-                                                            '<tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val">' + b.tujuanMonev.MTs + '</td></tr>' +
-                                                            '<tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val">' + b.tujuanMonev.MI + '</td></tr>';
-      
-      document.getElementById('statSudahMonev').innerHTML = '<tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val">' + b.sudahMonev.MA + '</td></tr>' +
-                                                            '<tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val">' + b.sudahMonev.MTs + '</td></tr>' +
-                                                            '<tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val">' + b.sudahMonev.MI + '</td></tr>';
-      
-      document.getElementById('statBelumMonev').innerHTML = '<tr><td class="col-key">MA</td><td class="col-sep">:</td><td class="col-val">' + b.belumMonev.MA + '</td></tr>' +
-                                                            '<tr><td class="col-key">MTs</td><td class="col-sep">:</td><td class="col-val">' + b.belumMonev.MTs + '</td></tr>' +
-                                                            '<tr><td class="col-key">MI</td><td class="col-sep">:</td><td class="col-val">' + b.belumMonev.MI + '</td></tr>';
-
-      document.getElementById('badge-TKA').textContent = String(APP_STATE.stats.totalTKA);
-      document.getElementById('badge-BOS').textContent = String(APP_STATE.stats.totalBOS);
-      document.getElementById('badge-UjianAkhir').textContent = String(APP_STATE.stats.totalUjian);
-      document.getElementById('badge-Madrasah').textContent = String(APP_STATE.stats.totalMadrasah || APP_STATE.madrasah.length);
-      document.getElementById('badge-Tim').textContent = String(APP_STATE.stats.totalTim);
+      document.getElementById('badge-TKA').textContent = String(APP_STATE.stats.totalTKA || 0);
+      document.getElementById('badge-BOS').textContent = String(APP_STATE.stats.totalBOS || 0);
+      document.getElementById('badge-UjianAkhir').textContent = String(APP_STATE.stats.totalUjian || 0);
+      document.getElementById('badge-Madrasah').textContent = String(APP_STATE.madrasah.length);
+      document.getElementById('badge-Tim').textContent = String(APP_STATE.timMonev.length);
 
       var selMad = document.getElementById('inpPilihMadrasah');
-      var sasaranMasterId = document.getElementById('sasaranMasterId');
-      var madHtml = '<option value="">-- Pilih Madrasah Sasaran --</option>';
-      for (var m = 0; m < APP_STATE.madrasah.length; m++) {
-        var item = APP_STATE.madrasah[m];
-        madHtml += '<option value="' + escapeAttr(item.ID_Madrasah) + '">' + escapeText(item.Nama_Madrasah) + ' (' + escapeText(item.Alamat_Kecamatan) + ')</option>';
-      }
-      if (selMad) selMad.innerHTML = madHtml;
-      if (sasaranMasterId) sasaranMasterId.innerHTML = madHtml;
-
-      var selTim = document.getElementById('inpIdTim');
-      if (selTim) {
-        var timHtml = '<option value="Tim 1">Tim 1</option>' +
-                      '<option value="Tim 2">Tim 2</option>' +
-                      '<option value="Tim 3">Tim 3</option>';
-        selTim.innerHTML = timHtml;
-      }
-      handleAutoFillPetugasFromTim();
-      updateTimPegawaiSlotOptions();
-    }
-
-    function handleAutoFillPetugasFromTim() {
-      var selectedTimName = String(document.getElementById('inpIdTim').value || 'Tim 1');
-      var petugasStr = '';
-      for (var i = 0; i < APP_STATE.timMonev.length; i++) {
-        var t = APP_STATE.timMonev[i];
-        if (String(t.Nama_Tim) === selectedTimName) {
-          petugasStr = t.Anggota_Tim || '';
-          break;
+      if (selMad) {
+        var html = '<option value="">-- Pilih Madrasah Sasaran --</option>';
+        for (var i = 0; i < APP_STATE.madrasah.length; i++) {
+          html += '<option value="' + escapeAttr(APP_STATE.madrasah[i].ID_Madrasah) + '">' + escapeText(APP_STATE.madrasah[i].Nama_Madrasah) + '</option>';
         }
+        selMad.innerHTML = html;
       }
-      var elBoxLabel = document.getElementById('labelPetugasBox');
-      if (elBoxLabel) elBoxLabel.innerHTML = '<strong>Petugas Monitoring ' + escapeText(selectedTimName) + '</strong>';
-
-      var elNama1 = document.getElementById('inpNamaPetugas');
-      if (elNama1) elNama1.value = petugasStr;
     }
 
     function handleAutoFillMadrasah() {
-      var selectedId = String(document.getElementById('inpPilihMadrasah').value || '');
-      if (!selectedId) {
-        document.getElementById('inpNamaMadrasah').value = '';
-        document.getElementById('inpJenjang').value = '';
-        document.getElementById('inpNSM').value = '';
-        document.getElementById('inpNPSN').value = '';
-        document.getElementById('inpKepalaMadrasah').value = '';
-        document.getElementById('inpNIPKepala').value = '';
-        document.getElementById('inpAlamatDesa').value = '';
-        document.getElementById('inpAlamatKecamatan').value = '';
-        return;
-      }
-
-      for (var i = 0; i < APP_STATE.madrasah.length; i++) {
-        var m = APP_STATE.madrasah[i];
-        if (String(m.ID_Madrasah) === selectedId) {
-          document.getElementById('inpNamaMadrasah').value = m.Nama_Madrasah || '';
-          document.getElementById('inpJenjang').value = m.Jenjang || 'MA';
-          document.getElementById('inpNSM').value = m.NSM || '-';
-          document.getElementById('inpNPSN').value = m.NPSN || '-';
-          document.getElementById('inpKepalaMadrasah').value = m.Kepala_Madrasah || '';
-          document.getElementById('inpNIPKepala').value = m.NIP_Kepala || '-';
-          document.getElementById('inpAlamatDesa').value = m.Alamat_Desa || '';
-          document.getElementById('inpAlamatKecamatan').value = m.Alamat_Kecamatan || '';
-          showToast('Data madrasah sasaran otomatis terisi (Terkunci)!', 'success');
-          return;
-        }
-      }
-    }
-
-    function handleAutoFillSasaran() {
-      var id = document.getElementById('sasaranMasterId').value;
+      var id = document.getElementById('inpPilihMadrasah').value;
       for (var i = 0; i < APP_STATE.madrasah.length; i++) {
         var m = APP_STATE.madrasah[i];
         if (String(m.ID_Madrasah) === id) {
-          document.getElementById('sasaranNama').value = m.Nama_Madrasah || '';
-          document.getElementById('sasaranJenjang').value = m.Jenjang || '';
-          document.getElementById('sasaranNSM').value = m.NSM || '';
-          document.getElementById('sasaranNPSN').value = m.NPSN || '';
-          document.getElementById('sasaranKepala').value = m.Kepala_Madrasah || '';
-          document.getElementById('sasaranNIP').value = m.NIP_Kepala || '';
-          document.getElementById('sasaranDesa').value = m.Alamat_Desa || '';
-          document.getElementById('sasaranKecamatan').value = m.Alamat_Kecamatan || '';
+          document.getElementById('inpNamaMadrasah').value = m.Nama_Madrasah || '';
+          document.getElementById('inpJenjang').value = m.Jenjang || 'MA';
+          document.getElementById('inpNSM').value = m.NSM || '';
+          document.getElementById('inpNPSN').value = m.NPSN || '';
+          document.getElementById('inpKepalaMadrasah').value = m.Kepala_Madrasah || '';
+          document.getElementById('inpNIPKepala').value = m.NIP_Kepala || '';
+          document.getElementById('inpAlamatDesa').value = m.Alamat_Desa || '';
+          document.getElementById('inpAlamatKecamatan').value = m.Alamat_Kecamatan || '';
           break;
         }
       }
     }
 
-    function handleSaveMadrasahSasaran() {
-      var nama = document.getElementById('sasaranNama').value;
-      if (!nama) {
-        showToast('Pilih madrasah terlebih dahulu.', 'error');
-        return;
-      }
-      showToast('Madrasah ' + nama + ' berhasil ditetapkan sebagai sasaran tujuan Monev!', 'success');
-      document.getElementById('formMadrasahSasaran').reset();
-    }
-
-    function requestSwitchToPengaturan() {
-      if (APP_STATE.adminUnlocked) {
-        switchModule('Pengaturan');
-        return;
-      }
-      var passInput = document.getElementById('inpAdminPassPrompt');
-      if (passInput) passInput.value = '';
-      document.getElementById('adminAuthModal').classList.add('show');
-      setTimeout(function() { if (passInput) passInput.focus(); }, 100);
-    }
-
-    function closeAdminAuthModal() {
-      document.getElementById('adminAuthModal').classList.remove('show');
-    }
-
-    function submitAdminPassword() {
-      var pass = String(document.getElementById('inpAdminPassPrompt').value || '').trim();
-      var btn = document.getElementById('btnVerifyAdminPass');
-      btn.disabled = true;
-      btn.textContent = 'Memeriksa...';
-
-      callBackend('verifyAdminPassword', pass, function(res) {
-        btn.disabled = false;
-        btn.textContent = '🔓 Masuk';
-        if (res && res.authenticated) {
-          APP_STATE.adminUnlocked = true;
-          closeAdminAuthModal();
-          switchModule('Pengaturan');
-          showToast(res.message, 'success');
-        } else {
-          showToast(res ? res.message : 'Password salah!', 'error');
-        }
-      }, function(err) {
-        btn.disabled = false;
-        btn.textContent = '🔓 Masuk';
-        showToast('Error: ' + err.message, 'error');
+    function switchModule(mod) {
+      APP_STATE.currentModule = mod;
+      ['TKA', 'BOS', 'UjianAkhir', 'Madrasah', 'Tim', 'Pengaturan'].forEach(function(m) {
+        var btn = document.getElementById('nav-' + m);
+        if (btn) btn.classList.toggle('active', m === mod);
       });
-    }
-
-    function lockAdminSession() {
-      APP_STATE.adminUnlocked = false;
-      switchModule('TKA');
-      showToast('Sesi Pengaturan dikunci kembali.', 'success');
-    }
-
-    function handleSaveAccessSettings() {
-      var payload = {
-        AKSES_TKA: document.getElementById('menuToggleTKA').value,
-        AKSES_BOS: document.getElementById('menuToggleBOS').value,
-        AKSES_UJIAN: document.getElementById('menuToggleUjian').value,
-        AKSES_MADRASAH: document.getElementById('menuToggleMadrasah').value,
-        AKSES_TIM: document.getElementById('menuToggleTim').value,
-        NEW_ADMIN_PASS: String(document.getElementById('setNewAdminPass').value || '').trim(),
-        CUSTOM_LOGO_BASE64: document.getElementById('inpCustomLogoBase64').value
-      };
-
-      document.getElementById('setNewAdminPass').value = '';
-
-      APP_STATE.menuAccess = {
-        TKA: payload.AKSES_TKA === 'AKTIF',
-        BOS: payload.AKSES_BOS === 'AKTIF',
-        UjianAkhir: payload.AKSES_UJIAN === 'AKTIF',
-        Madrasah: payload.AKSES_MADRASAH === 'AKTIF',
-        Tim: payload.AKSES_TIM === 'AKTIF'
-      };
-      applyMenuVisibility();
-
-      showBicycLoader('Loading...');
-      callBackend('saveModuleAccessSettings', payload, function(res) {
-        hideBicycLoader();
-        if (res && res.status === 'success') {
-          if (res.menuAccess) APP_STATE.menuAccess = res.menuAccess;
-          applyMenuVisibility();
-          showToast(res.message, 'success');
-        } else {
-          showToast(res ? res.message : 'Gagal menyimpan.', 'error');
-        }
-      }, function(err) {
-        hideBicycLoader();
-        showToast('Gagal menyimpan: ' + err.message, 'error');
-      });
-    }
-
-    function switchModule(modName) {
-      if (modName === 'Pengaturan' && !APP_STATE.adminUnlocked) {
-        requestSwitchToPengaturan();
-        return;
-      }
-
-      APP_STATE.currentModule = modName;
-      var menus = ['TKA', 'BOS', 'UjianAkhir', 'Madrasah', 'Tim', 'Pengaturan'];
-      for (var i = 0; i < menus.length; i++) {
-        var b = document.getElementById('nav-' + menus[i]);
-        if (b) {
-          if (menus[i] === modName) b.classList.add('active');
-          else b.classList.remove('active');
-        }
-      }
-
-      document.getElementById('sidebarNav').classList.remove('open');
-
-      var listPanel = document.getElementById('monevListPanel');
-      var formPanel = document.getElementById('monevFormPanel');
-      var madSection = document.getElementById('madrasahModuleSection');
-      var timSection = document.getElementById('timModuleSection');
-      var setSection = document.getElementById('pengaturanModuleSection');
-      var btnToggle = document.getElementById('btnToggleForm');
-
-      madSection.classList.add('hidden');
-      timSection.classList.add('hidden');
-      setSection.classList.add('hidden');
-      listPanel.classList.add('hidden');
-      formPanel.classList.add('hidden');
-      btnToggle.classList.add('hidden');
-
-      if (modName === 'Madrasah') {
-        madSection.classList.remove('hidden');
-        document.getElementById('moduleHeading').textContent = 'Master Data Madrasah';
-        document.getElementById('moduleSubheading').textContent = 'Kelola database satuan pendidikan dan tetapkan sasaran tujuan Monev';
-        renderMadrasahTable();
-        return;
-      }
-      if (modName === 'Tim') {
-        timSection.classList.remove('hidden');
-        document.getElementById('moduleHeading').textContent = 'Manajemen Tim Monev & Pegawai';
-        document.getElementById('moduleSubheading').textContent = 'Input pegawai dan bentuk Tim Monev penugasan';
-        renderAdminTables();
-        return;
-      }
-      if (modName === 'Pengaturan') {
-        setSection.classList.remove('hidden');
-        document.getElementById('moduleHeading').textContent = 'Pengaturan Akses Menu & Keamanan';
-        document.getElementById('moduleSubheading').textContent = 'Kontrol aktivasi menu aplikasi dan ubah password admin';
-        syncAccessSelectControls();
-        return;
-      }
-
-      listPanel.classList.remove('hidden');
-      btnToggle.classList.remove('hidden');
-
-      document.getElementById('fields-TKA').classList.add('hidden');
-      document.getElementById('fields-BOS').classList.add('hidden');
-      document.getElementById('fields-UjianAkhir').classList.add('hidden');
-      document.getElementById('fields-SharedNotes').classList.remove('hidden');
-
-      if (modName === 'TKA') {
-        document.getElementById('moduleHeading').textContent = 'Monev Tes Kemampuan Akademik (TKA)';
-        document.getElementById('moduleSubheading').textContent = 'Instrumen Monitoring & Evaluasi Pelaksanaan TKA Kemenag Kab. Musi Rawas';
-        document.getElementById('fields-TKA').classList.remove('hidden');
-      } else if (modName === 'BOS') {
-        document.getElementById('moduleHeading').textContent = 'Monev Dana BOS';
-        document.getElementById('moduleSubheading').textContent = 'Instrumen Monitoring & Evaluasi Penatausahaan Dana BOS';
-        document.getElementById('fields-BOS').classList.remove('hidden');
-      } else if (modName === 'UjianAkhir') {
-        document.getElementById('moduleHeading').textContent = 'Monev Ujian Akhir Madrasah';
-        document.getElementById('moduleSubheading').textContent = 'Instrumen Monitoring & Evaluasi Ujian Akhir Madrasah';
-        document.getElementById('fields-UjianAkhir').classList.remove('hidden');
-        document.getElementById('fields-SharedNotes').classList.add('hidden');
-      }
-
-      updateModuleAccessUI();
-      resetAndLoadMonev();
+      document.getElementById('monevListPanel').classList.toggle('hidden', ['Madrasah', 'Tim', 'Pengaturan'].indexOf(mod) !== -1);
+      document.getElementById('madrasahModuleSection').classList.toggle('hidden', mod !== 'Madrasah');
+      document.getElementById('timModuleSection').classList.toggle('hidden', mod !== 'Tim');
+      document.getElementById('pengaturanModuleSection').classList.toggle('hidden', mod !== 'Pengaturan');
+      if (['Madrasah', 'Tim', 'Pengaturan'].indexOf(mod) === -1) resetAndLoadMonev();
     }
 
     function toggleFormPanel() {
-      var panel = document.getElementById('monevFormPanel');
-      if (panel.classList.contains('hidden')) {
-        panel.classList.remove('hidden');
-        handleAutoFillPetugasFromTim();
-        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        panel.classList.add('hidden');
-      }
+      var p = document.getElementById('monevFormPanel');
+      p.classList.toggle('hidden');
     }
-
     function toggleMobileSidebar() {
       document.getElementById('sidebarNav').classList.toggle('open');
     }
 
-    function debounceFilterMonev() {
-      if (APP_STATE.searchTimer) clearTimeout(APP_STATE.searchTimer);
-      APP_STATE.searchTimer = setTimeout(function() { resetAndLoadMonev(); }, 300);
-    }
-
-    function resetFilterControls() {
-      document.getElementById('searchMonev').value = '';
-      document.getElementById('filterJenjang').value = 'ALL';
-      document.getElementById('filterStatus').value = 'ALL';
-      resetAndLoadMonev();
-    }
-
     function resetAndLoadMonev() {
       APP_STATE.pagination.offset = 0;
-      APP_STATE.pagination.items = [];
-      renderMonevTableHead();
-      fetchMonevPage(false);
+      fetchMonevPage();
     }
-
-    function loadMoreMonev() {
-      if (!APP_STATE.pagination.hasMore) return;
-      APP_STATE.pagination.offset += APP_STATE.pagination.limit;
-      fetchMonevPage(true);
-    }
-
-    function fetchMonevPage(isAppend) {
-      var mod = APP_STATE.currentModule;
-      var params = {
-        module: mod,
-        search: String(document.getElementById('searchMonev').value || ''),
-        filterJenjang: String(document.getElementById('filterJenjang').value || 'ALL'),
-        filterStatus: String(document.getElementById('filterStatus').value || 'ALL'),
+    function fetchMonevPage() {
+      callGasApi('getPaginatedData', {
+        module: APP_STATE.currentModule,
+        search: document.getElementById('searchMonev').value,
+        filterJenjang: document.getElementById('filterJenjang').value,
+        filterStatus: document.getElementById('filterStatus').value,
         limit: APP_STATE.pagination.limit,
         offset: APP_STATE.pagination.offset
-      };
-
-      callBackend('getPaginatedData', params, function(res) {
+      }, function(res) {
         if (res && res.status === 'success') {
           APP_STATE.pagination.total = res.total;
-          APP_STATE.pagination.hasMore = res.hasMore;
-          var rawItems = res.items || [];
-          
-          if (isAppend) APP_STATE.pagination.items = APP_STATE.pagination.items.concat(rawItems);
-          else APP_STATE.pagination.items = rawItems;
+          APP_STATE.pagination.items = res.items || [];
           renderMonevTableRows();
         }
-      }, function(err) {
-        console.error(err);
       });
     }
-
-    function initLazyLoadObserver() {
-      var sentinel = document.getElementById('lazyLoadSentinel');
-      if (!('IntersectionObserver' in window) || !sentinel) return;
-      var obs = new IntersectionObserver(function(entries) {
-        if (entries[0].isIntersecting && APP_STATE.pagination.hasMore) loadMoreMonev();
-      }, { rootMargin: '100px' });
-      obs.observe(sentinel);
-    }
-
-    function renderMonevTableHead() {
-      var mod = APP_STATE.currentModule;
-      var thead = document.getElementById('monevTableHead');
-      if (mod === 'TKA') {
-        thead.innerHTML = '<tr><th>ID &amp; Tanggal</th><th>Madrasah &amp; Kepala</th><th>Tim &amp; Petugas</th><th>Peserta &amp; Sarpras</th><th>Capaian</th><th>Status</th><th>Aksi PDF</th></tr>';
-      } else if (mod === 'BOS') {
-        thead.innerHTML = '<tr><th>ID &amp; Tanggal</th><th>Madrasah &amp; Kepala</th><th>Tahap BOS</th><th>Dokumen</th><th>Skor</th><th>Status</th><th>Aksi PDF</th></tr>';
-      } else {
-        thead.innerHTML = '<tr><th>ID &amp; Tanggal</th><th>Madrasah &amp; Kepala</th><th>Jenis Ujian</th><th>Kehadiran</th><th>Kendala</th><th>Status</th><th>Aksi PDF</th></tr>';
-      }
-    }
-
     function renderMonevTableRows() {
       var tbody = document.getElementById('monevTableBody');
-      var items = APP_STATE.pagination.items || [];
-      var mod = APP_STATE.currentModule;
-      document.getElementById('paginationInfo').textContent = 'Menampilkan ' + items.length + ' dari ' + APP_STATE.pagination.total + ' data';
-
+      var items = APP_STATE.pagination.items;
+      if (!tbody) return;
       if (items.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:28px; color:var(--text-secondary);">Belum ada data rekam jejak Monev.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">Belum ada data.</td></tr>';
         return;
       }
-
       var html = '';
       for (var i = 0; i < items.length; i++) {
         var r = items[i];
-        var infoMad = '<td><strong>' + escapeText(r.Nama_Madrasah) + '</strong> <span class="badge badge-info">' + escapeText(r.Jenjang) + '</span><div style="font-size:0.75rem; color:var(--text-secondary);">Ka: ' + escapeText(r.Kepala_Madrasah) + '</div></td>';
-        if (mod === 'TKA') {
-          html += '<tr>' +
-            '<td style="text-align:center;"><span class="mono-id">' + escapeText(r.ID_Monev) + '</span><div style="font-size:0.73rem; color:var(--text-secondary);">' + escapeText(r.Hari_Tanggal || r.Tanggal) + '</div></td>' +
-            infoMad +
-            '<td><div style="font-size:0.78rem;"><strong>' + escapeText(r.ID_Tim) + '</strong></div><div style="font-size:0.74rem; color:var(--text-secondary);">' + escapeText(r.Nama_Petugas) + '</div></td>' +
-            '<td><strong>' + escapeText(r.Jumlah_Peserta) + ' Siswa</strong></td>' +
-            '<td><strong>' + escapeText(r.Persentase_Capaian || '100') + '%</strong><div class="progress-wrap"><div class="progress-fill" style="width:' + escapeAttr(r.Persentase_Capaian || 100) + '%;"></div></div></td>' +
-            '<td style="text-align:center;">' + renderStatusBadge(r.Status_Monev) + '</td>' +
-            '<td style="text-align:center;"><button type="button" class="btn btn-ghost btn-sm" onclick="handleOpenPdfById(\'TKA\', \'' + escapeAttr(r.ID_Monev) + '\')">📄 PDF</button></td>'
+        html += '<tr><td><span class="mono-id">' + escapeText(r.ID_Monev) + '</span></td>' +
+          '<td><strong>' + escapeText(r.Nama_Madrasah) + '</strong></td>' +
+          '<td>' + escapeText(r.ID_Tim || '-') + '</td>' +
+          '<td>' + escapeText(r.Jumlah_Peserta || r.Skor_Kepatuhan || '-') + '</td>' +
+          '<td><span class="badge badge-success">' + escapeText(r.Status_Monev || r.Status_Verifikasi || 'Selesai') + '</span></td>' +
+          '<td><button type="button" class="btn btn-ghost btn-sm" onclick="handleOpenPdfById(\'' + APP_STATE.currentModule + '\', \'' + r.ID_Monev + '\')">📄 PDF</button></td></tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function handleSaveMadrasah() {
+      callGasApi('saveMadrasahRecord', {
+        Jenjang: document.getElementById('madJenjang').value,
+        Nama_Madrasah: document.getElementById('madNama').value,
+        NSM: document.getElementById('madNSM').value,
+        NPSN: document.getElementById('madNPSN').value,
+        Kepala_Madrasah: document.getElementById('madKepala').value,
+        NIP_Kepala: document.getElementById('madNIP').value,
+        Alamat_Desa: document.getElementById('madDesa').value,
+        Alamat_Kecamatan: document.getElementById('madKecamatan').value
+      }, function(res) {
+        if (res && res.status === 'success') {
+          showToast(res.message, 'success');
+          document.getElementById('formMadrasah').reset();
+          initializeAppData();
+        }
+      });
+    }
+
+    function renderMadrasahTable() {
+      var tbody = document.getElementById('madrasahTableBody');
+      if (!tbody) return;
+      var html = '';
+      for (var i = 0; i < APP_STATE.madrasah.length; i++) {
+        var m = APP_STATE.madrasah[i];
+        html += '<tr><td><span class="mono-id">' + m.ID_Madrasah + '</span></td><td>' + m.Jenjang + '</td><td><strong>' + m.Nama_Madrasah + '</strong></td><td>' + m.NSM + '</td><td>' + m.NPSN + '</td><td>' + m.Kepala_Madrasah + '</td><td>' + m.NIP_Kepala + '</td><td>' + m.Alamat_Desa + '</td><td>' + m.Alamat_Kecamatan + '</td><td>-</td></tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function renderAdminTables() {
+      var tbody = document.getElementById('timTableBody');
+      if (!tbody) return;
+      var html = '';
+      for (var i = 0; i < APP_STATE.timMonev.length; i++) {
+        var t = APP_STATE.timMonev[i];
+        html += '<tr><td>' + t.ID_Tim + '</td><td>' + t.Nama_Tim + '</td><td>' + t.Anggota_Tim + '</td><td>' + t.Status_Tim + '</td></tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function handleSaveMonev() {
+      var mod = APP_STATE.currentModule;
+      callGasApi('saveMonevRecord', {
+        module: mod,
+        Tanggal: document.getElementById('inpTanggal').value,
+        Hari_Tanggal: document.getElementById('inpHariTanggal').value,
+        ID_Tim: document.getElementById('inpIdTim').value,
+        Nama_Madrasah: document.getElementById('inpNamaMadrasah').value,
+        Jenjang: document.getElementById('inpJenjang').value,
+        NSM: document.getElementById('inpNSM').value,
+        NPSN: document.getElementById('inpNPSN').value,
+        Kepala_Madrasah: document.getElementById('inpKepalaMadrasah').value,
+        NIP_Kepala: document.getElementById('inpNIPKepala').value,
+        Alamat_Desa: document.getElementById('inpAlamatDesa').value,
+        Alamat_Kecamatan: document.getElementById('inpAlamatKecamatan').value,
+        Status_Monev: document.getElementById('inpStatusMonev').value,
+        Jumlah_Peserta: document.getElementById('totPJml').textContent
+      }, function(res) {
+        if (res && res.status === 'success') {
+          showToast(res.message, 'success');
+          toggleFormPanel();
+          openPdfModal(res.pdfBase64, res.pdfFileName);
+          resetAndLoadMonev();
+        }
+      });
+    }
+
+    function handleOpenPdfById(mod, idMonev) {
+      callGasApi('generatePdfById', { moduleName: mod, idMonev: idMonev }, function(res) {
+        if (res && res.status === 'success') {
+          openPdfModal(res.pdfBase64, res.pdfFileName);
+        }
+      });
+    }
+
+    function openPdfModal(b64, filename) {
+      APP_STATE.activePdf = { base64: b64, fileName: filename };
+      document.getElementById('pdfPaperContainer').innerHTML = '<div style="text-align:center; padding:30px;"><h4>PDF Sesuai Tim Siap Diunduh</h4><p>' + filename + '</p></div>';
+      document.getElementById('pdfModal').classList.add('show');
+    }
+    function closePdfModal() { document.getElementById('pdfModal').classList.remove('show'); }
+
+    function triggerDirectPdfDownload() {
+      var b64 = APP_STATE.activePdf.base64;
+      var link = document.createElement('a');
+      link.href = 'data:application/pdf;base64,' + b64;
+      link.download = APP_STATE.activePdf.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function sharePdfToWhatsApp() {
+      triggerDirectPdfDownload();
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent('Berikut Laporan Monev Kemenag Musi Rawas'), '_blank');
+    }
+
+    function handleSaveAccessSettings() {
+      var newUrl = document.getElementById('inpGasApiUrl').value.trim();
+      if (newUrl) {
+        GAS_API_URL = newUrl;
+        localStorage.setItem('VERCEL_GAS_API_URL', newUrl);
+        showToast('URL Backend GAS berhasil diperbarui!', 'success');
+      }
+    }
+
+    function requestSwitchToPengaturan() {
+      if (APP_STATE.adminUnlocked) { switchModule('Pengaturan'); return; }
+      document.getElementById('adminAuthModal').classList.add('show');
+    }
+    function closeAdminAuthModal() { document.getElementById('adminAuthModal').classList.remove('show'); }
+    function submitAdminPassword() {
+      if (document.getElementById('inpAdminPassPrompt').value === '123456') {
+        APP_STATE.adminUnlocked = true;
+        closeAdminAuthModal();
+        switchModule('Pengaturan');
+      } else {
+        showToast('Password salah!', 'error');
+      }
+    }
+    function lockAdminSession() { APP_STATE.adminUnlocked = false; switchModule('TKA'); }
+
+    function showToast(msg, type) {
+      var container = document.getElementById('toastContainer');
+      var item = document.createElement('div');
+      item.className = 'toast-item' + (type === 'error' ? ' error' : '');
+      item.textContent = msg;
+      container.appendChild(item);
+      setTimeout(function() { item.remove(); }, 3500);
+    }
+  </script>
+</body>
+</html>
