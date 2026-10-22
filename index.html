@@ -859,24 +859,40 @@
         card.setAttribute('data-room-idx', String(i));
         card.innerHTML = '<div class="room-mobile-card-header"><span class="rm-no" data-val="' + i + '">Ruang ' + i + '</span></div>' +
           '<div class="room-fields-grid">' +
-          '<div><label>L</label><input type="number" class="input-mini rm-pL" value="0" oninput="recalculateTkaRoomTotals()"></div>' +
-          '<div><label>P</label><input type="number" class="input-mini rm-pP" value="0" oninput="recalculateTkaRoomTotals()"></div>' +
+          '<div><label>L</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label>P</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value===\'0\')this.value=\'\';" onblur="if(this.value===\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label>Total</label><div class="input-mini" id="rm-pJml-' + i + '">0</div></div>' +
           '</div>';
         container.appendChild(card);
       }
       recalculateTkaRoomTotals();
     }
+
+    function cleanLeadingZero(inputEl) {
+      if (inputEl.value.length > 1 && inputEl.value.indexOf('0') === 0 && inputEl.value.indexOf('.') === -1) {
+        inputEl.value = inputEl.value.replace(/^0+/, '');
+      }
+    }
+
     function recalculateTkaRoomTotals() {
       var cards = document.querySelectorAll('.room-mobile-card');
-      var tot = 0;
+      var totPJml = 0;
+
       for (var i = 0; i < cards.length; i++) {
-        var pL = parseInt(cards[i].querySelector('.rm-pL').value, 10) || 0;
-        var pP = parseInt(cards[i].querySelector('.rm-pP').value, 10) || 0;
-        tot += (pL + pP);
+        var card = cards[i];
+        var idx = card.getAttribute('data-room-idx');
+        var pL = parseInt(card.querySelector('.rm-pL').value, 10) || 0;
+        var pP = parseInt(card.querySelector('.rm-pP').value, 10) || 0;
+        var pJml = pL + pP;
+
+        var elPJml = document.getElementById('rm-pJml-' + idx);
+        if (elPJml) elPJml.textContent = String(pJml);
+
+        totPJml += pJml;
       }
+
       var elTotP = document.getElementById('totPJml');
-      if (elTotP) elTotP.textContent = String(tot);
+      if (elTotP) elTotP.textContent = String(totPJml);
     }
 
     function renderTkaChecklistFormTable() {
