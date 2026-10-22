@@ -320,15 +320,13 @@
             <div class="form-group full-width">
               <label class="form-label">Pilih Tim Monev Penugasan <span class="req">*</span></label>
               <select id="inpIdTim" class="select-control" onchange="handleAutoFillPetugasFromTim()" required>
-                <option value="Tim 1">Tim 1</option>
-                <option value="Tim 2">Tim 2</option>
-                <option value="Tim 3">Tim 3</option>
+                <option value="">-- Pilih Tim Monev --</option>
               </select>
             </div>
 
             <div class="form-group full-width">
               <div class="sub-card-box" style="margin-top:0; background:#eef5ff; border-color:#b6d4fe;">
-                <label class="form-label" id="labelPetugasBox" style="color:#084298; margin-bottom:4px;"><strong>Petugas Monitoring Tim 1</strong></label>
+                <label class="form-label" id="labelPetugasBox" style="color:#084298; margin-bottom:4px;"><strong>Petugas Monitoring</strong></label>
                 <input type="text" id="inpNamaPetugas" class="input-control" style="background:#ffffff; font-weight:700;" readonly required>
               </div>
             </div>
@@ -345,31 +343,31 @@
             </div>
             <div class="form-group">
               <label class="form-label">Nama Madrasah Penyelenggara <span class="req">*</span></label>
-              <input type="text" id="inpNamaMadrasah" class="input-control" readonly required>
+              <input type="text" id="inpNamaMadrasah" class="input-control" placeholder="Contoh: MIN 1 Musi Rawas" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Nomor Statistik Madrasah (NSM) <span class="req">*</span></label>
-              <input type="text" id="inpNSM" class="input-control" readonly required>
+              <input type="text" id="inpNSM" class="input-control" placeholder="12 Digit NSM" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Nomor Pokok Sekolah Nasional (NPSN) <span class="req">*</span></label>
-              <input type="text" id="inpNPSN" class="input-control" readonly required>
+              <input type="text" id="inpNPSN" class="input-control" placeholder="8 Digit NPSN" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Nama Kepala Madrasah <span class="req">*</span></label>
-              <input type="text" id="inpKepalaMadrasah" class="input-control" readonly required>
+              <input type="text" id="inpKepalaMadrasah" class="input-control" placeholder="Nama lengkap & gelar" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">NIP Kepala Madrasah <span class="req">*</span></label>
-              <input type="text" id="inpNIPKepala" class="input-control" readonly required>
+              <input type="text" id="inpNIPKepala" class="input-control" placeholder="18 Digit NIP atau '-'" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Alamat Desa / Kelurahan <span class="req">*</span></label>
-              <input type="text" id="inpAlamatDesa" class="input-control" readonly required>
+              <input type="text" id="inpAlamatDesa" class="input-control" placeholder="Contoh: Desa Muara Beliti Baru" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Alamat Kecamatan <span class="req">*</span></label>
-              <input type="text" id="inpAlamatKecamatan" class="input-control" readonly required>
+              <input type="text" id="inpAlamatKecamatan" class="input-control" placeholder="Contoh: Kec. Muara Beliti" readonly required>
             </div>
             <div class="form-group">
               <label class="form-label">Status Evaluasi</label>
@@ -989,9 +987,28 @@
           renderMadrasahTable();
           renderAdminTables();
           updateTimPegawaiSlotOptions();
+          updateMonevTimDropdowns();
           resetAndLoadMonev();
         }
       });
+    }
+
+    function updateMonevTimDropdowns() {
+      var selTim = document.getElementById('inpIdTim');
+      if (!selTim) return;
+      var html = '<option value="">-- Pilih Tim Monev --</option>';
+      var uniqueTeams = [];
+      for (var i = 0; i < APP_STATE.timMonev.length; i++) {
+        var tName = APP_STATE.timMonev[i].Nama_Tim || APP_STATE.timMonev[i].ID_Tim;
+        if (tName && uniqueTeams.indexOf(tName) === -1) {
+          uniqueTeams.push(tName);
+        }
+      }
+      for (var j = 0; j < uniqueTeams.length; j++) {
+        html += '<option value="' + escapeAttr(uniqueTeams[j]) + '">' + escapeText(uniqueTeams[j]) + '</option>';
+      }
+      selTim.innerHTML = html;
+      handleAutoFillPetugasFromTim();
     }
 
     function syncAccessSelectControls() {
@@ -1061,7 +1078,7 @@
       var petugasField = document.getElementById('inpNamaPetugas');
       var labelPetugas = document.getElementById('labelPetugasBox');
       
-      if (labelPetugas) labelPetugas.innerHTML = '<strong>Petugas Monitoring ' + selectedTim + '</strong>';
+      if (labelPetugas) labelPetugas.innerHTML = '<strong>Petugas Monitoring ' + (selectedTim || 'Tim') + '</strong>';
 
       var members = [];
       for (var i = 0; i < APP_STATE.timMonev.length; i++) {
@@ -1121,6 +1138,7 @@
       var p = document.getElementById('monevFormPanel');
       p.classList.toggle('hidden');
       if (!p.classList.contains('hidden')) {
+        updateMonevTimDropdowns();
         handleAutoFillPetugasFromTim();
       }
     }
