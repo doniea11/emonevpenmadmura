@@ -600,6 +600,7 @@
                 <div class="form-group"><label class="form-label">Status</label><select id="pegStatus" class="select-control"><option value="Aktif">Aktif</option></select></div>
               </div>
               <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:8px;">
+                <button type="button" id="btnCancelEditPegawai" class="btn btn-ghost btn-sm hidden" onclick="cancelEditPegawai()">Batal</button>
                 <button type="submit" class="btn btn-neon btn-sm" id="btnSubmitPegawai">+ Simpan / Perbarui Pegawai</button>
               </div>
             </form>
@@ -623,6 +624,7 @@
                 </div>
               </div>
               <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:8px;">
+                <button type="button" id="btnCancelEditTim" class="btn btn-ghost btn-sm hidden" onclick="cancelEditTim()">Batal</button>
                 <button type="submit" class="btn btn-neon btn-sm" id="btnSubmitTim">🛡️ Terbitkan / Perbarui Tim</button>
               </div>
             </form>
@@ -757,7 +759,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycby_kidvSU53tNM3DxHT1zvJDKBTBb8M2BU8x5ttxkxXyhRbJ5fnbC55CvMb91oW9yQ/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbwrgx23AjUi34BHuikTh5PfcpCq7lTtjG9uPMv0nEXp5ZDT9O3YC6bOisoNkPsP23Fsqg/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -1467,3 +1469,4 @@
   </script>
 </body>
 </html>
+```eof
