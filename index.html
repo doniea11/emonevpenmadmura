@@ -840,7 +840,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbynvdeiVXFdxwRrE4KlgKRE6AfOZi4v66lbu-W-IAX4LhF51fFAt0BP3aulFkszPOI0/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbw6FAF0D2x6Lqljp5U8LGaOfQnLo5bwIvM4wFGcLjsJ17B1xpZ0C836HGyCXBfnQ5QJ3g/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -872,7 +872,7 @@
       { no: 16, text: 'Nota Belanja' },
       { no: 17, text: 'Daftar Terima Honor Pendidik Dan Tenaga Kependidikan' },
       { no: 18, text: 'Kuitansi Penerimaan Honor' },
-      { no: 19, text: 'Persentase Penggunaan Dana BOS untuk Honor' }
+      { no: 19, text: 'Persentase Penggunaan Dana BOS untuk Honor', isCustomHonor: true }
     ];
 
     var APP_STATE = {
@@ -971,6 +971,55 @@
     
     function escapeAttr(str) {
       return escapeText(str);
+    }
+
+    function formatRupiah(value) {
+      var number_string = value.replace(/[^,\d]/g, '').toString();
+      var split = number_string.split(',');
+      var sisa = split[0].length % 3;
+      var rupiah = split[0].substr(0, sisa);
+      var ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+      if (ribuan) {
+        var separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+      }
+      rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+      return rupiah ? 'Rp ' + rupiah : '';
+    }
+
+    function parseRupiahNumber(str) {
+      if (!str) return 0;
+      var clean = String(str).replace(/[^0-9]/g, '');
+      return parseFloat(clean) || 0;
+    }
+
+    function onHonorInputChange() {
+      var angInput = document.getElementById('honor_anggaran');
+      var realInput = document.getElementById('honor_realisasi');
+      var persentaseVal = document.getElementById('honor_persentase_val');
+      var warningBox = document.getElementById('honor_warning_box');
+
+      if (!angInput || !realInput) return;
+
+      var ang = parseRupiahNumber(angInput.value);
+      var real = parseRupiahNumber(realInput.value);
+
+      var pct = 0;
+      if (ang > 0) {
+        pct = (real / ang) * 100;
+      }
+
+      if (persentaseVal) persentaseVal.textContent = pct.toFixed(2) + '%';
+
+      if (warningBox) {
+        if (pct > 50) {
+          warningBox.style.display = 'block';
+          warningBox.innerHTML = '⚠️ <strong>Catatan Khusus:</strong> Realisasi pembayaran honor (' + pct.toFixed(2) + '%) melebihi 50% dari total anggaran honor!';
+        } else {
+          warningBox.style.display = 'none';
+          warningBox.innerHTML = '';
+        }
+      }
     }
 
     function setDefaultDates() {
@@ -1192,33 +1241,64 @@
       var html = '';
       for (var i = 0; i < BOS_MASTER_ITEMS.length; i++) {
         var item = BOS_MASTER_ITEMS[i];
-        var radioHtml = '<label class="tka-radio-pill"><input type="radio" name="bos_chk_' + item.no + '" value="Ada" checked> <span><strong>Ada</strong></span></label>' +
-                        '<label class="tka-radio-pill"><input type="radio" name="bos_chk_' + item.no + '" value="Tidak Lengkap"> <span><strong>Tidak Lengkap</strong></span></label>' +
-                        '<label class="tka-radio-pill"><input type="radio" name="bos_chk_' + item.no + '" value="Tidak Ada"> <span><strong>Tidak Ada</strong></span></label>';
 
-        html += '<div class="tka-mobile-card">' +
-          '<div class="tka-mobile-card-header">' +
-          '<span style="background:#e9ecef; padding:2px 8px; border-radius:4px; font-family:monospace; font-size:0.8rem; color:#495057;">#' + item.no + '</span>' +
-          '<span>' + escapeText(item.text) + '</span>' +
-          '</div>' +
-          '<div class="tka-radio-group">' + radioHtml + '</div>' +
-          '<div style="margin-top:8px;">' +
-          '<input type="text" id="bos_ket_' + item.no + '" class="input-control" placeholder="Catatan dokumen (jika ada)" style="font-size:0.85rem; padding:8px 12px; height:42px;">' +
-          '</div>' +
+        if (item.isCustomHonor) {
+          html += '<div class="tka-mobile-card" style="border:1.5px solid var(--tka-blue); background:#fdfeff;">' +
+            '<div class="tka-mobile-card-header">' +
+              '<span style="background:var(--tka-blue); color:#fff; padding:2px 8px; border-radius:4px; font-family:monospace; font-size:0.8rem;">#' + item.no + '</span>' +
+              '<span><strong>' + escapeText(item.text) + '</strong></span>' +
+            '</div>' +
+            '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin-top:10px;">' +
+              '<div>' +
+                '<label class="form-label" style="font-size:0.8rem;">Anggaran Untuk Honor (Rp)</label>' +
+                '<input type="text" id="honor_anggaran" class="input-control" placeholder="Rp 0" oninput="this.value = formatRupiah(this.value); onHonorInputChange()" style="font-size:0.9rem; height:42px;">' +
+              '</div>' +
+              '<div>' +
+                '<label class="form-label" style="font-size:0.8rem;">Realisasi Pembayaran Honor (Rp)</label>' +
+                '<input type="text" id="honor_realisasi" class="input-control" placeholder="Rp 0" oninput="this.value = formatRupiah(this.value); onHonorInputChange()" style="font-size:0.9rem; height:42px;">' +
+              '</div>' +
+            '</div>' +
+            '<div style="margin-top:10px; padding:8px 12px; background:#eef5ff; border-radius:var(--radius-sm); display:flex; justify-content:space-between; align-items:center; font-size:0.88rem;">' +
+              '<span>Persentase Penggunaan:</span>' +
+              '<strong id="honor_persentase_val" style="color:var(--tka-blue); font-size:1rem;">0.00%</strong>' +
+            '</div>' +
+            '<div id="honor_warning_box" style="margin-top:8px; padding:10px; background:#f8d7da; color:#842029; border:1px solid #f5c2c7; border-radius:var(--radius-sm); font-size:0.85rem; display:none;"></div>' +
+            '<div style="margin-top:8px;">' +
+              '<input type="text" id="bos_ket_' + item.no + '" class="input-control" placeholder="Catatan khusus honor (jika ada)" style="font-size:0.85rem; padding:8px 12px; height:42px;">' +
+            '</div>' +
           '</div>';
+        } else {
+          var radioHtml = '<label class="tka-radio-pill"><input type="radio" name="bos_chk_' + item.no + '" value="Ada" checked> <span><strong>Ada</strong></span></label>' +
+                          '<label class="tka-radio-pill"><input type="radio" name="bos_chk_' + item.no + '" value="Tidak Lengkap"> <span><strong>Tidak Lengkap</strong></span></label>' +
+                          '<label class="tka-radio-pill"><input type="radio" name="bos_chk_' + item.no + '" value="Tidak Ada"> <span><strong>Tidak Ada</strong></span></label>';
+
+          html += '<div class="tka-mobile-card">' +
+            '<div class="tka-mobile-card-header">' +
+            '<span style="background:#e9ecef; padding:2px 8px; border-radius:4px; font-family:monospace; font-size:0.8rem; color:#495057;">#' + item.no + '</span>' +
+            '<span>' + escapeText(item.text) + '</span>' +
+            '</div>' +
+            '<div class="tka-radio-group">' + radioHtml + '</div>' +
+            '<div style="margin-top:8px;">' +
+            '<input type="text" id="bos_ket_' + item.no + '" class="input-control" placeholder="Catatan dokumen (jika ada)" style="font-size:0.85rem; padding:8px 12px; height:42px;">' +
+            '</div>' +
+            '</div>';
+        }
       }
       container.innerHTML = html;
     }
 
     function setAllBosChecklist(val) {
       for (var i = 0; i < BOS_MASTER_ITEMS.length; i++) {
-        var no = BOS_MASTER_ITEMS[i].no;
-        var radios = document.getElementsByName('bos_chk_' + no);
-        for (var r = 0; r < radios.length; r++) {
-          if (radios[r].value === String(val)) radios[r].checked = true;
+        var item = BOS_MASTER_ITEMS[i];
+        if (!item.isCustomHonor) {
+          var no = item.no;
+          var radios = document.getElementsByName('bos_chk_' + no);
+          for (var r = 0; r < radios.length; r++) {
+            if (radios[r].value === String(val)) radios[r].checked = true;
+          }
         }
       }
-      showToast('Seluruh checklist BOS diatur ke ' + val + '.', 'success');
+      showToast('Seluruh checklist dokumen BOS diatur ke ' + val + '.', 'success');
     }
 
     function toggleTkaSubInput(itemNo, val) {
@@ -2298,11 +2378,25 @@
         var bosChkArr = [];
         var docNames = [];
         for (var b = 0; b < BOS_MASTER_ITEMS.length; b++) {
-          var bNo = BOS_MASTER_ITEMS[b].no;
-          var bName = BOS_MASTER_ITEMS[b].text;
-          var checkedBosRadio = document.querySelector('input[name="bos_chk_' + bNo + '"]:checked');
-          var bVal = checkedBosRadio ? checkedBosRadio.value : 'Ada';
-          var bKet = document.getElementById('bos_ket_' + bNo).value || '';
+          var bItem = BOS_MASTER_ITEMS[b];
+          var bNo = bItem.no;
+          var bName = bItem.text;
+          var bVal = 'Ada';
+          var bKet = '';
+
+          if (bItem.isCustomHonor) {
+            var ang = document.getElementById('honor_anggaran') ? document.getElementById('honor_anggaran').value : '0';
+            var real = document.getElementById('honor_realisasi') ? document.getElementById('honor_realisasi').value : '0';
+            var pctVal = document.getElementById('honor_persentase_val') ? document.getElementById('honor_persentase_val').textContent : '0%';
+            bKet = 'Anggaran: ' + ang + ' | Realisasi: ' + real + ' (' + pctVal + ')';
+            bVal = 'Ada';
+            var userKet = document.getElementById('bos_ket_' + bNo) ? document.getElementById('bos_ket_' + bNo).value : '';
+            if (userKet) bKet += ' | ' + userKet;
+          } else {
+            var checkedBosRadio = document.querySelector('input[name="bos_chk_' + bNo + '"]:checked');
+            bVal = checkedBosRadio ? checkedBosRadio.value : 'Ada';
+            bKet = document.getElementById('bos_ket_' + bNo) ? document.getElementById('bos_ket_' + bNo).value : '';
+          }
           
           if (bVal === 'Ada') docNames.push(bName);
           bosChkArr.push({ no: bNo, text: bName, status: bVal, ket: bKet });
