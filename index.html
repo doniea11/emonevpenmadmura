@@ -749,6 +749,34 @@
             </div>
           </form>
         </div>
+
+        <div class="glass-panel" style="margin-top:18px;">
+          <div class="panel-header">
+            <div class="panel-title"><span class="accent-bar"></span><span>⚠️ Pembatalan / Hapus Rekap Hasil Input Monev</span></div>
+          </div>
+          <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">
+            Gunakan fitur ini jika terjadi kesalahan input rekam jejak monev. Pilih jenis modul dan data monev target untuk menghapusnya secara permanen dari database.
+          </div>
+          <div class="form-grid" style="align-items:flex-end;">
+            <div class="form-group">
+              <label class="form-label">Pilih Modul Target</label>
+              <select id="cancelMonevModule" class="select-control" onchange="loadMonevDropdownForCancellation()">
+                <option value="TKA">Monev TKA Madrasah</option>
+                <option value="BOS">Monev Dana BOS</option>
+                <option value="UjianAkhir">Monev Ujian Akhir</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pilih Data Madrasah &amp; ID Monev</label>
+              <select id="cancelMonevIdDropdown" class="select-control">
+                <option value="">-- Pilih Rekam Jejak Monev --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-locked" onclick="handleCancelMonevRecord()">🗑️ Hapus Data Monev Terpilih</button>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
@@ -812,7 +840,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbxV3zhY2iqxpQ0XSaW9DvavkXCFVYS1iP95ckrPyX22tZgVHkpthCvZ8pAocCt5eVa9aA/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbzQdrclq6Zz4A8WmVZy1Vz9p0Vuz1B_EBirbQX9zn2Kxj5Q-a3FsZCHZvwDKx_KBOVAvw/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -888,6 +916,8 @@
         else if (action === 'verifyAdminPassword') runner.verifyAdminPassword(payload);
         else if (action === 'saveModuleAccessSettings') runner.saveModuleAccessSettings(payload);
         else if (action === 'generatePdfById') runner.generatePdfById(payload.moduleName, payload.idMonev);
+        else if (action === 'deleteMonevRecord') runner.deleteMonevRecord(payload);
+        else if (action === 'getMonevListForDropdown') runner.getMonevListForDropdown(payload.moduleName);
       } else {
         var targetUrl = GAS_API_URL + "?action=" + action;
         fetch(targetUrl, {
@@ -1317,6 +1347,7 @@
           renderAdminTables();
           populateTimPegawaiSlotsOptions();
           resetAndLoadMonev();
+          loadMonevDropdownForCancellation();
         } else {
           hideBicycLoader();
           showToast(res ? res.message : 'Gagal memuat data awal.', 'error');
@@ -1324,6 +1355,49 @@
       }, function(err) {
         hideBicycLoader();
         showToast('Error koneksi: ' + err.message, 'error');
+      });
+    }
+
+    function loadMonevDropdownForCancellation() {
+      var mod = document.getElementById('cancelMonevModule').value;
+      callGasApi('getMonevListForDropdown', { moduleName: mod }, function(res) {
+        var sel = document.getElementById('cancelMonevIdDropdown');
+        if (!sel) return;
+        if (res && res.status === 'success') {
+          var html = '<option value="">-- Pilih Rekam Jejak Monev --</option>';
+          var items = res.items || [];
+          for (var i = 0; i < items.length; i++) {
+            html += '<option value="' + escapeAttr(items[i].idMonev) + '">' + escapeText(items[i].namaMadrasah + ' (' + items[i].idMonev + ')') + '</option>';
+          }
+          sel.innerHTML = html;
+        } else {
+          sel.innerHTML = '<option value="">-- Gagal Memuat Data --</option>';
+        }
+      });
+    }
+
+    function handleCancelMonevRecord() {
+      var mod = document.getElementById('cancelMonevModule').value;
+      var idMonev = String(document.getElementById('cancelMonevIdDropdown').value || '').trim();
+
+      if (!idMonev) {
+        showToast('Pilih rekam jejak Monev yang ingin dihapus!', 'error');
+        return;
+      }
+
+      if (!confirm('Apakah Anda yakin ingin menghapus data Monev dengan ID ' + idMonev + ' dari modul ' + mod + '?')) {
+        return;
+      }
+
+      showBicycLoader('Menghapus Data...');
+      callGasApi('deleteMonevRecord', { module: mod, idMonev: idMonev }, function(res) {
+        hideBicycLoader();
+        if (res && res.status === 'success') {
+          showToast(res.message, 'success');
+          initializeAppData();
+        } else {
+          showToast(res && res.message ? res.message : 'Gagal menghapus data.', 'error');
+        }
       });
     }
 
@@ -1638,6 +1712,7 @@
         document.getElementById('moduleHeading').textContent = 'Pengaturan Akses Menu & Keamanan';
         document.getElementById('moduleSubheading').textContent = 'Kontrol aktivasi menu aplikasi dan ubah password admin';
         syncAccessSelectControls();
+        loadMonevDropdownForCancellation();
         return;
       }
 
