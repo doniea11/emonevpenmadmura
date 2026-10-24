@@ -150,7 +150,7 @@
     .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.92); backdrop-filter: blur(4px); z-index: 3000; display: none; align-items: center; justify-content: center; flex-direction: column; }
     .loader-overlay.show { display: flex; }
     .loader-logo-container { position: relative; width: 76px; height: 76px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
-    .loader-logo-container img { max-width: 46px; max-height: 46px; object-fit: contain; z-index: 2; border-radius: 8px; }
+    .loader-logo-container img { max-width: 52px; max-height: 52px; object-fit: contain; z-index: 2; border-radius: 6px; }
     
     .loader-fallback-icon { display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #0d6efd, #0043a8); color: #ffffff; font-weight: 800; font-size: 1.3rem; z-index: 2; box-shadow: 0 3px 10px rgba(13, 110, 253, 0.25); margin: 0; }
     
@@ -172,9 +172,10 @@
 </head>
 <body>
 
+  <!-- LOADING SCREEN DENGAN LOGO KEMENAG DINAMIS -->
   <div class="loader-overlay" id="mainLoaderOverlay">
     <div class="loader-logo-container">
-      <img src="" id="mainLoaderLogo" style="display:none;" alt="Logo">
+      <img src="" id="mainLoaderLogo" style="display:none;" alt="Logo Instansi">
       <div class="loader-fallback-icon" id="mainLoaderFallback" style="display:none;">M</div>
       <div class="spinner-ring"></div>
     </div>
@@ -349,7 +350,7 @@
 
             <div class="form-group full-width">
               <div class="sub-card-box" style="margin-top:0; background:#eef5ff; border-color:#b6d4fe;">
-                <label class="form-label" id="labelPetugasBox" style="color:#084298; margin-bottom:4px;"><strong>Petugas Monitoring Tim 1</strong></label>
+                <label class="form-label" id="labelPetugasBox" style="color:#084298; margin-bottom:4px;"><strong>Petugas Monitoring</strong></label>
                 <input type="text" id="inpNamaPetugas" class="input-control" style="background:#ffffff; font-weight:700;" readonly>
               </div>
             </div>
@@ -828,7 +829,7 @@
       </div>
       <form onsubmit="event.preventDefault(); submitAdminPassword();">
         <div class="form-group">
-          <input type="password" id="inpAdminPassPrompt" class="input-control" placeholder="SILAHKAN MASUKKAN PASSWORD !">
+          <input type="password" id="inpAdminPassPrompt" class="input-control" placeholder="SILAHKAN MASUKKAN PASSWORD !" required>
         </div>
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
           <button type="button" class="btn btn-ghost" onclick="closeAdminAuthModal()">Batal</button>
@@ -847,7 +848,7 @@
         Silakan masukkan berapa jumlah ruang ujian yang digunakan pada satuan pendidikan ini:
       </div>
       <div class="form-group">
-        <input type="number" id="inpPromptRoomCount" class="input-control" value="0" min="1" max="20" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';" oninput="cleanLeadingZero(this)" style="font-size:1.2rem; text-align:center; font-weight:bold;">
+        <input type="number" id="inpPromptRoomCount" class="input-control" value="0" min="1" max="20" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';" oninput="cleanLeadingZero(this)" style="font-size:1.2rem; text-align:center; font-weight:bold;" required>
       </div>
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
         <button type="button" class="btn btn-ghost" onclick="closeRoomPromptModal()">Batal</button>
@@ -955,7 +956,7 @@
       if (m) m.classList.remove('show');
     }
 
-    /* -- Spinner -- */
+    /* -- Spinner dengan Logo Kemenag / Fallback M -- */
     function showMainLoader(text) {
       var el = document.getElementById('mainLoaderOverlay');
       var txt = document.getElementById('mainLoaderText');
@@ -1155,59 +1156,6 @@
 
     function checkConsistencyOnBlur(inputEl) {
       if (inputEl.value === '') inputEl.value = '0';
-      
-      var card = inputEl.closest ? inputEl.closest('.room-mobile-card') : null;
-      if (!card) {
-        card = inputEl;
-        while (card && !card.classList.contains('room-mobile-card')) {
-          card = card.parentElement;
-        }
-      }
-      if (!card) return;
-
-      var idx = card.getAttribute('data-room-idx');
-      
-      var el_pL = card.querySelector('.rm-pL');
-      var el_pP = card.querySelector('.rm-pP');
-      var el_hL = card.querySelector('.rm-hL');
-      var el_hP = card.querySelector('.rm-hP');
-      var el_tL = card.querySelector('.rm-tL');
-      var el_tP = card.querySelector('.rm-tP');
-
-      var pL = parseInt(el_pL.value, 10) || 0;
-      var pP = parseInt(el_pP.value, 10) || 0;
-      var hL = parseInt(el_hL.value, 10) || 0;
-      var hP = parseInt(el_hP.value, 10) || 0;
-      var tL = parseInt(el_tL.value, 10) || 0;
-      var tP = parseInt(el_tP.value, 10) || 0;
-
-      var isLakiExceed = (hL + tL) > pL;
-      var isPerempuanExceed = (hP + tP) > pP;
-
-      var isLakiInvalid = (hL + tL) !== pL && pL > 0;
-      var isPerempuanInvalid = (hP + tP) !== pP && pP > 0;
-
-      var errStyle = '2px solid var(--accent-danger)';
-      var normStyle = '1px solid #ced4da';
-
-      el_pL.style.border = isLakiInvalid ? errStyle : normStyle;
-      el_hL.style.border = isLakiInvalid ? errStyle : normStyle;
-      el_tL.style.border = isLakiInvalid ? errStyle : normStyle;
-
-      el_pP.style.border = isPerempuanInvalid ? errStyle : normStyle;
-      el_hP.style.border = isPerempuanInvalid ? errStyle : normStyle;
-      el_tP.style.border = isPerempuanInvalid ? errStyle : normStyle;
-
-      if (isLakiExceed || isPerempuanExceed) {
-        inputEl.value = '0'; // auto reset
-        showAlertModal('⚠️ KESALAHAN INPUT (RUANG ' + idx + ')\n\nJumlah Siswa Hadir dan Tidak Hadir MELEBIHI Total Siswa yang terdaftar pada L/P.\n\nInput yang salah otomatis direset ke 0.');
-      } else if (isLakiInvalid || isPerempuanInvalid) {
-        var msg = '⚠️ PERHATIAN (RUANG ' + idx + ')\n\nData peserta tidak konsisten:\n';
-        if (isLakiInvalid) msg += '- Laki-Laki: Total ('+pL+') ≠ Hadir ('+hL+') + Absen ('+tL+')\n';
-        if (isPerempuanInvalid) msg += '- Perempuan: Total ('+pP+') ≠ Hadir ('+hP+') + Absen ('+tP+')\n';
-        msg += '\nSistem menolak menyimpan data sebelum angka di atas diperbaiki.';
-        showAlertModal(msg);
-      }
       recalculateTkaRoomTotals();
     }
 
