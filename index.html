@@ -820,7 +820,7 @@
       </div>
       <form onsubmit="event.preventDefault(); submitAdminPassword();">
         <div class="form-group">
-          <input type="password" id="inpAdminPassPrompt" class="input-control" placeholder="SILAHKAN MASUKKAN PASSWORD !" required>
+          <input type="password" id="inpAdminPassPrompt" class="input-control" placeholder="SILAHKAN MASUKKAN PASSWORD !">
         </div>
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
           <button type="button" class="btn btn-ghost" onclick="closeAdminAuthModal()">Batal</button>
@@ -1135,12 +1135,10 @@
 
     function checkConsistencyOnBlur(inputEl) {
       if (inputEl.value === '') inputEl.value = '0';
-      var card = inputEl.closest ? inputEl.closest('.room-mobile-card') : null;
-      if (!card) {
-        card = inputEl;
-        while (card && !card.classList.contains('room-mobile-card')) {
-          card = card.parentElement;
-        }
+      
+      var card = inputEl;
+      while (card && !card.classList.contains('room-mobile-card')) {
+        card = card.parentElement;
       }
       if (!card) return;
 
@@ -1155,11 +1153,14 @@
       var isLakiExceed = (hL + tL) > pL;
       var isPerempuanExceed = (hP + tP) > pP;
 
-      if (isLakiExceed || isPerempuanExceed) {
-        showAlertModal('⚠️ Kesalahan Input di Ruang ' + idx + '\n\nJumlah Hadir ditambah Tidak Hadir tidak boleh melebihi Total Peserta pada masing-masing jenis kelamin (L/P).');
+      if (isLakiExceed) {
+        showAlertModal('⚠️ Kesalahan Input di Ruang ' + idx + '\n\nLAKI-LAKI: Jumlah Hadir ('+hL+') + Tidak Hadir ('+tL+') melebihi Total Peserta Laki-laki ('+pL+').\n\nAngka akan direset.');
         inputEl.value = '0';
-        recalculateTkaRoomTotals();
+      } else if (isPerempuanExceed) {
+        showAlertModal('⚠️ Kesalahan Input di Ruang ' + idx + '\n\nPEREMPUAN: Jumlah Hadir ('+hP+') + Tidak Hadir ('+tP+') melebihi Total Peserta Perempuan ('+pP+').\n\nAngka akan direset.');
+        inputEl.value = '0';
       }
+      recalculateTkaRoomTotals();
     }
 
     function addTkaRoomRowExplicit(idx) {
@@ -2116,8 +2117,8 @@
         Alamat_Kecamatan: String(document.getElementById('madKecamatan').value || '').trim()
       };
 
-      if (!payload.Nama_Madrasah || !payload.NSM || !payload.NPSN) {
-        showToast('Mohon lengkapi Nama, NSM, dan NPSN Madrasah.', 'error');
+      if (!payload.Nama_Madrasah || !payload.NSM || !payload.NPSN || !payload.Kepala_Madrasah || !payload.NIP_Kepala) {
+        showToast('Mohon lengkapi Data Wajib Madrasah (Nama, NSM, NPSN, Kepala Madrasah, NIP).', 'error');
         return;
       }
 
