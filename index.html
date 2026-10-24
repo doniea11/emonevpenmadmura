@@ -146,12 +146,15 @@
     .modal-card-sm { max-width: 440px; }
     @media (max-width: 600px) { .modal-backdrop { padding: 0; align-items: flex-end; } .modal-card { max-height: 94vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0; padding: 16px; } }
     
-    /* ANIMASI LOADING SPINNER TENGAH LAYAR */
+    /* ANIMASI LOADING (LOGO GLOW) */
     .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.92); backdrop-filter: blur(4px); z-index: 3000; display: none; align-items: center; justify-content: center; flex-direction: column; }
     .loader-overlay.show { display: flex; }
-    .spinner-box { width: 60px; height: 60px; border: 6px solid #e7f1ff; border-top-color: var(--tka-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    .loader-text { font-size: 1.05rem; font-weight: 800; color: var(--tka-blue); letter-spacing: 0.02em; text-align:center; }
+    .loader-logo-container { position: relative; width: 76px; height: 76px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+    .loader-logo-container img { max-width: 46px; max-height: 46px; object-fit: contain; z-index: 2; border-radius: 8px; }
+    .loader-fallback-icon { z-index: 2; }
+    .spinner-ring { position: absolute; inset: 0; border: 3px solid transparent; border-top-color: #0d6efd; border-right-color: #00ffaa; border-radius: 50%; animation: spinGlowing 1s linear infinite; box-shadow: 0 0 15px rgba(13,110,253,0.5), inset 0 0 15px rgba(0,255,170,0.5); z-index: 1; }
+    @keyframes spinGlowing { 0% { transform: rotate(0deg); filter: hue-rotate(0deg); } 100% { transform: rotate(360deg); filter: hue-rotate(360deg); } }
+    .loader-text { font-size: 1.05rem; font-weight: 800; color: var(--tka-blue); letter-spacing: 0.02em; text-align:center; margin-top:8px; }
     
     .online-pulse-dot { width: 10px; height: 10px; background: var(--tka-green); border-radius: 50%; display: inline-block; }
     
@@ -167,9 +170,13 @@
 </head>
 <body>
 
-  <!-- SPINNER LOADING SCREEN TENGAH LAYAR -->
+  <!-- LOADING SCREEN BERPUTAR DENGAN LOGO INSTANSI -->
   <div class="loader-overlay" id="mainLoaderOverlay">
-    <div class="spinner-box"></div>
+    <div class="loader-logo-container">
+      <img src="" id="mainLoaderLogo" style="display:none;" alt="Logo">
+      <svg class="loader-fallback-icon" id="mainLoaderFallback" width="40" height="40" viewBox="0 0 120 115" style="display:none;"><polygon points="60,4 114,42 94,108 26,108 6,42" fill="#006837" stroke="#f1c40f" stroke-width="5"/></svg>
+      <div class="spinner-ring"></div>
+    </div>
     <div class="loader-text" id="mainLoaderText">Memproses...</div>
   </div>
 
@@ -322,7 +329,6 @@
           <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFormPanel()">← Kembali / Tutup</button>
         </div>
 
-        <!-- FORM DIPERBAIKI: Hapus validasi kaku browser (prevent default manual murni) -->
         <form id="formMonev" onsubmit="event.preventDefault(); handleSaveMonev();">
           <div class="form-grid">
             <div class="form-group">
@@ -953,6 +959,18 @@
       var el = document.getElementById('mainLoaderOverlay');
       var txt = document.getElementById('mainLoaderText');
       if (txt && text) txt.textContent = text;
+      
+      var img = document.getElementById('mainLoaderLogo');
+      var fallback = document.getElementById('mainLoaderFallback');
+      
+      if (APP_STATE.customLogoBase64) {
+        if (img) { img.src = APP_STATE.customLogoBase64; img.style.display = 'block'; }
+        if (fallback) fallback.style.display = 'none';
+      } else {
+        if (img) img.style.display = 'none';
+        if (fallback) fallback.style.display = 'block';
+      }
+      
       if (el) el.classList.add('show');
     }
     function hideMainLoader() {
@@ -1134,6 +1152,64 @@
       recalculateTkaRoomTotals();
     }
 
+    function checkConsistencyOnBlur(inputEl) {
+      if (inputEl.value === '') inputEl.value = '0';
+      
+      var card = inputEl.closest ? inputEl.closest('.room-mobile-card') : null;
+      if (!card) {
+        card = inputEl;
+        while (card && !card.classList.contains('room-mobile-card')) {
+          card = card.parentElement;
+        }
+      }
+      if (!card) return;
+
+      var idx = card.getAttribute('data-room-idx');
+      
+      var el_pL = card.querySelector('.rm-pL');
+      var el_pP = card.querySelector('.rm-pP');
+      var el_hL = card.querySelector('.rm-hL');
+      var el_hP = card.querySelector('.rm-hP');
+      var el_tL = card.querySelector('.rm-tL');
+      var el_tP = card.querySelector('.rm-tP');
+
+      var pL = parseInt(el_pL.value, 10) || 0;
+      var pP = parseInt(el_pP.value, 10) || 0;
+      var hL = parseInt(el_hL.value, 10) || 0;
+      var hP = parseInt(el_hP.value, 10) || 0;
+      var tL = parseInt(el_tL.value, 10) || 0;
+      var tP = parseInt(el_tP.value, 10) || 0;
+
+      var isLakiExceed = (hL + tL) > pL;
+      var isPerempuanExceed = (hP + tP) > pP;
+
+      var isLakiInvalid = (hL + tL) !== pL && pL > 0;
+      var isPerempuanInvalid = (hP + tP) !== pP && pP > 0;
+
+      var errStyle = '2px solid var(--accent-danger)';
+      var normStyle = '1px solid #ced4da';
+
+      el_pL.style.border = isLakiInvalid ? errStyle : normStyle;
+      el_hL.style.border = isLakiInvalid ? errStyle : normStyle;
+      el_tL.style.border = isLakiInvalid ? errStyle : normStyle;
+
+      el_pP.style.border = isPerempuanInvalid ? errStyle : normStyle;
+      el_hP.style.border = isPerempuanInvalid ? errStyle : normStyle;
+      el_tP.style.border = isPerempuanInvalid ? errStyle : normStyle;
+
+      if (isLakiExceed || isPerempuanExceed) {
+        inputEl.value = '0'; // auto reset the specific wrong input
+        showAlertModal('⚠️ KESALAHAN INPUT (RUANG ' + idx + ')\n\nJumlah Siswa Hadir dan Tidak Hadir MELEBIHI Total Siswa yang terdaftar.\n\nInput yang salah otomatis direset ke 0.');
+      } else if (isLakiInvalid || isPerempuanInvalid) {
+        var msg = '⚠️ PERHATIAN (RUANG ' + idx + ')\n\nData peserta tidak konsisten:\n';
+        if (isLakiInvalid) msg += '- Laki-Laki: Total ('+pL+') ≠ Hadir ('+hL+') + Absen ('+tL+')\n';
+        if (isPerempuanInvalid) msg += '- Perempuan: Total ('+pP+') ≠ Hadir ('+hP+') + Absen ('+tP+')\n';
+        msg += '\nSistem tidak akan dapat menyimpan data sebelum angka diperbaiki.';
+        showAlertModal(msg);
+      }
+      recalculateTkaRoomTotals();
+    }
+
     function addTkaRoomRowExplicit(idx) {
       APP_STATE.roomRowCount = idx;
       var container = document.getElementById('tkaRoomCardsContainer');
@@ -1151,20 +1227,20 @@
         '</div>' +
         '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Jumlah Peserta (L / P / Jml)</div>' +
         '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Laki-laki</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Perempuan</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Laki-laki</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Perempuan</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total</label><div class="input-mini" style="background:#e9ecef; font-weight:800; display:flex; align-items:center; justify-content:center;" id="rm-pJml-' + idx + '">0</div></div>' +
         '</div>' +
         '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin:8px 0 4px;">Peserta Hadir (L / P / Jml)</div>' +
         '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir L</label><input type="number" class="input-mini rm-hL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir P</label><input type="number" class="input-mini rm-hP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir L</label><input type="number" class="input-mini rm-hL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir P</label><input type="number" class="input-mini rm-hP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total Hadir</label><div class="input-mini" style="background:#e9ecef; font-weight:800; color:var(--tka-green); display:flex; align-items:center; justify-content:center;" id="rm-hJml-' + idx + '">0</div></div>' +
         '</div>' +
         '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin:8px 0 4px;">Peserta Tidak Hadir (L / P / Jml)</div>' +
         '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen L</label><input type="number" class="input-mini rm-tL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen P</label><input type="number" class="input-mini rm-tP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen L</label><input type="number" class="input-mini rm-tL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen P</label><input type="number" class="input-mini rm-tP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total Absen</label><div class="input-mini" style="background:#e9ecef; font-weight:800; color:var(--accent-danger); display:flex; align-items:center; justify-content:center;" id="rm-tJml-' + idx + '">0</div></div>' +
         '</div>' +
         '<div style="margin-top:8px;">' +
@@ -1207,20 +1283,9 @@
         var tP = parseInt(el_tP.value, 10) || 0;
         var tJml = tL + tP;
 
-        // Visual Validation Realtime per Gender
         var errL = pL !== (hL + tL) && (hL + tL) > 0;
         var errP = pP !== (hP + tP) && (hP + tP) > 0;
-        var errStyle = '2px solid var(--accent-danger)';
-        var normStyle = '1px solid #ced4da';
         
-        el_pL.style.border = errL ? errStyle : normStyle;
-        el_hL.style.border = errL ? errStyle : normStyle;
-        el_tL.style.border = errL ? errStyle : normStyle;
-        
-        el_pP.style.border = errP ? errStyle : normStyle;
-        el_hP.style.border = errP ? errStyle : normStyle;
-        el_tP.style.border = errP ? errStyle : normStyle;
-
         var elPJml = document.getElementById('rm-pJml-' + idx);
         var elHJml = document.getElementById('rm-hJml-' + idx);
         var elTJml = document.getElementById('rm-tJml-' + idx);
@@ -1579,8 +1644,18 @@
       var tSelect = document.getElementById('inpIdTim');
       if (tSelect) {
         var tHtml = '<option value="">-- Pilih Tim Monev --</option>';
-        for (var j = 0; j < APP_STATE.timMonev.length; j++) {
-          tHtml += '<option value="' + escapeAttr(APP_STATE.timMonev[j].ID_Tim) + '">' + escapeText(APP_STATE.timMonev[j].Nama_Tim) + ' - ' + escapeText(APP_STATE.timMonev[j].Ketua_Tim) + '</option>';
+        
+        var sortedTim = APP_STATE.timMonev.slice().sort(function(a, b) {
+           var nameA = String(a.Nama_Tim || '').toUpperCase();
+           var nameB = String(b.Nama_Tim || '').toUpperCase();
+           if (nameA < nameB) return -1;
+           if (nameA > nameB) return 1;
+           return 0;
+        });
+
+        for (var j = 0; j < sortedTim.length; j++) {
+          var membersStr = String(sortedTim[j].Anggota_Tim || '').split(' | ').join(', ');
+          tHtml += '<option value="' + escapeAttr(sortedTim[j].ID_Tim) + '">' + escapeText(sortedTim[j].Nama_Tim) + ' - ' + escapeText(membersStr) + '</option>';
         }
         tSelect.innerHTML = tHtml;
       }
@@ -1630,7 +1705,7 @@
         var t = APP_STATE.timMonev[i];
         if (String(t.ID_Tim) === String(selTimId)) {
           var members = String(t.Anggota_Tim || '').split(' | ');
-          var fullText = members.join(' ; ');
+          var fullText = members.join(', ');
           if(inpNamaPetugas) inpNamaPetugas.value = fullText;
           if(lblBox) lblBox.innerHTML = '<strong>Petugas Monitoring ' + escapeText(t.Nama_Tim) + '</strong> (' + members.length + ' Orang)';
           break;
@@ -2099,175 +2174,6 @@
       var isOk = (s === 'Selesai' || s === 'Terverifikasi' || s === 'Berjalan Lancar');
       if (isOk) return '<span class="badge badge-success">Selesai</span>';
       return '<span class="badge badge-warning">Belum Selesai</span>';
-    }
-
-    // MAIN SAVE HANDLER WITH ERROR TRAP
-    function handleSaveMonev() {
-      try {
-        var mod = APP_STATE.currentModule;
-        
-        var inpMadrasah = document.getElementById('inpPilihMadrasah');
-        if (inpMadrasah && !inpMadrasah.value) {
-          showToast('Mohon pilih Madrasah Tujuan Monev.', 'error');
-          return;
-        }
-
-        var inpTim = document.getElementById('inpIdTim');
-        if (inpTim && !inpTim.value) {
-          showToast('Mohon pilih Tim Monev Penugasan.', 'error');
-          return;
-        }
-
-        if (mod === 'TKA') {
-          var cards = document.querySelectorAll('.room-mobile-card');
-          for (var idx = 0; idx < cards.length; idx++) {
-            var c = cards[idx];
-            var pL = parseInt(c.querySelector('.rm-pL').value, 10) || 0;
-            var pP = parseInt(c.querySelector('.rm-pP').value, 10) || 0;
-            var hL = parseInt(c.querySelector('.rm-hL').value, 10) || 0;
-            var hP = parseInt(c.querySelector('.rm-hP').value, 10) || 0;
-            var tL = parseInt(c.querySelector('.rm-tL').value, 10) || 0;
-            var tP = parseInt(c.querySelector('.rm-tP').value, 10) || 0;
-            
-            if (pL !== (hL + tL) || pP !== (hP + tP)) {
-              showAlertModal('⚠️ GAGAL MENYIMPAN\n\nData di Ruang ' + (idx + 1) + ' tidak konsisten!\n\nLaki-Laki: Total (' + pL + ') harus = Hadir ('+hL+') + Absen ('+tL+')\nPerempuan: Total (' + pP + ') harus = Hadir ('+hP+') + Absen ('+tP+')\n\nMohon perbaiki kotak input yang berwarna merah.');
-              return;
-            }
-          }
-        }
-
-        var payload = {
-          module: mod,
-          Tanggal: document.getElementById('inpTanggal') ? document.getElementById('inpTanggal').value : '',
-          Hari_Tanggal: document.getElementById('inpHariTanggal') ? document.getElementById('inpHariTanggal').value : '',
-          ID_Tim: document.getElementById('inpIdTim') ? document.getElementById('inpIdTim').value : '',
-          Nama_Petugas: document.getElementById('inpNamaPetugas') ? document.getElementById('inpNamaPetugas').value : '',
-          Nama_Madrasah: document.getElementById('inpNamaMadrasah') ? document.getElementById('inpNamaMadrasah').value : '',
-          Jenjang: document.getElementById('inpJenjang') ? document.getElementById('inpJenjang').value : '',
-          NSM: document.getElementById('inpNSM') ? document.getElementById('inpNSM').value : '',
-          NPSN: document.getElementById('inpNPSN') ? document.getElementById('inpNPSN').value : '',
-          Kepala_Madrasah: document.getElementById('inpKepalaMadrasah') ? document.getElementById('inpKepalaMadrasah').value : '',
-          NIP_Kepala: document.getElementById('inpNIPKepala') ? document.getElementById('inpNIPKepala').value : '',
-          Alamat_Desa: document.getElementById('inpAlamatDesa') ? document.getElementById('inpAlamatDesa').value : '',
-          Alamat_Kecamatan: document.getElementById('inpAlamatKecamatan') ? document.getElementById('inpAlamatKecamatan').value : '',
-          Status_Monev: document.getElementById('inpStatusMonev') ? document.getElementById('inpStatusMonev').value : ''
-        };
-
-        if (mod === 'TKA') {
-          var ruangArr = [];
-          var cardsEl = document.querySelectorAll('.room-mobile-card');
-          for (var i = 0; i < cardsEl.length; i++) {
-            var cEl = cardsEl[i];
-            var rpL = parseInt(cEl.querySelector('.rm-pL').value, 10) || 0;
-            var rpP = parseInt(cEl.querySelector('.rm-pP').value, 10) || 0;
-            var rhL = parseInt(cEl.querySelector('.rm-hL').value, 10) || 0;
-            var rhP = parseInt(cEl.querySelector('.rm-hP').value, 10) || 0;
-            var rtL = parseInt(cEl.querySelector('.rm-tL').value, 10) || 0;
-            var rtP = parseInt(cEl.querySelector('.rm-tP').value, 10) || 0;
-
-            var rNo = cEl.querySelector('.rm-no') ? cEl.querySelector('.rm-no').getAttribute('data-val') : (i + 1);
-            var rKet = cEl.querySelector('.rm-ket') ? cEl.querySelector('.rm-ket').value : '';
-            ruangArr.push({ ruang: rNo, pL: rpL, pP: rpP, hL: rhL, hP: rhP, tL: rtL, tP: rtP, ket: rKet });
-          }
-          payload.Detail_Ruang_JSON = JSON.stringify(ruangArr);
-          payload.Jumlah_Peserta = document.getElementById('totPJml') ? document.getElementById('totPJml').textContent : '0';
-          payload.Kesiapan_Sarpras = ruangArr.length + ' Ruang Ujian (Hadir: ' + (document.getElementById('totHJml') ? document.getElementById('totHJml').textContent : '0') + ')';
-          payload.Persentase_Capaian = '100';
-
-          var chkArr = [];
-          for (var cNo = 1; cNo <= 21; cNo++) {
-            var checkedRadio = document.querySelector('input[name="tka_chk_' + cNo + '"]:checked');
-            var stVal = checkedRadio ? checkedRadio.value : '1';
-            var elKet = document.getElementById('tka_ket_' + cNo);
-            var ketVal = elKet ? elKet.value : '';
-            
-            if (cNo === 3) {
-              var subAdaVal = document.getElementById('tka_sub_ada_3') ? document.getElementById('tka_sub_ada_3').value.trim() : '';
-              var subTdkVal = document.getElementById('tka_sub_tdk_3') ? document.getElementById('tka_sub_tdk_3').value.trim() : '';
-              if (stVal === '1' && subAdaVal) {
-                ketVal = 'Ketersediaan perangkat: ' + subAdaVal + (ketVal ? ' | ' + ketVal : '');
-              } else if (stVal === '2' && subTdkVal) {
-                ketVal = 'Perangkat tidak tersedia: ' + subTdkVal + (ketVal ? ' | ' + ketVal : '');
-              }
-            }
-
-            chkArr.push({ no: cNo, status: stVal, ket: ketVal });
-          }
-          payload.Checklist_TKA_JSON = JSON.stringify(chkArr);
-          payload.Catatan_Temuan = document.getElementById('inpCatatanTemuan') ? document.getElementById('inpCatatanTemuan').value : '';
-          payload.Kesimpulan = document.getElementById('inpKesimpulan') ? document.getElementById('inpKesimpulan').value : '';
-          payload.Rekomendasi = document.getElementById('inpRekomendasi') ? document.getElementById('inpRekomendasi').value : '';
-        } else if (mod === 'BOS') {
-          payload.Tahap_BOS = document.getElementById('inpTahapBOS') ? document.getElementById('inpTahapBOS').value : '';
-          payload.Skor_Kepatuhan = document.getElementById('inpSkorKepatuhan') ? document.getElementById('inpSkorKepatuhan').value : '95';
-          payload.Status_Verifikasi = document.getElementById('inpStatusVerifikasi') ? document.getElementById('inpStatusVerifikasi').value : '';
-          
-          var bosChkArr = [];
-          var docNames = [];
-          for (var b = 0; b < BOS_MASTER_ITEMS.length; b++) {
-            var bItem = BOS_MASTER_ITEMS[b];
-            var bNo = bItem.no;
-            var bName = bItem.text;
-            var bVal = 'Ada';
-            var bKet = '';
-
-            if (bItem.isCustomHonor) {
-              var ang = document.getElementById('honor_anggaran') ? document.getElementById('honor_anggaran').value : '0';
-              var real = document.getElementById('honor_realisasi') ? document.getElementById('honor_realisasi').value : '0';
-              var pctVal = document.getElementById('honor_persentase_val') ? document.getElementById('honor_persentase_val').textContent : '0%';
-              bKet = 'Anggaran: ' + ang + ' | Realisasi: ' + real + ' (' + pctVal + ')';
-              bVal = 'Ada';
-              var userKet = document.getElementById('bos_ket_' + bNo) ? document.getElementById('bos_ket_' + bNo).value : '';
-              if (userKet) bKet += ' | ' + userKet;
-            } else if (bItem.isTaxPayment) {
-              var checkedTaxRadio = document.querySelector('input[name="bos_chk_' + bNo + '"]:checked');
-              bVal = checkedTaxRadio ? checkedTaxRadio.value : 'Ada';
-              var taxNom = document.getElementById('tax_nominal_' + bNo) ? document.getElementById('tax_nominal_' + bNo).value : '0';
-              var userTaxKet = document.getElementById('bos_ket_' + bNo) ? document.getElementById('bos_ket_' + bNo).value : '';
-              bKet = 'Nominal Pajak: ' + taxNom;
-              if (userTaxKet) bKet += ' | ' + userTaxKet;
-            } else {
-              var checkedBosRadio = document.querySelector('input[name="bos_chk_' + bNo + '"]:checked');
-              bVal = checkedBosRadio ? checkedBosRadio.value : 'Ada';
-              bKet = document.getElementById('bos_ket_' + bNo) ? document.getElementById('bos_ket_' + bNo).value : '';
-            }
-            
-            if (bVal === 'Ada') docNames.push(bName);
-            bosChkArr.push({ no: bNo, text: bName, status: bVal, ket: bKet });
-          }
-          payload.Checklist_BOS_JSON = JSON.stringify(bosChkArr);
-          payload.Checklist_Dokumen = docNames.join(', ');
-          payload.Catatan_Temuan = document.getElementById('inpCatatanTemuan') ? document.getElementById('inpCatatanTemuan').value : '';
-          payload.Rekomendasi = document.getElementById('inpRekomendasi') ? document.getElementById('inpRekomendasi').value : '';
-        } else if (mod === 'UjianAkhir') {
-          payload.Jenis_Ujian = document.getElementById('inpJenisUjian') ? document.getElementById('inpJenisUjian').value : '';
-          payload.Peserta_Hadir = document.getElementById('inpPesertaHadir') ? document.getElementById('inpPesertaHadir').value : '0';
-          payload.Peserta_Absen = document.getElementById('inpPesertaAbsen') ? document.getElementById('inpPesertaAbsen').value : '0';
-          payload.Kendala_Lapangan = document.getElementById('inpKendalaLapangan') ? document.getElementById('inpKendalaLapangan').value : '';
-          payload.Tindak_Lanjut = document.getElementById('inpTindakLanjut') ? document.getElementById('inpTindakLanjut').value : '';
-          payload.Status_Pelaksanaan = document.getElementById('inpStatusPelaksanaan') ? document.getElementById('inpStatusPelaksanaan').value : '';
-        }
-
-        showMainLoader('Menyimpan & Membuat PDF...');
-        callGasApi('saveMonevRecord', payload, function(res) {
-          hideMainLoader();
-          if (res && res.status === 'success') {
-            showToast(res.message, 'success');
-            toggleFormPanel();
-            APP_STATE.activePdf = { base64: res.pdfBase64, fileName: res.pdfFileName, record: res.record };
-            openPdfModal(res.pdfBase64, res.pdfFileName);
-            resetAndLoadMonev();
-          } else {
-            showToast(res ? res.message : 'Gagal menyimpan.', 'error');
-          }
-        }, function(err) {
-          hideMainLoader();
-          showToast('Gagal terhubung ke backend: ' + err.message, 'error');
-        });
-      } catch (sysErr) {
-        hideMainLoader();
-        showAlertModal("CRITICAL ERROR:\n" + sysErr.message);
-      }
     }
 
     function handleSaveMadrasah() {
