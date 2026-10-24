@@ -151,7 +151,9 @@
     .loader-overlay.show { display: flex; }
     .loader-logo-container { position: relative; width: 76px; height: 76px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
     .loader-logo-container img { max-width: 46px; max-height: 46px; object-fit: contain; z-index: 2; border-radius: 8px; }
-    .loader-fallback-icon { z-index: 2; }
+    
+    .loader-fallback-icon { display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #0d6efd, #0043a8); color: #ffffff; font-weight: 800; font-size: 1.3rem; z-index: 2; box-shadow: 0 3px 10px rgba(13, 110, 253, 0.25); margin: 0; }
+    
     .spinner-ring { position: absolute; inset: 0; border: 3px solid transparent; border-top-color: #0d6efd; border-right-color: #00ffaa; border-radius: 50%; animation: spinGlowing 1s linear infinite; box-shadow: 0 0 15px rgba(13,110,253,0.5), inset 0 0 15px rgba(0,255,170,0.5); z-index: 1; }
     @keyframes spinGlowing { 0% { transform: rotate(0deg); filter: hue-rotate(0deg); } 100% { transform: rotate(360deg); filter: hue-rotate(360deg); } }
     .loader-text { font-size: 1.05rem; font-weight: 800; color: var(--tka-blue); letter-spacing: 0.02em; text-align:center; margin-top:8px; }
@@ -170,11 +172,10 @@
 </head>
 <body>
 
-  <!-- LOADING SCREEN BERPUTAR DENGAN LOGO INSTANSI -->
   <div class="loader-overlay" id="mainLoaderOverlay">
     <div class="loader-logo-container">
       <img src="" id="mainLoaderLogo" style="display:none;" alt="Logo">
-      <svg class="loader-fallback-icon" id="mainLoaderFallback" width="40" height="40" viewBox="0 0 120 115" style="display:none;"><polygon points="60,4 114,42 94,108 26,108 6,42" fill="#006837" stroke="#f1c40f" stroke-width="5"/></svg>
+      <div class="loader-fallback-icon" id="mainLoaderFallback" style="display:none;">M</div>
       <div class="spinner-ring"></div>
     </div>
     <div class="loader-text" id="mainLoaderText">Memproses...</div>
@@ -968,7 +969,7 @@
         if (fallback) fallback.style.display = 'none';
       } else {
         if (img) img.style.display = 'none';
-        if (fallback) fallback.style.display = 'block';
+        if (fallback) fallback.style.display = 'flex';
       }
       
       if (el) el.classList.add('show');
@@ -1198,13 +1199,13 @@
       el_tP.style.border = isPerempuanInvalid ? errStyle : normStyle;
 
       if (isLakiExceed || isPerempuanExceed) {
-        inputEl.value = '0'; // auto reset the specific wrong input
-        showAlertModal('⚠️ KESALAHAN INPUT (RUANG ' + idx + ')\n\nJumlah Siswa Hadir dan Tidak Hadir MELEBIHI Total Siswa yang terdaftar.\n\nInput yang salah otomatis direset ke 0.');
+        inputEl.value = '0'; // auto reset
+        showAlertModal('⚠️ KESALAHAN INPUT (RUANG ' + idx + ')\n\nJumlah Siswa Hadir dan Tidak Hadir MELEBIHI Total Siswa yang terdaftar pada L/P.\n\nInput yang salah otomatis direset ke 0.');
       } else if (isLakiInvalid || isPerempuanInvalid) {
         var msg = '⚠️ PERHATIAN (RUANG ' + idx + ')\n\nData peserta tidak konsisten:\n';
         if (isLakiInvalid) msg += '- Laki-Laki: Total ('+pL+') ≠ Hadir ('+hL+') + Absen ('+tL+')\n';
         if (isPerempuanInvalid) msg += '- Perempuan: Total ('+pP+') ≠ Hadir ('+hP+') + Absen ('+tP+')\n';
-        msg += '\nSistem tidak akan dapat menyimpan data sebelum angka diperbaiki.';
+        msg += '\nSistem menolak menyimpan data sebelum angka di atas diperbaiki.';
         showAlertModal(msg);
       }
       recalculateTkaRoomTotals();
