@@ -33,17 +33,16 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background-color: var(--bg-deep); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; line-height: 1.5; }
-    .app-shell { display: flex; min-height: 100vh; position: relative; }
+    .app-shell { display: flex; min-height: 100vh; position: relative; z-index: 1; }
     
-    /* Layout Layering Fix */
     .sidebar { width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border-glass); padding: 16px; display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 2000; box-shadow: 4px 0 20px rgba(0,0,0,0.08); transition: transform var(--transition-fast); overflow-y: auto; }
     @media (max-width: 960px) { 
       .sidebar { transform: translateX(-100%); width: 280px; } 
       .sidebar.open { transform: translateX(0); } 
     }
     
-    .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1999; backdrop-filter: blur(2px); pointer-events: none; }
-    .sidebar-backdrop.show { display: block; pointer-events: auto; }
+    .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1999; backdrop-filter: blur(2px); }
+    .sidebar-backdrop.show { display: block; }
     
     .main-area { flex: 1; margin-left: 280px; padding: 20px 24px 60px; max-width: 100%; transition: margin var(--transition-fast); position: relative; z-index: 10; }
     @media (max-width: 960px) { .main-area { margin-left: 0; padding: 12px 10px 50px; } }
@@ -54,14 +53,14 @@
     .brand-title span { font-size: 0.65rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-top: 2px; }
     .nav-section-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); padding: 8px 10px 4px; font-weight: 700; }
     .nav-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .nav-btn { width: 100%; background: transparent; border: 1px solid transparent; color: var(--text-secondary); padding: 12px 14px; border-radius: var(--radius-md); font-family: inherit; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 12px; cursor: pointer; text-align: left; transition: all var(--transition-fast); min-height: 44px; position: relative; z-index: 2001; }
+    .nav-btn { width: 100%; background: transparent; border: 1px solid transparent; color: var(--text-secondary); padding: 12px 14px; border-radius: var(--radius-md); font-family: inherit; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 12px; cursor: pointer; text-align: left; transition: all var(--transition-fast); min-height: 44px; position: relative; }
     .nav-btn:hover, .nav-btn:active { background: #f1f5f9; color: var(--tka-blue); }
     .nav-btn.active { background: #e7f1ff; border: 1.5px solid var(--tka-blue); color: var(--tka-blue); font-weight: 700; }
     .nav-badge { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; background: #e9ecef; color: var(--text-secondary); font-weight: 700; }
     .nav-btn.active .nav-badge { background: var(--tka-blue); color: #ffffff; }
 
     .topbar { background: #ffffff; border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; box-shadow: 0 2px 6px rgba(0,0,0,0.02); position: relative; z-index: 100; }
-    .mobile-toggle { display: none; background: var(--tka-blue); color: #ffffff; border: none; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 700; cursor: pointer; min-height: 44px; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(13,110,253,0.2); z-index: 1500; position: relative; }
+    .mobile-toggle { display: none; background: var(--tka-blue); color: #ffffff; border: none; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 700; cursor: pointer; min-height: 44px; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(13,110,253,0.2); }
     @media (max-width: 960px) { .mobile-toggle { display: inline-flex; } }
     .page-heading h2 { font-size: 1.15rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em; }
     .page-heading p { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
@@ -86,7 +85,7 @@
     .panel-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
     .panel-title span.accent-bar { width: 4px; height: 16px; background: var(--tka-blue); border-radius: 4px; display: inline-block; }
     
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: var(--radius-md); font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all var(--transition-fast); text-decoration: none; min-height: 44px; z-index: 20; position: relative; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: var(--radius-md); font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all var(--transition-fast); text-decoration: none; min-height: 44px; position: relative; }
     @media (max-width: 600px) { .btn { width: 100%; } .topbar-actions .btn { width: auto; } }
     .btn:disabled { opacity: 0.65; cursor: not-allowed; }
     .btn-neon { background: var(--tka-blue); color: #ffffff; box-shadow: 0 2px 6px rgba(13, 110, 253, 0.25); }
@@ -140,22 +139,24 @@
     .progress-wrap { width: 110px; background: #dee2e6; height: 9px; border-radius: 99px; overflow: hidden; margin-top: 4px; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, var(--tka-blue), var(--tka-green)); border-radius: 99px; }
     
+    /* MODALS & NOTIFICATIONS */
     .modal-backdrop { position: fixed; inset: 0; background: rgba(33, 37, 41, 0.6); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 2500; padding: 12px; }
     .modal-backdrop.show { display: flex; }
-    .modal-card { background: #ffffff; border: 1px solid #ced4da; border-radius: var(--radius-lg); width: 100%; max-width: 880px; max-height: 94vh; overflow-y: auto; padding: 20px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); }
+    .modal-card { background: #ffffff; border: 1px solid #ced4da; border-radius: var(--radius-lg); width: 100%; max-width: 880px; max-height: 94vh; overflow-y: auto; padding: 20px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); position: relative; }
     .modal-card-sm { max-width: 440px; }
     @media (max-width: 600px) { .modal-backdrop { padding: 0; align-items: flex-end; } .modal-card { max-height: 94vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0; padding: 16px; } }
     
-    .bicyc-loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.88); backdrop-filter: blur(4px); z-index: 3000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
-    .bicyc-stage { width: 240px; height: 90px; position: relative; overflow: hidden; }
-    .bicyc-road { position: absolute; bottom: 10px; left: 0; width: 100%; height: 3px; background: #0d6efd; border-radius: 2px; }
-    .bicyc-icon { position: absolute; bottom: 12px; left: 250px; font-size: 2.8rem; animation: rideBikeBackward 1.6s linear infinite; }
-    @keyframes rideBikeBackward { 0% { left: 250px; transform: scaleX(-1); } 100% { left: -50px; transform: scaleX(-1); } }
-    .bicyc-text { font-size: 0.92rem; font-weight: 700; color: var(--tka-blue); letter-spacing: 0.02em; }
+    /* NEW: Visual Loading Spinner Center Screen */
+    .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.92); backdrop-filter: blur(4px); z-index: 3000; display: none; align-items: center; justify-content: center; flex-direction: column; }
+    .loader-overlay.show { display: flex; }
+    .spinner-box { width: 60px; height: 60px; border: 6px solid #e7f1ff; border-top-color: var(--tka-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .loader-text { font-size: 1.05rem; font-weight: 800; color: var(--tka-blue); letter-spacing: 0.02em; }
+    
     .online-pulse-dot { width: 10px; height: 10px; background: var(--tka-green); border-radius: 50%; display: inline-block; }
     
     .toast-container { position: fixed; bottom: 20px; right: 20px; left: 20px; z-index: 3500; display: flex; flex-direction: column; gap: 8px; max-width: 380px; margin: 0 auto; }
-    .toast-item { background: #ffffff; border-left: 5px solid var(--tka-green); border: 1px solid #dee2e6; border-left-width: 5px; color: var(--text-primary); padding: 13px 16px; border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(0,0,0,0.12); font-size: 0.88rem; font-weight: 600; text-align: center; }
+    .toast-item { background: #ffffff; border-left: 5px solid var(--tka-green); border: 1px solid #dee2e6; border-left-width: 5px; color: var(--text-primary); padding: 13px 16px; border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(0,0,0,0.12); font-size: 0.88rem; font-weight: 600; text-align: center; transition: opacity 0.3s; }
     .toast-item.error { border-left-color: var(--accent-danger); }
     .lazy-loader-box { text-align: center; padding: 14px; }
     .hidden { display: none !important; }
@@ -166,12 +167,10 @@
 </head>
 <body>
 
-  <div class="bicyc-loader-overlay" id="bicycLoaderOverlay">
-    <div class="bicyc-stage">
-      <div class="bicyc-icon">🚴</div>
-      <div class="bicyc-road"></div>
-    </div>
-    <div class="bicyc-text" id="bicycLoaderText">Menyimpan &amp; Membuat PDF...</div>
+  <!-- LOADING SCREEN (SPINNER) -->
+  <div class="loader-overlay" id="mainLoaderOverlay">
+    <div class="spinner-box"></div>
+    <div class="loader-text" id="mainLoaderText">Memproses...</div>
   </div>
 
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar()"></div>
@@ -805,6 +804,16 @@
     </main>
   </div>
 
+  <!-- POPUP VALIDASI DATA TIDAK KONSISTEN -->
+  <div class="modal-backdrop" id="alertModal">
+    <div class="modal-card modal-card-sm" style="text-align:center; padding:30px 20px;">
+      <div style="font-size:3.5rem; margin-bottom:12px; line-height:1;">⚠️</div>
+      <h3 style="margin-bottom:8px; color:var(--accent-danger); font-size:1.2rem; font-weight:800;">Data Tidak Konsisten</h3>
+      <p id="alertModalMessage" style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:24px; line-height:1.5;"></p>
+      <button type="button" class="btn btn-ghost" style="width:100%; border-color:var(--border-active);" onclick="closeAlertModal()">Tutup &amp; Perbaiki</button>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="adminAuthModal">
     <div class="modal-card modal-card-sm">
       <div class="panel-header" style="margin-bottom:12px;">
@@ -928,6 +937,30 @@
       testBackendConnectionAsync();
     });
 
+    /* -- Alert Modal (Validasi Konsistensi Data) -- */
+    function showAlertModal(msg) {
+      var el = document.getElementById('alertModalMessage');
+      if (el) el.textContent = msg;
+      var m = document.getElementById('alertModal');
+      if (m) m.classList.add('show');
+    }
+    function closeAlertModal() {
+      var m = document.getElementById('alertModal');
+      if (m) m.classList.remove('show');
+    }
+
+    /* -- Loading Screen (Spinner) -- */
+    function showMainLoader(text) {
+      var el = document.getElementById('mainLoaderOverlay');
+      var txt = document.getElementById('mainLoaderText');
+      if (txt && text) txt.textContent = text;
+      if (el) el.classList.add('show');
+    }
+    function hideMainLoader() {
+      var el = document.getElementById('mainLoaderOverlay');
+      if (el) el.classList.remove('show');
+    }
+
     function callGasApi(action, payload, successCallback, failureCallback) {
       if (APP_STATE.isGasEnv) {
         var runner = google.script.run.withSuccessHandler(successCallback);
@@ -978,18 +1011,6 @@
           }
         });
       }, 500);
-    }
-
-    function showBicycLoader(text) {
-      var el = document.getElementById('bicycLoaderOverlay');
-      var txt = document.getElementById('bicycLoaderText');
-      if (txt && text) txt.textContent = text;
-      if (el) el.classList.add('show');
-    }
-
-    function hideBicycLoader() {
-      var el = document.getElementById('bicycLoaderOverlay');
-      if (el) el.classList.remove('show');
     }
 
     function escapeText(str) {
@@ -1433,9 +1454,9 @@
       if (!fileInput.files || !fileInput.files[0]) return;
       var file = fileInput.files[0];
       var reader = new FileReader();
-      showBicycLoader('Loading...');
+      showMainLoader('Memuat Logo...');
       reader.onload = function(e) {
-        hideBicycLoader();
+        hideMainLoader();
         var b64Result = e.target.result;
         APP_STATE.customLogoBase64 = b64Result;
         document.getElementById('inpCustomLogoBase64').value = b64Result;
@@ -1444,16 +1465,16 @@
         showToast('Logo berhasil dimuat. Klik Simpan Pengaturan.', 'success');
       };
       reader.onerror = function() {
-        hideBicycLoader();
+        hideMainLoader();
         showToast('Gagal membaca file gambar.', 'error');
       };
       reader.readAsDataURL(file);
     }
 
     function initializeAppData() {
-      showBicycLoader('Loading...');
+      showMainLoader('Menyinkronkan Data...');
       callGasApi('getInitialAppState', {}, function(res) {
-        hideBicycLoader();
+        hideMainLoader();
         if (res && res.status === 'success') {
           APP_STATE.madrasah = res.madrasah || [];
           APP_STATE.pegawai = res.pegawai || [];
@@ -1476,11 +1497,11 @@
           resetAndLoadMonev();
           loadMonevDropdownForCancellation();
         } else {
-          hideBicycLoader();
+          hideMainLoader();
           showToast(res ? res.message : 'Gagal memuat data awal.', 'error');
         }
       }, function(err) {
-        hideBicycLoader();
+        hideMainLoader();
         showToast('Error koneksi: ' + err.message, 'error');
       });
     }
@@ -1622,9 +1643,9 @@
         return;
       }
 
-      showBicycLoader('Menghapus Data...');
+      showMainLoader('Menghapus Data...');
       callGasApi('deleteMonevRecord', { module: mod, idMonev: idMonev }, function(res) {
-        hideBicycLoader();
+        hideMainLoader();
         if (res && res.status === 'success') {
           showToast(res.message, 'success');
           initializeAppData();
@@ -1655,9 +1676,9 @@
 
     function submitAdminPassword() {
       var p = document.getElementById('inpAdminPassPrompt').value;
-      showBicycLoader('Memverifikasi...');
+      showMainLoader('Memverifikasi...');
       callGasApi('verifyAdminPassword', { password: p }, function(res) {
-        hideBicycLoader();
+        hideMainLoader();
         if (res && res.status === 'success' && res.authenticated) {
           APP_STATE.adminUnlocked = true;
           closeAdminAuthModal();
@@ -1667,7 +1688,7 @@
           showToast('Password salah atau sesi tidak valid!', 'error');
         }
       }, function(err) {
-        hideBicycLoader();
+        hideMainLoader();
         showToast('Error: ' + err.message, 'error');
       });
     }
@@ -1689,9 +1710,9 @@
         CUSTOM_LOGO_BASE64: APP_STATE.customLogoBase64
       };
 
-      showBicycLoader('Menyimpan Pengaturan...');
+      showMainLoader('Menyimpan Pengaturan...');
       callGasApi('saveModuleAccessSettings', payload, function(res) {
-        hideBicycLoader();
+        hideMainLoader();
         if (res && res.status === 'success') {
           showToast(res.message, 'success');
           document.getElementById('setNewAdminPass').value = '';
@@ -1704,7 +1725,7 @@
           showToast(res ? res.message : 'Gagal.', 'error');
         }
       }, function(err) {
-        hideBicycLoader();
+        hideMainLoader();
         showToast('Gagal: ' + err.message, 'error');
       });
     }
@@ -1823,8 +1844,13 @@
       var sidebar = document.getElementById('sidebarNav');
       var backdrop = document.getElementById('sidebarBackdrop');
       var closeBtn = document.getElementById('btnCloseMobileSidebar');
-      if (sidebar) sidebar.classList.remove('open');
-      if (backdrop) backdrop.classList.remove('show');
+      
+      if (sidebar && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+      }
+      if (backdrop && backdrop.classList.contains('show')) {
+        backdrop.classList.remove('show');
+      }
       if (closeBtn) closeBtn.style.display = 'none';
 
       var listPanel = document.getElementById('monevListPanel');
@@ -2067,9 +2093,9 @@
         return;
       }
 
-      showBicycLoader('Menyimpan Data Madrasah...');
+      showMainLoader('Menyimpan Data Madrasah...');
       callGasApi('saveMadrasahRecord', payload, function(res) {
-        hideBicycLoader();
+        hideMainLoader();
         if (res && res.status === 'success') {
           if (editId) {
             for (var i = 0; i < APP_STATE.madrasah.length; i++) {
@@ -2089,7 +2115,7 @@
           showToast(res ? res.message : 'Gagal menyimpan.', 'error');
         }
       }, function(err) {
-        hideBicycLoader();
+        hideMainLoader();
         showToast('Gagal menyimpan: ' + err.message, 'error');
       });
     }
@@ -2214,9 +2240,9 @@
         return;
       }
 
-      showBicycLoader('Menyimpan Pegawai...');
+      showMainLoader('Menyimpan Pegawai...');
       callGasApi('saveAdminRecord', payload, function(res) {
-        hideBicycLoader();
+        hideMainLoader();
         if (res && res.status === 'success') {
           if (editId) {
             for (var i = 0; i < APP_STATE.pegawai.length; i++) {
@@ -2237,7 +2263,7 @@
           showToast(res ? res.message : 'Gagal.', 'error');
         }
       }, function(err) {
-        hideBicycLoader();
+        hideMainLoader();
         showToast('Gagal: ' + err.message, 'error');
       });
     }
@@ -2318,9 +2344,9 @@
         Status_Tim: 'Aktif'
       };
 
-      showBicycLoader('Menyimpan Tim Monev...');
+      showMainLoader('Menyimpan Tim Monev...');
       callGasApi('saveAdminRecord', payload, function(res) {
-        hideBicycLoader();
+        hideMainLoader();
         if (res && res.status === 'success') {
           if (editId) {
             for (var i = 0; i < APP_STATE.timMonev.length; i++) {
@@ -2341,7 +2367,7 @@
           showToast(res ? res.message : 'Gagal.', 'error');
         }
       }, function(err) {
-        hideBicycLoader();
+        hideMainLoader();
         showToast('Gagal: ' + err.message, 'error');
       });
     }
