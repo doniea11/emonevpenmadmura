@@ -101,7 +101,7 @@
     .input-control, .select-control, .textarea-control { width: 100%; background: #ffffff; border: 1px solid #ced4da; color: var(--text-primary); padding: 12px 14px; border-radius: var(--radius-md); font-family: inherit; font-size: 1rem; outline: none; transition: all var(--transition-fast); min-height: 48px; position: relative; z-index: 5; }
     .input-control[readonly] { background-color: #e9ecef; color: #495057; font-weight: 700; cursor: not-allowed; border-color: #adb5bd; }
     .input-control:focus:not([readonly]), .select-control:focus, .textarea-control:focus { border-color: var(--tka-blue); box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15); }
-    .input-mini { width: 100%; text-align: center; padding: 8px 6px; font-size: 1rem; border: 1px solid #ced4da; border-radius: var(--radius-sm); height: 44px; font-family: 'JetBrains Mono', monospace; }
+    .input-mini { width: 100%; text-align: center; padding: 8px 6px; font-size: 1rem; border: 1px solid #ced4da; border-radius: var(--radius-sm); height: 44px; font-family: 'JetBrains Mono', monospace; transition: border-color 0.2s; }
     .textarea-control { min-height: 90px; resize: vertical; }
     
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
@@ -322,14 +322,15 @@
           <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFormPanel()">← Kembali / Tutup</button>
         </div>
 
+        <!-- FORM DIPERBAIKI: Hapus validasi kaku browser (prevent default manual murni) -->
         <form id="formMonev" onsubmit="event.preventDefault(); handleSaveMonev();">
           <div class="form-grid">
             <div class="form-group">
-              <label class="form-label">Tanggal Monitoring <span class="req">*</span></label>
+              <label class="form-label">Tanggal Monitoring</label>
               <input type="date" id="inpTanggal" class="input-control" onchange="syncHariTanggalText()">
             </div>
             <div class="form-group">
-              <label class="form-label">Tanggal (Tercetak di PDF) <span class="req">*</span></label>
+              <label class="form-label">Tanggal (Tercetak di PDF)</label>
               <input type="text" id="inpHariTanggal" class="input-control" placeholder="Contoh: 20 Oktober 2026">
             </div>
             <div class="form-group full-width">
@@ -353,35 +354,35 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Jenjang Sasaran <span class="req">*</span></label>
+              <label class="form-label">Jenjang Sasaran</label>
               <input type="text" id="inpJenjang" class="input-control" readonly>
             </div>
             <div class="form-group">
-              <label class="form-label">Nama Madrasah Penyelenggara <span class="req">*</span></label>
+              <label class="form-label">Nama Madrasah Penyelenggara</label>
               <input type="text" id="inpNamaMadrasah" class="input-control" placeholder="Pilih dari atas" readonly>
             </div>
             <div class="form-group">
-              <label class="form-label">Nomor Statistik Madrasah (NSM) <span class="req">*</span></label>
+              <label class="form-label">Nomor Statistik Madrasah (NSM)</label>
               <input type="text" id="inpNSM" class="input-control" placeholder="Pilih dari atas" readonly>
             </div>
             <div class="form-group">
-              <label class="form-label">Nomor Pokok Sekolah Nasional (NPSN) <span class="req">*</span></label>
+              <label class="form-label">Nomor Pokok Sekolah Nasional (NPSN)</label>
               <input type="text" id="inpNPSN" class="input-control" placeholder="Pilih dari atas" readonly>
             </div>
             <div class="form-group">
-              <label class="form-label">Nama Kepala Madrasah <span class="req">*</span></label>
+              <label class="form-label">Nama Kepala Madrasah</label>
               <input type="text" id="inpKepalaMadrasah" class="input-control" placeholder="Pilih dari atas" readonly>
             </div>
             <div class="form-group">
-              <label class="form-label">NIP Kepala Madrasah <span class="req">*</span></label>
+              <label class="form-label">NIP Kepala Madrasah</label>
               <input type="text" id="inpNIPKepala" class="input-control" placeholder="Pilih dari atas" readonly>
             </div>
             <div class="form-group">
-              <label class="form-label">Alamat Desa / Kelurahan <span class="req">*</span></label>
+              <label class="form-label">Alamat Desa / Kelurahan</label>
               <input type="text" id="inpAlamatDesa" class="input-control" placeholder="Pilih dari atas" readonly>
             </div>
             <div class="form-group">
-              <label class="form-label">Alamat Kecamatan <span class="req">*</span></label>
+              <label class="form-label">Alamat Kecamatan</label>
               <input type="text" id="inpAlamatKecamatan" class="input-control" placeholder="Pilih dari atas" readonly>
             </div>
             <div class="form-group">
@@ -566,7 +567,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label class="form-label">Jenjang <span class="req">*</span></label>
-                <select id="madJenjang" class="select-control" required>
+                <select id="madJenjang" class="select-control">
                   <option value="MA">MA (Madrasah Aliyah)</option>
                   <option value="MTs">MTs (Madrasah Tsanawiyah)</option>
                   <option value="MI">MI (Madrasah Ibtidaiyah)</option>
@@ -574,31 +575,31 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Nama Madrasah <span class="req">*</span></label>
-                <input type="text" id="madNama" class="input-control" placeholder="Contoh: MIN 1 Musi Rawas" required>
+                <input type="text" id="madNama" class="input-control" placeholder="Contoh: MIN 1 Musi Rawas">
               </div>
               <div class="form-group">
                 <label class="form-label">NSM (Hanya Angka) <span class="req">*</span></label>
-                <input type="text" id="madNSM" class="input-control" placeholder="12 Digit NSM" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                <input type="text" id="madNSM" class="input-control" placeholder="12 Digit NSM" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
               </div>
               <div class="form-group">
                 <label class="form-label">NPSN (Hanya Angka) <span class="req">*</span></label>
-                <input type="text" id="madNPSN" class="input-control" placeholder="8 Digit NPSN" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                <input type="text" id="madNPSN" class="input-control" placeholder="8 Digit NPSN" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
               </div>
               <div class="form-group">
                 <label class="form-label">Nama Kepala Madrasah <span class="req">*</span></label>
-                <input type="text" id="madKepala" class="input-control" placeholder="Contoh: Drs. H. Lukman Hakim, M.Pd" required>
+                <input type="text" id="madKepala" class="input-control" placeholder="Contoh: Drs. H. Lukman Hakim, M.Pd">
               </div>
               <div class="form-group">
                 <label class="form-label">NIP Kepala (Hanya Angka atau '-') <span class="req">*</span></label>
-                <input type="text" id="madNIP" class="input-control" placeholder="18 Digit NIP atau '-'" required>
+                <input type="text" id="madNIP" class="input-control" placeholder="18 Digit NIP atau '-'">
               </div>
               <div class="form-group">
                 <label class="form-label">Alamat Desa / Kelurahan <span class="req">*</span></label>
-                <input type="text" id="madDesa" class="input-control" placeholder="Desa Muara Beliti Baru" required>
+                <input type="text" id="madDesa" class="input-control" placeholder="Desa Muara Beliti Baru">
               </div>
               <div class="form-group">
                 <label class="form-label">Alamat Kecamatan <span class="req">*</span></label>
-                <input type="text" id="madKecamatan" class="input-control" placeholder="Kec. Muara Beliti" required>
+                <input type="text" id="madKecamatan" class="input-control" placeholder="Kec. Muara Beliti">
               </div>
             </div>
             <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
@@ -632,15 +633,15 @@
               <div class="form-grid">
                 <div class="form-group">
                   <label class="form-label">NIP (Hanya Angka) <span class="req">*</span></label>
-                  <input type="text" id="pegNIP" class="input-control" placeholder="18 Digit NIP" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                  <input type="text" id="pegNIP" class="input-control" placeholder="18 Digit NIP" pattern="[0-9]+" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Nama Lengkap &amp; Gelar <span class="req">*</span></label>
-                  <input type="text" id="pegNama" class="input-control" placeholder="Nama lengkap & gelar" required>
+                  <input type="text" id="pegNama" class="input-control" placeholder="Nama lengkap & gelar">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Jabatan <span class="req">*</span></label>
-                  <input type="text" id="pegJabatan" class="input-control" placeholder="Pengawas Madrasah" required>
+                  <input type="text" id="pegJabatan" class="input-control" placeholder="Pengawas Madrasah">
                 </div>
                 <div class="form-group">
                   <label class="form-label">Status</label>
@@ -666,7 +667,7 @@
               <div class="form-grid">
                 <div class="form-group full-width">
                   <label class="form-label">Nama Tim (Tim 1, Tim 2, Tim 3) <span class="req">*</span></label>
-                  <select id="timNama" class="select-control" required>
+                  <select id="timNama" class="select-control">
                     <option value="Tim 1">Tim 1</option>
                     <option value="Tim 2">Tim 2</option>
                     <option value="Tim 3">Tim 3</option>
@@ -870,7 +871,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbwsQxjoYvL2rS4hY-C0MEJkZNj7_NSNLZh85HiWE1FacHqc7dNut1f640PfsyJIzORrxQ/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbxK7JzkimRUk3BqPLffb-G6BPJYyD2_WPEqQ0RkMX6EXXBpXFpE_FNkk5P0M5uWGEnuKA/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -1133,36 +1134,6 @@
       recalculateTkaRoomTotals();
     }
 
-    function checkConsistencyOnBlur(inputEl) {
-      if (inputEl.value === '') inputEl.value = '0';
-      
-      var card = inputEl;
-      while (card && !card.classList.contains('room-mobile-card')) {
-        card = card.parentElement;
-      }
-      if (!card) return;
-
-      var idx = card.getAttribute('data-room-idx');
-      var pL = parseInt(card.querySelector('.rm-pL').value, 10) || 0;
-      var pP = parseInt(card.querySelector('.rm-pP').value, 10) || 0;
-      var hL = parseInt(card.querySelector('.rm-hL').value, 10) || 0;
-      var hP = parseInt(card.querySelector('.rm-hP').value, 10) || 0;
-      var tL = parseInt(card.querySelector('.rm-tL').value, 10) || 0;
-      var tP = parseInt(card.querySelector('.rm-tP').value, 10) || 0;
-
-      var isLakiExceed = (hL + tL) > pL;
-      var isPerempuanExceed = (hP + tP) > pP;
-
-      if (isLakiExceed) {
-        showAlertModal('⚠️ Kesalahan Input di Ruang ' + idx + '\n\nLAKI-LAKI: Jumlah Hadir ('+hL+') + Tidak Hadir ('+tL+') melebihi Total Peserta Laki-laki ('+pL+').\n\nAngka akan direset.');
-        inputEl.value = '0';
-      } else if (isPerempuanExceed) {
-        showAlertModal('⚠️ Kesalahan Input di Ruang ' + idx + '\n\nPEREMPUAN: Jumlah Hadir ('+hP+') + Tidak Hadir ('+tP+') melebihi Total Peserta Perempuan ('+pP+').\n\nAngka akan direset.');
-        inputEl.value = '0';
-      }
-      recalculateTkaRoomTotals();
-    }
-
     function addTkaRoomRowExplicit(idx) {
       APP_STATE.roomRowCount = idx;
       var container = document.getElementById('tkaRoomCardsContainer');
@@ -1180,20 +1151,20 @@
         '</div>' +
         '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Jumlah Peserta (L / P / Jml)</div>' +
         '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Laki-laki</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Perempuan</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Laki-laki</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Perempuan</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total</label><div class="input-mini" style="background:#e9ecef; font-weight:800; display:flex; align-items:center; justify-content:center;" id="rm-pJml-' + idx + '">0</div></div>' +
         '</div>' +
         '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin:8px 0 4px;">Peserta Hadir (L / P / Jml)</div>' +
         '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir L</label><input type="number" class="input-mini rm-hL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir P</label><input type="number" class="input-mini rm-hP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir L</label><input type="number" class="input-mini rm-hL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir P</label><input type="number" class="input-mini rm-hP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total Hadir</label><div class="input-mini" style="background:#e9ecef; font-weight:800; color:var(--tka-green); display:flex; align-items:center; justify-content:center;" id="rm-hJml-' + idx + '">0</div></div>' +
         '</div>' +
         '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin:8px 0 4px;">Peserta Tidak Hadir (L / P / Jml)</div>' +
         '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen L</label><input type="number" class="input-mini rm-tL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen P</label><input type="number" class="input-mini rm-tP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen L</label><input type="number" class="input-mini rm-tL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen P</label><input type="number" class="input-mini rm-tP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total Absen</label><div class="input-mini" style="background:#e9ecef; font-weight:800; color:var(--accent-danger); display:flex; align-items:center; justify-content:center;" id="rm-tJml-' + idx + '">0</div></div>' +
         '</div>' +
         '<div style="margin-top:8px;">' +
@@ -1216,25 +1187,52 @@
       for (var i = 0; i < cards.length; i++) {
         var card = cards[i];
         var idx = card.getAttribute('data-room-idx');
-        var pL = parseInt(card.querySelector('.rm-pL').value, 10) || 0;
-        var pP = parseInt(card.querySelector('.rm-pP').value, 10) || 0;
+        
+        var el_pL = card.querySelector('.rm-pL');
+        var el_pP = card.querySelector('.rm-pP');
+        var el_hL = card.querySelector('.rm-hL');
+        var el_hP = card.querySelector('.rm-hP');
+        var el_tL = card.querySelector('.rm-tL');
+        var el_tP = card.querySelector('.rm-tP');
+
+        var pL = parseInt(el_pL.value, 10) || 0;
+        var pP = parseInt(el_pP.value, 10) || 0;
         var pJml = pL + pP;
 
-        var hL = parseInt(card.querySelector('.rm-hL').value, 10) || 0;
-        var hP = parseInt(card.querySelector('.rm-hP').value, 10) || 0;
+        var hL = parseInt(el_hL.value, 10) || 0;
+        var hP = parseInt(el_hP.value, 10) || 0;
         var hJml = hL + hP;
 
-        var tL = parseInt(card.querySelector('.rm-tL').value, 10) || 0;
-        var tP = parseInt(card.querySelector('.rm-tP').value, 10) || 0;
+        var tL = parseInt(el_tL.value, 10) || 0;
+        var tP = parseInt(el_tP.value, 10) || 0;
         var tJml = tL + tP;
+
+        // Visual Validation Realtime per Gender
+        var errL = pL !== (hL + tL) && (hL + tL) > 0;
+        var errP = pP !== (hP + tP) && (hP + tP) > 0;
+        var errStyle = '2px solid var(--accent-danger)';
+        var normStyle = '1px solid #ced4da';
+        
+        el_pL.style.border = errL ? errStyle : normStyle;
+        el_hL.style.border = errL ? errStyle : normStyle;
+        el_tL.style.border = errL ? errStyle : normStyle;
+        
+        el_pP.style.border = errP ? errStyle : normStyle;
+        el_hP.style.border = errP ? errStyle : normStyle;
+        el_tP.style.border = errP ? errStyle : normStyle;
 
         var elPJml = document.getElementById('rm-pJml-' + idx);
         var elHJml = document.getElementById('rm-hJml-' + idx);
         var elTJml = document.getElementById('rm-tJml-' + idx);
 
         if (elPJml) elPJml.textContent = String(pJml);
-        if (elHJml) elHJml.textContent = String(hJml);
-        if (elTJml) elTJml.textContent = String(tJml);
+        if (elHJml) {
+          elHJml.textContent = String(hJml);
+          elHJml.style.color = errL || errP ? 'var(--accent-danger)' : 'var(--tka-green)';
+        }
+        if (elTJml) {
+          elTJml.textContent = String(tJml);
+        }
 
         totPJml += pJml;
         totHJml += hJml;
@@ -1869,7 +1867,7 @@
         }
       }
 
-      // Auto-Close Mobile Menu (Jika terbuka dari layar kecil)
+      // Auto-Close Mobile Menu
       var sidebar = document.getElementById('sidebarNav');
       var backdrop = document.getElementById('sidebarBackdrop');
       var closeBtn = document.getElementById('btnCloseMobileSidebar');
@@ -2103,50 +2101,224 @@
       return '<span class="badge badge-warning">Belum Selesai</span>';
     }
 
-    function handleSaveMadrasah() {
-      var editId = document.getElementById('editMadrasahId') ? document.getElementById('editMadrasahId').value : '';
-      var payload = {
-        ID_Madrasah: editId,
-        Jenjang: String(document.getElementById('madJenjang').value || 'MA').trim(),
-        Nama_Madrasah: String(document.getElementById('madNama').value || '').trim(),
-        NSM: String(document.getElementById('madNSM').value || '').trim(),
-        NPSN: String(document.getElementById('madNPSN').value || '').trim(),
-        Kepala_Madrasah: String(document.getElementById('madKepala').value || '').trim(),
-        NIP_Kepala: String(document.getElementById('madNIP').value || '-').trim(),
-        Alamat_Desa: String(document.getElementById('madDesa').value || '').trim(),
-        Alamat_Kecamatan: String(document.getElementById('madKecamatan').value || '').trim()
-      };
+    // MAIN SAVE HANDLER WITH ERROR TRAP
+    function handleSaveMonev() {
+      try {
+        var mod = APP_STATE.currentModule;
+        
+        var inpMadrasah = document.getElementById('inpPilihMadrasah');
+        if (inpMadrasah && !inpMadrasah.value) {
+          showToast('Mohon pilih Madrasah Tujuan Monev.', 'error');
+          return;
+        }
 
-      if (!payload.Nama_Madrasah || !payload.NSM || !payload.NPSN || !payload.Kepala_Madrasah || !payload.NIP_Kepala) {
-        showToast('Mohon lengkapi Data Wajib Madrasah (Nama, NSM, NPSN, Kepala Madrasah, NIP).', 'error');
-        return;
-      }
+        var inpTim = document.getElementById('inpIdTim');
+        if (inpTim && !inpTim.value) {
+          showToast('Mohon pilih Tim Monev Penugasan.', 'error');
+          return;
+        }
 
-      showMainLoader('Menyimpan Data Madrasah...');
-      callGasApi('saveMadrasahRecord', payload, function(res) {
-        hideMainLoader();
-        if (res && res.status === 'success') {
-          if (editId) {
-            for (var i = 0; i < APP_STATE.madrasah.length; i++) {
-              if (String(APP_STATE.madrasah[i].ID_Madrasah) === String(editId)) {
-                APP_STATE.madrasah[i] = res.record;
-                break;
+        if (mod === 'TKA') {
+          var cards = document.querySelectorAll('.room-mobile-card');
+          for (var idx = 0; idx < cards.length; idx++) {
+            var c = cards[idx];
+            var pL = parseInt(c.querySelector('.rm-pL').value, 10) || 0;
+            var pP = parseInt(c.querySelector('.rm-pP').value, 10) || 0;
+            var hL = parseInt(c.querySelector('.rm-hL').value, 10) || 0;
+            var hP = parseInt(c.querySelector('.rm-hP').value, 10) || 0;
+            var tL = parseInt(c.querySelector('.rm-tL').value, 10) || 0;
+            var tP = parseInt(c.querySelector('.rm-tP').value, 10) || 0;
+            
+            if (pL !== (hL + tL) || pP !== (hP + tP)) {
+              showAlertModal('⚠️ GAGAL MENYIMPAN\n\nData di Ruang ' + (idx + 1) + ' tidak konsisten!\n\nLaki-Laki: Total (' + pL + ') harus = Hadir ('+hL+') + Absen ('+tL+')\nPerempuan: Total (' + pP + ') harus = Hadir ('+hP+') + Absen ('+tP+')\n\nMohon perbaiki kotak input yang berwarna merah.');
+              return;
+            }
+          }
+        }
+
+        var payload = {
+          module: mod,
+          Tanggal: document.getElementById('inpTanggal') ? document.getElementById('inpTanggal').value : '',
+          Hari_Tanggal: document.getElementById('inpHariTanggal') ? document.getElementById('inpHariTanggal').value : '',
+          ID_Tim: document.getElementById('inpIdTim') ? document.getElementById('inpIdTim').value : '',
+          Nama_Petugas: document.getElementById('inpNamaPetugas') ? document.getElementById('inpNamaPetugas').value : '',
+          Nama_Madrasah: document.getElementById('inpNamaMadrasah') ? document.getElementById('inpNamaMadrasah').value : '',
+          Jenjang: document.getElementById('inpJenjang') ? document.getElementById('inpJenjang').value : '',
+          NSM: document.getElementById('inpNSM') ? document.getElementById('inpNSM').value : '',
+          NPSN: document.getElementById('inpNPSN') ? document.getElementById('inpNPSN').value : '',
+          Kepala_Madrasah: document.getElementById('inpKepalaMadrasah') ? document.getElementById('inpKepalaMadrasah').value : '',
+          NIP_Kepala: document.getElementById('inpNIPKepala') ? document.getElementById('inpNIPKepala').value : '',
+          Alamat_Desa: document.getElementById('inpAlamatDesa') ? document.getElementById('inpAlamatDesa').value : '',
+          Alamat_Kecamatan: document.getElementById('inpAlamatKecamatan') ? document.getElementById('inpAlamatKecamatan').value : '',
+          Status_Monev: document.getElementById('inpStatusMonev') ? document.getElementById('inpStatusMonev').value : ''
+        };
+
+        if (mod === 'TKA') {
+          var ruangArr = [];
+          var cardsEl = document.querySelectorAll('.room-mobile-card');
+          for (var i = 0; i < cardsEl.length; i++) {
+            var cEl = cardsEl[i];
+            var rpL = parseInt(cEl.querySelector('.rm-pL').value, 10) || 0;
+            var rpP = parseInt(cEl.querySelector('.rm-pP').value, 10) || 0;
+            var rhL = parseInt(cEl.querySelector('.rm-hL').value, 10) || 0;
+            var rhP = parseInt(cEl.querySelector('.rm-hP').value, 10) || 0;
+            var rtL = parseInt(cEl.querySelector('.rm-tL').value, 10) || 0;
+            var rtP = parseInt(cEl.querySelector('.rm-tP').value, 10) || 0;
+
+            var rNo = cEl.querySelector('.rm-no') ? cEl.querySelector('.rm-no').getAttribute('data-val') : (i + 1);
+            var rKet = cEl.querySelector('.rm-ket') ? cEl.querySelector('.rm-ket').value : '';
+            ruangArr.push({ ruang: rNo, pL: rpL, pP: rpP, hL: rhL, hP: rhP, tL: rtL, tP: rtP, ket: rKet });
+          }
+          payload.Detail_Ruang_JSON = JSON.stringify(ruangArr);
+          payload.Jumlah_Peserta = document.getElementById('totPJml') ? document.getElementById('totPJml').textContent : '0';
+          payload.Kesiapan_Sarpras = ruangArr.length + ' Ruang Ujian (Hadir: ' + (document.getElementById('totHJml') ? document.getElementById('totHJml').textContent : '0') + ')';
+          payload.Persentase_Capaian = '100';
+
+          var chkArr = [];
+          for (var cNo = 1; cNo <= 21; cNo++) {
+            var checkedRadio = document.querySelector('input[name="tka_chk_' + cNo + '"]:checked');
+            var stVal = checkedRadio ? checkedRadio.value : '1';
+            var elKet = document.getElementById('tka_ket_' + cNo);
+            var ketVal = elKet ? elKet.value : '';
+            
+            if (cNo === 3) {
+              var subAdaVal = document.getElementById('tka_sub_ada_3') ? document.getElementById('tka_sub_ada_3').value.trim() : '';
+              var subTdkVal = document.getElementById('tka_sub_tdk_3') ? document.getElementById('tka_sub_tdk_3').value.trim() : '';
+              if (stVal === '1' && subAdaVal) {
+                ketVal = 'Ketersediaan perangkat: ' + subAdaVal + (ketVal ? ' | ' + ketVal : '');
+              } else if (stVal === '2' && subTdkVal) {
+                ketVal = 'Perangkat tidak tersedia: ' + subTdkVal + (ketVal ? ' | ' + ketVal : '');
               }
             }
-          } else {
-            APP_STATE.madrasah.unshift(res.record);
+
+            chkArr.push({ no: cNo, status: stVal, ket: ketVal });
           }
-          renderStatsAndDropdowns();
-          renderMadrasahTable();
-          cancelEditMadrasah();
-          showToast(res.message, 'success');
-        } else {
-          showToast(res ? res.message : 'Gagal menyimpan.', 'error');
+          payload.Checklist_TKA_JSON = JSON.stringify(chkArr);
+          payload.Catatan_Temuan = document.getElementById('inpCatatanTemuan') ? document.getElementById('inpCatatanTemuan').value : '';
+          payload.Kesimpulan = document.getElementById('inpKesimpulan') ? document.getElementById('inpKesimpulan').value : '';
+          payload.Rekomendasi = document.getElementById('inpRekomendasi') ? document.getElementById('inpRekomendasi').value : '';
+        } else if (mod === 'BOS') {
+          payload.Tahap_BOS = document.getElementById('inpTahapBOS') ? document.getElementById('inpTahapBOS').value : '';
+          payload.Skor_Kepatuhan = document.getElementById('inpSkorKepatuhan') ? document.getElementById('inpSkorKepatuhan').value : '95';
+          payload.Status_Verifikasi = document.getElementById('inpStatusVerifikasi') ? document.getElementById('inpStatusVerifikasi').value : '';
+          
+          var bosChkArr = [];
+          var docNames = [];
+          for (var b = 0; b < BOS_MASTER_ITEMS.length; b++) {
+            var bItem = BOS_MASTER_ITEMS[b];
+            var bNo = bItem.no;
+            var bName = bItem.text;
+            var bVal = 'Ada';
+            var bKet = '';
+
+            if (bItem.isCustomHonor) {
+              var ang = document.getElementById('honor_anggaran') ? document.getElementById('honor_anggaran').value : '0';
+              var real = document.getElementById('honor_realisasi') ? document.getElementById('honor_realisasi').value : '0';
+              var pctVal = document.getElementById('honor_persentase_val') ? document.getElementById('honor_persentase_val').textContent : '0%';
+              bKet = 'Anggaran: ' + ang + ' | Realisasi: ' + real + ' (' + pctVal + ')';
+              bVal = 'Ada';
+              var userKet = document.getElementById('bos_ket_' + bNo) ? document.getElementById('bos_ket_' + bNo).value : '';
+              if (userKet) bKet += ' | ' + userKet;
+            } else if (bItem.isTaxPayment) {
+              var checkedTaxRadio = document.querySelector('input[name="bos_chk_' + bNo + '"]:checked');
+              bVal = checkedTaxRadio ? checkedTaxRadio.value : 'Ada';
+              var taxNom = document.getElementById('tax_nominal_' + bNo) ? document.getElementById('tax_nominal_' + bNo).value : '0';
+              var userTaxKet = document.getElementById('bos_ket_' + bNo) ? document.getElementById('bos_ket_' + bNo).value : '';
+              bKet = 'Nominal Pajak: ' + taxNom;
+              if (userTaxKet) bKet += ' | ' + userTaxKet;
+            } else {
+              var checkedBosRadio = document.querySelector('input[name="bos_chk_' + bNo + '"]:checked');
+              bVal = checkedBosRadio ? checkedBosRadio.value : 'Ada';
+              bKet = document.getElementById('bos_ket_' + bNo) ? document.getElementById('bos_ket_' + bNo).value : '';
+            }
+            
+            if (bVal === 'Ada') docNames.push(bName);
+            bosChkArr.push({ no: bNo, text: bName, status: bVal, ket: bKet });
+          }
+          payload.Checklist_BOS_JSON = JSON.stringify(bosChkArr);
+          payload.Checklist_Dokumen = docNames.join(', ');
+          payload.Catatan_Temuan = document.getElementById('inpCatatanTemuan') ? document.getElementById('inpCatatanTemuan').value : '';
+          payload.Rekomendasi = document.getElementById('inpRekomendasi') ? document.getElementById('inpRekomendasi').value : '';
+        } else if (mod === 'UjianAkhir') {
+          payload.Jenis_Ujian = document.getElementById('inpJenisUjian') ? document.getElementById('inpJenisUjian').value : '';
+          payload.Peserta_Hadir = document.getElementById('inpPesertaHadir') ? document.getElementById('inpPesertaHadir').value : '0';
+          payload.Peserta_Absen = document.getElementById('inpPesertaAbsen') ? document.getElementById('inpPesertaAbsen').value : '0';
+          payload.Kendala_Lapangan = document.getElementById('inpKendalaLapangan') ? document.getElementById('inpKendalaLapangan').value : '';
+          payload.Tindak_Lanjut = document.getElementById('inpTindakLanjut') ? document.getElementById('inpTindakLanjut').value : '';
+          payload.Status_Pelaksanaan = document.getElementById('inpStatusPelaksanaan') ? document.getElementById('inpStatusPelaksanaan').value : '';
         }
-      }, function(err) {
+
+        showMainLoader('Menyimpan & Membuat PDF...');
+        callGasApi('saveMonevRecord', payload, function(res) {
+          hideMainLoader();
+          if (res && res.status === 'success') {
+            showToast(res.message, 'success');
+            toggleFormPanel();
+            APP_STATE.activePdf = { base64: res.pdfBase64, fileName: res.pdfFileName, record: res.record };
+            openPdfModal(res.pdfBase64, res.pdfFileName);
+            resetAndLoadMonev();
+          } else {
+            showToast(res ? res.message : 'Gagal menyimpan.', 'error');
+          }
+        }, function(err) {
+          hideMainLoader();
+          showToast('Gagal terhubung ke backend: ' + err.message, 'error');
+        });
+      } catch (sysErr) {
         hideMainLoader();
-        showToast('Gagal menyimpan: ' + err.message, 'error');
-      });
+        showAlertModal("CRITICAL ERROR:\n" + sysErr.message);
+      }
+    }
+
+    function handleSaveMadrasah() {
+      try {
+        var editId = document.getElementById('editMadrasahId') ? document.getElementById('editMadrasahId').value : '';
+        var payload = {
+          ID_Madrasah: editId,
+          Jenjang: String(document.getElementById('madJenjang').value || 'MA').trim(),
+          Nama_Madrasah: String(document.getElementById('madNama').value || '').trim(),
+          NSM: String(document.getElementById('madNSM').value || '').trim(),
+          NPSN: String(document.getElementById('madNPSN').value || '').trim(),
+          Kepala_Madrasah: String(document.getElementById('madKepala').value || '').trim(),
+          NIP_Kepala: String(document.getElementById('madNIP').value || '-').trim(),
+          Alamat_Desa: String(document.getElementById('madDesa').value || '').trim(),
+          Alamat_Kecamatan: String(document.getElementById('madKecamatan').value || '').trim()
+        };
+
+        if (!payload.Nama_Madrasah || !payload.NSM || !payload.NPSN || !payload.Kepala_Madrasah || !payload.NIP_Kepala) {
+          showToast('Mohon lengkapi Data Wajib Madrasah (Nama, NSM, NPSN, Kepala Madrasah, NIP).', 'error');
+          return;
+        }
+
+        showMainLoader('Menyimpan Data Madrasah...');
+        callGasApi('saveMadrasahRecord', payload, function(res) {
+          hideMainLoader();
+          if (res && res.status === 'success') {
+            if (editId) {
+              for (var i = 0; i < APP_STATE.madrasah.length; i++) {
+                if (String(APP_STATE.madrasah[i].ID_Madrasah) === String(editId)) {
+                  APP_STATE.madrasah[i] = res.record;
+                  break;
+                }
+              }
+            } else {
+              APP_STATE.madrasah.unshift(res.record);
+            }
+            renderStatsAndDropdowns();
+            renderMadrasahTable();
+            cancelEditMadrasah();
+            showToast(res.message, 'success');
+          } else {
+            showToast(res ? res.message : 'Gagal menyimpan.', 'error');
+          }
+        }, function(err) {
+          hideMainLoader();
+          showToast('Gagal menyimpan: ' + err.message, 'error');
+        });
+      } catch (sysErr) {
+        hideMainLoader();
+        showAlertModal("CRITICAL ERROR:\n" + sysErr.message);
+      }
     }
 
     function editMadrasah(id) {
@@ -2254,47 +2426,52 @@
     }
 
     function handleSavePegawai() {
-      var editId = document.getElementById('editPegawaiId') ? document.getElementById('editPegawaiId').value : '';
-      var payload = {
-        type: 'Pegawai',
-        ID_Pegawai: editId,
-        NIP: String(document.getElementById('pegNIP').value || '').trim(),
-        Nama_Pegawai: String(document.getElementById('pegNama').value || '').trim(),
-        Jabatan: String(document.getElementById('pegJabatan').value || '').trim(),
-        Status: String(document.getElementById('pegStatus').value || 'Aktif')
-      };
+      try {
+        var editId = document.getElementById('editPegawaiId') ? document.getElementById('editPegawaiId').value : '';
+        var payload = {
+          type: 'Pegawai',
+          ID_Pegawai: editId,
+          NIP: String(document.getElementById('pegNIP').value || '').trim(),
+          Nama_Pegawai: String(document.getElementById('pegNama').value || '').trim(),
+          Jabatan: String(document.getElementById('pegJabatan').value || '').trim(),
+          Status: String(document.getElementById('pegStatus').value || 'Aktif')
+        };
 
-      if (!payload.NIP || !payload.Nama_Pegawai) {
-        showToast('Mohon lengkapi NIP dan Nama Pegawai.', 'error');
-        return;
-      }
-
-      showMainLoader('Menyimpan Pegawai...');
-      callGasApi('saveAdminRecord', payload, function(res) {
-        hideMainLoader();
-        if (res && res.status === 'success') {
-          if (editId) {
-            for (var i = 0; i < APP_STATE.pegawai.length; i++) {
-              if (String(APP_STATE.pegawai[i].ID_Pegawai) === String(editId)) {
-                APP_STATE.pegawai[i] = res.record;
-                break;
-              }
-            }
-          } else {
-            APP_STATE.pegawai.unshift(res.record);
-          }
-          renderStatsAndDropdowns();
-          renderAdminTables();
-          populateTimPegawaiSlotsOptions();
-          cancelEditPegawai();
-          showToast(res.message, 'success');
-        } else {
-          showToast(res ? res.message : 'Gagal.', 'error');
+        if (!payload.NIP || !payload.Nama_Pegawai) {
+          showToast('Mohon lengkapi NIP dan Nama Pegawai.', 'error');
+          return;
         }
-      }, function(err) {
+
+        showMainLoader('Menyimpan Pegawai...');
+        callGasApi('saveAdminRecord', payload, function(res) {
+          hideMainLoader();
+          if (res && res.status === 'success') {
+            if (editId) {
+              for (var i = 0; i < APP_STATE.pegawai.length; i++) {
+                if (String(APP_STATE.pegawai[i].ID_Pegawai) === String(editId)) {
+                  APP_STATE.pegawai[i] = res.record;
+                  break;
+                }
+              }
+            } else {
+              APP_STATE.pegawai.unshift(res.record);
+            }
+            renderStatsAndDropdowns();
+            renderAdminTables();
+            populateTimPegawaiSlotsOptions();
+            cancelEditPegawai();
+            showToast(res.message, 'success');
+          } else {
+            showToast(res ? res.message : 'Gagal.', 'error');
+          }
+        }, function(err) {
+          hideMainLoader();
+          showToast('Gagal: ' + err.message, 'error');
+        });
+      } catch (sysErr) {
         hideMainLoader();
-        showToast('Gagal: ' + err.message, 'error');
-      });
+        showAlertModal("CRITICAL ERROR:\n" + sysErr.message);
+      }
     }
 
     function editPegawai(id) {
@@ -2345,60 +2522,65 @@
     }
 
     function handleSaveTimMonev() {
-      var editId = document.getElementById('editTimId') ? document.getElementById('editTimId').value : '';
-      var namaTim = document.getElementById('timNama') ? document.getElementById('timNama').value : 'Tim 1';
+      try {
+        var editId = document.getElementById('editTimId') ? document.getElementById('editTimId').value : '';
+        var namaTim = document.getElementById('timNama') ? document.getElementById('timNama').value : 'Tim 1';
 
-      var members = [];
-      for (var s = 1; s <= 10; s++) {
-        var el = document.getElementById('timPegSlot_' + s);
-        if (el && el.value && members.indexOf(el.value) === -1) {
-          members.push(el.value);
-        }
-      }
-
-      if (members.length === 0) {
-        showToast('Pilih minimal 1 petugas pegawai untuk tim ini.', 'error');
-        return;
-      }
-
-      var payload = {
-        type: 'TimMonev',
-        ID_Tim: editId,
-        Nama_Tim: namaTim,
-        No_Surat_Tugas: '-',
-        Ketua_Tim: members[0],
-        Anggota_Tim: members.join(' | '),
-        Wilayah_Sasaran: 'Kab. Musi Rawas',
-        Tanggal_Tugas: new Date().toLocaleDateString('id-ID'),
-        Status_Tim: 'Aktif'
-      };
-
-      showMainLoader('Menyimpan Tim Monev...');
-      callGasApi('saveAdminRecord', payload, function(res) {
-        hideMainLoader();
-        if (res && res.status === 'success') {
-          if (editId) {
-            for (var i = 0; i < APP_STATE.timMonev.length; i++) {
-              if (String(APP_STATE.timMonev[i].ID_Tim) === String(editId)) {
-                APP_STATE.timMonev[i] = res.record;
-                break;
-              }
-            }
-          } else {
-            APP_STATE.timMonev.unshift(res.record);
+        var members = [];
+        for (var s = 1; s <= 10; s++) {
+          var el = document.getElementById('timPegSlot_' + s);
+          if (el && el.value && members.indexOf(el.value) === -1) {
+            members.push(el.value);
           }
-          renderStatsAndDropdowns();
-          renderAdminTables();
-          populateTimPegawaiSlotsOptions();
-          cancelEditTim();
-          showToast(res.message, 'success');
-        } else {
-          showToast(res ? res.message : 'Gagal.', 'error');
         }
-      }, function(err) {
+
+        if (members.length === 0) {
+          showToast('Pilih minimal 1 petugas pegawai untuk tim ini.', 'error');
+          return;
+        }
+
+        var payload = {
+          type: 'TimMonev',
+          ID_Tim: editId,
+          Nama_Tim: namaTim,
+          No_Surat_Tugas: '-',
+          Ketua_Tim: members[0],
+          Anggota_Tim: members.join(' | '),
+          Wilayah_Sasaran: 'Kab. Musi Rawas',
+          Tanggal_Tugas: new Date().toLocaleDateString('id-ID'),
+          Status_Tim: 'Aktif'
+        };
+
+        showMainLoader('Menyimpan Tim Monev...');
+        callGasApi('saveAdminRecord', payload, function(res) {
+          hideMainLoader();
+          if (res && res.status === 'success') {
+            if (editId) {
+              for (var i = 0; i < APP_STATE.timMonev.length; i++) {
+                if (String(APP_STATE.timMonev[i].ID_Tim) === String(editId)) {
+                  APP_STATE.timMonev[i] = res.record;
+                  break;
+                }
+              }
+            } else {
+              APP_STATE.timMonev.unshift(res.record);
+            }
+            renderStatsAndDropdowns();
+            renderAdminTables();
+            populateTimPegawaiSlotsOptions();
+            cancelEditTim();
+            showToast(res.message, 'success');
+          } else {
+            showToast(res ? res.message : 'Gagal.', 'error');
+          }
+        }, function(err) {
+          hideMainLoader();
+          showToast('Gagal: ' + err.message, 'error');
+        });
+      } catch (sysErr) {
         hideMainLoader();
-        showToast('Gagal: ' + err.message, 'error');
-      });
+        showAlertModal("CRITICAL ERROR:\n" + sysErr.message);
+      }
     }
 
     function editTim(id) {
@@ -2497,6 +2679,80 @@
           tTbody.innerHTML = tHtml;
         }
       }
+    }
+
+    function handleOpenPdfById(mod, idMonev) {
+      showMainLoader('Memuat Dokumen PDF...');
+      callGasApi('generatePdfById', { moduleName: mod, idMonev: idMonev }, function(res) {
+        hideMainLoader();
+        if (res && res.status === 'success') {
+          APP_STATE.activePdf = { base64: res.pdfBase64, fileName: res.pdfFileName, record: res.record };
+          openPdfModal(res.pdfBase64, res.pdfFileName);
+        } else {
+          showToast('Gagal memuat PDF.', 'error');
+        }
+      }, function(err) {
+        hideMainLoader();
+        showToast('Gagal memuat PDF: ' + err.message, 'error');
+      });
+    }
+
+    function openPdfModal(b64, fileName) {
+      APP_STATE.activePdf.base64 = b64;
+      APP_STATE.activePdf.fileName = fileName;
+      var container = document.getElementById('pdfPaperContainer');
+      if (container) {
+        container.innerHTML = '<div style="text-align:center; padding:30px;">' +
+          '<h4>Dokumen PDF Sesuai Jumlah Anggota Tim Siap Diunduh</h4>' +
+          '<p style="margin-top:10px; color:var(--text-secondary);">' + escapeText(fileName) + '</p>' +
+          '</div>';
+      }
+      var m = document.getElementById('pdfModal');
+      if (m) m.classList.add('show');
+    }
+
+    function closePdfModal() {
+      var m = document.getElementById('pdfModal');
+      if (m) m.classList.remove('show');
+    }
+
+    function triggerDirectPdfDownload() {
+      var b64 = APP_STATE.activePdf.base64;
+      var filename = APP_STATE.activePdf.fileName;
+      if (!b64) {
+        showToast('File PDF belum tersedia.', 'error');
+        return;
+      }
+      var link = document.createElement('a');
+      link.href = 'data:application/pdf;base64,' + b64;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Unduhan PDF dimulai!', 'success');
+    }
+
+    function printPaperReport() {
+      var b64 = APP_STATE.activePdf.base64;
+      if (!b64) {
+        triggerDirectPdfDownload();
+        return;
+      }
+      var win = window.open('about:blank');
+      win.document.write('<iframe width="100%" height="100%" src="data:application/pdf;base64,' + b64 + '"></iframe>');
+    }
+
+    function showToast(msg, type) {
+      var container = document.getElementById('toastContainer');
+      if (!container) return;
+      var item = document.createElement('div');
+      item.className = 'toast-item' + (type === 'error' ? ' error' : '');
+      item.textContent = msg;
+      container.appendChild(item);
+      setTimeout(function() {
+        item.style.opacity = '0';
+        setTimeout(function() { item.remove(); }, 300);
+      }, 3500);
     }
   </script>
 </body>
