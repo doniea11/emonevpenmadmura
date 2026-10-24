@@ -341,7 +341,7 @@
 
             <div class="form-group full-width">
               <div class="sub-card-box" style="margin-top:0; background:#eef5ff; border-color:#b6d4fe;">
-                <label class="form-label" id="labelPetugasBox" style="color:#084298; margin-bottom:4px;"><strong>Petugas Monitoring</strong></label>
+                <label class="form-label" id="labelPetugasBox" style="color:#084298; margin-bottom:4px;"><strong>Petugas Monitoring Tim 1</strong></label>
                 <input type="text" id="inpNamaPetugas" class="input-control" style="background:#ffffff; font-weight:700;" readonly>
               </div>
             </div>
@@ -1133,30 +1133,32 @@
       recalculateTkaRoomTotals();
     }
 
-    /* Validasi On Blur saat mengisi form input TKA */
-    function checkRoomConsistencyFinal(inputEl) {
-       var card = inputEl;
-       while (card && !card.classList.contains('room-mobile-card')) {
-         card = card.parentElement;
-       }
-       if (!card) return;
-       
-       var idx = card.getAttribute('data-room-idx');
-       var pL = parseInt(card.querySelector('.rm-pL').value, 10) || 0;
-       var pP = parseInt(card.querySelector('.rm-pP').value, 10) || 0;
-       var pJml = pL + pP;
+    function checkConsistencyOnBlur(inputEl) {
+      if (inputEl.value === '') inputEl.value = '0';
+      var card = inputEl;
+      while (card && !card.classList.contains('room-mobile-card')) {
+        card = card.parentElement;
+      }
+      if (!card) return;
 
-       var hL = parseInt(card.querySelector('.rm-hL').value, 10) || 0;
-       var hP = parseInt(card.querySelector('.rm-hP').value, 10) || 0;
-       var hJml = hL + hP;
+      var idx = card.getAttribute('data-room-idx');
+      var pL = parseInt(card.querySelector('.rm-pL').value, 10) || 0;
+      var pP = parseInt(card.querySelector('.rm-pP').value, 10) || 0;
+      var pJml = pL + pP;
 
-       var tL = parseInt(card.querySelector('.rm-tL').value, 10) || 0;
-       var tP = parseInt(card.querySelector('.rm-tP').value, 10) || 0;
-       var tJml = tL + tP;
-       
-       if ((pJml > 0 || (hJml+tJml) > 0) && pJml !== (hJml + tJml)) {
-          showAlertModal('Data di Ruang ' + idx + ' tidak konsisten!\n\nTotal Siswa (' + pJml + ') TIDAK SAMA dengan jumlah\nHadir (' + hJml + ') ditambah Absen (' + tJml + ').\n\nMohon perbaiki angka agar valid sebelum disimpan.');
-       }
+      var hL = parseInt(card.querySelector('.rm-hL').value, 10) || 0;
+      var hP = parseInt(card.querySelector('.rm-hP').value, 10) || 0;
+      var hJml = hL + hP;
+
+      var tL = parseInt(card.querySelector('.rm-tL').value, 10) || 0;
+      var tP = parseInt(card.querySelector('.rm-tP').value, 10) || 0;
+      var tJml = tL + tP;
+
+      if (pJml > 0 && (hJml > 0 || tJml > 0)) {
+        if (pJml !== (hJml + tJml)) {
+          showAlertModal('Data di Ruang ' + idx + ' tidak konsisten!\n\nTotal Siswa (' + pJml + ') TIDAK SAMA dengan jumlah\nHadir (' + hJml + ') ditambah Absen (' + tJml + ').\n\nMohon sesuaikan angka agar valid.');
+        }
+      }
     }
 
     function addTkaRoomRowExplicit(idx) {
@@ -1176,20 +1178,20 @@
         '</div>' +
         '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin-bottom:4px;">Jumlah Peserta (L / P / Jml)</div>' +
         '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Laki-laki</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Perempuan</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Laki-laki</label><input type="number" class="input-mini rm-pL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Perempuan</label><input type="number" class="input-mini rm-pP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total</label><div class="input-mini" style="background:#e9ecef; font-weight:800; display:flex; align-items:center; justify-content:center;" id="rm-pJml-' + idx + '">0</div></div>' +
         '</div>' +
         '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin:8px 0 4px;">Peserta Hadir (L / P / Jml)</div>' +
         '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir L</label><input type="number" class="input-mini rm-hL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir P</label><input type="number" class="input-mini rm-hP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir L</label><input type="number" class="input-mini rm-hL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Hadir P</label><input type="number" class="input-mini rm-hP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total Hadir</label><div class="input-mini" style="background:#e9ecef; font-weight:800; color:var(--tka-green); display:flex; align-items:center; justify-content:center;" id="rm-hJml-' + idx + '">0</div></div>' +
         '</div>' +
         '<div style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); margin:8px 0 4px;">Peserta Tidak Hadir (L / P / Jml)</div>' +
         '<div class="room-fields-grid">' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen L</label><input type="number" class="input-mini rm-tL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\';" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
-          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen P</label><input type="number" class="input-mini rm-tP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'0\'; checkRoomConsistencyFinal(this);" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen L</label><input type="number" class="input-mini rm-tL" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
+          '<div><label style="font-size:0.7rem; color:var(--text-muted);">Absen P</label><input type="number" class="input-mini rm-tP" value="0" min="0" onfocus="if(this.value==\'0\')this.value=\'\';" onblur="checkConsistencyOnBlur(this)" oninput="cleanLeadingZero(this); recalculateTkaRoomTotals()"></div>' +
           '<div><label style="font-size:0.7rem; color:var(--text-muted);">Total Absen</label><div class="input-mini" style="background:#e9ecef; font-weight:800; color:var(--accent-danger); display:flex; align-items:center; justify-content:center;" id="rm-tJml-' + idx + '">0</div></div>' +
         '</div>' +
         '<div style="margin-top:8px;">' +
@@ -1865,7 +1867,6 @@
         }
       }
 
-      // Auto-Close Mobile Menu (Jika terbuka dari layar kecil)
       var sidebar = document.getElementById('sidebarNav');
       var backdrop = document.getElementById('sidebarBackdrop');
       var closeBtn = document.getElementById('btnCloseMobileSidebar');
