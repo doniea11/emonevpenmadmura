@@ -216,21 +216,22 @@
       <div class="nav-section-label" id="sectionLabelAdmin" style="margin-top:14px;">Master Data &amp; Panel Admin</div>
       <ul class="nav-list" id="navListAdmin">
         <li id="menuItem-Madrasah">
+          <!-- ZETTBOT: Ikon diubah jadi gembok untuk menandakan butuh Password Admin -->
           <button type="button" class="nav-btn" id="nav-Madrasah" onclick="switchModule('Madrasah')">
-            <span>🏫</span>
+            <span>🔒</span>
             <span>Data Madrasah</span>
             <span class="nav-badge" id="badge-Madrasah">0</span>
           </button>
         </li>
         <li id="menuItem-Tim">
           <button type="button" class="nav-btn" id="nav-Tim" onclick="switchModule('Tim')">
-            <span>👥</span>
+            <span>🔒</span>
             <span>Tim Monev</span>
             <span class="nav-badge" id="badge-Tim">0</span>
           </button>
         </li>
         <li id="menuItem-Pengaturan">
-          <button type="button" class="nav-btn" id="nav-Pengaturan" onclick="requestSwitchToPengaturan()">
+          <button type="button" class="nav-btn" id="nav-Pengaturan" onclick="switchModule('Pengaturan')">
             <span>🔒</span>
             <span>Pengaturan</span>
             <span class="nav-badge" id="badge-Pengaturan">⚙️</span>
@@ -744,14 +745,14 @@
                 <input type="text" id="setPinUjian" class="input-control" placeholder="PIN Akses Ujian (Default: 1234)" style="margin-top:8px;">
               </div>
               <div class="access-card">
-                <label class="form-label">4. Menu Data Madrasah</label>
+                <label class="form-label">4. Menu Data Madrasah (Area Admin)</label>
                 <select id="menuToggleMadrasah" class="select-control">
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
                 </select>
               </div>
               <div class="access-card">
-                <label class="form-label">5. Menu Tim Monev</label>
+                <label class="form-label">5. Menu Tim Monev (Area Admin)</label>
                 <select id="menuToggleTim" class="select-control">
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
@@ -817,16 +818,17 @@
     </div>
   </div>
 
-  <!-- POPUP PASSWORD ADMIN -->
+  <!-- POPUP PASSWORD ADMIN (Sekarang Melindungi Madrasah, Tim, dan Pengaturan) -->
   <div class="modal-backdrop" id="adminAuthModal">
     <div class="modal-card modal-card-sm">
       <div class="panel-header" style="margin-bottom:12px;">
-        <div class="panel-title"><span class="accent-bar"></span><span>SILAHKAN MASUKKAN PASSWORD !</span></div>
+        <div class="panel-title"><span class="accent-bar"></span><span>OTORISASI ADMIN MASTER</span></div>
         <button type="button" class="btn btn-ghost btn-sm" onclick="closeAdminAuthModal()">✕</button>
       </div>
+      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:14px;">Area ini dilindungi. Silahkan masukkan Password Admin Anda.</p>
       <form onsubmit="event.preventDefault(); submitAdminPassword();">
         <div class="form-group">
-          <input type="password" id="inpAdminPassPrompt" class="input-control" placeholder="SILAHKAN MASUKKAN PASSWORD !">
+          <input type="password" id="inpAdminPassPrompt" class="input-control" placeholder="Masukkan Password...">
         </div>
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
           <button type="button" class="btn btn-ghost" onclick="closeAdminAuthModal()">Batal</button>
@@ -896,7 +898,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbwrXaZboh2R3EiP7TC_IlFZ0RVlUnhD0Drz75z5OF9D9l3vm87Gx0vehz27o0Pi8rpsAw/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbzzPOp1AfBZGy6WTL5lPHaNo7BMyQC-0dPSw_a3GFrC5Vm247cF7Oi-269WizaVbkEp7w/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -936,11 +938,12 @@
       isGasEnv: (typeof google !== 'undefined' && google.script && google.script.run),
       currentModule: 'TKA',
       adminUnlocked: false,
+      pendingAdminModule: null, 
       localAdminPass: '123456',
       menuAccess: { TKA: true, BOS: true, UjianAkhir: true, Madrasah: true, Tim: true },
-      pins: { TKA: '1234', BOS: '1234', UjianAkhir: '1234' }, // Menyimpan PIN rahasia dari backend
-      unlockedModules: { TKA: false, BOS: false, UjianAkhir: false }, // Status apakah user sudah memasukkan PIN di sesi ini
-      pendingModuleSwitch: null, // Menyimpan target navigasi saat terhalang PIN
+      pins: { TKA: '1234', BOS: '1234', UjianAkhir: '1234' }, 
+      unlockedModules: { TKA: false, BOS: false, UjianAkhir: false }, 
+      pendingModuleSwitch: null, 
       madrasah: [],
       pegawai: [],
       timMonev: [],
@@ -997,10 +1000,10 @@
       var p = document.getElementById('inpModulePin').value;
       var targetMod = APP_STATE.pendingModuleSwitch;
       if (p === APP_STATE.pins[targetMod]) {
-        APP_STATE.unlockedModules[targetMod] = true; // Tandai bahwa PIN untuk modul ini sudah dibuka
+        APP_STATE.unlockedModules[targetMod] = true; 
         closePinPromptModal();
         showToast('Akses Modul ' + targetMod + ' Berhasil Dibuka!', 'success');
-        switchModule(targetMod); // Lanjutkan eksekusi pindah modul yang tertunda
+        switchModule(targetMod); 
       } else {
         showToast('PIN salah! Silakan coba lagi.', 'error');
         document.getElementById('inpModulePin').value = '';
@@ -1568,7 +1571,7 @@
           APP_STATE.stats = res.stats || APP_STATE.stats;
           
           if (res.menuAccess) APP_STATE.menuAccess = res.menuAccess;
-          if (res.pins) APP_STATE.pins = res.pins; // Injeksi PIN dari backend
+          if (res.pins) APP_STATE.pins = res.pins;
 
           if (res.customLogo) {
             APP_STATE.customLogoBase64 = res.customLogo;
@@ -1586,7 +1589,6 @@
           populateTimPegawaiSlotsOptions();
           loadMonevDropdownForCancellation();
 
-          // Trigger switchModule agar filter PIN otomatis berjalan pada load pertama
           switchModule(APP_STATE.currentModule);
         } else {
           hideMainLoader();
@@ -1747,20 +1749,6 @@
       });
     }
 
-    function requestSwitchToPengaturan() {
-      if (APP_STATE.adminUnlocked) {
-        switchModule('Pengaturan');
-        return;
-      }
-      var m = document.getElementById('adminAuthModal');
-      var p = document.getElementById('inpAdminPassPrompt');
-      if (m) m.classList.add('show');
-      if (p) {
-        p.value = '';
-        setTimeout(function() { p.focus(); }, 100);
-      }
-    }
-
     function closeAdminAuthModal() {
       var m = document.getElementById('adminAuthModal');
       if (m) m.classList.remove('show');
@@ -1775,7 +1763,11 @@
           APP_STATE.adminUnlocked = true;
           closeAdminAuthModal();
           showToast('Akses Administrator Terbuka', 'success');
-          switchModule('Pengaturan');
+          
+          // Lanjutkan pindah menu yang tadi tertahan
+          var target = APP_STATE.pendingAdminModule || 'Pengaturan';
+          APP_STATE.pendingAdminModule = null;
+          switchModule(target);
         } else {
           showToast('Password salah atau sesi tidak valid!', 'error');
         }
@@ -1788,7 +1780,7 @@
     function lockAdminSession() {
       APP_STATE.adminUnlocked = false;
       showToast('Sesi Pengaturan Dikunci', 'success');
-      switchModule('TKA');
+      switchModule('TKA'); // Otomatis keluar ke menu TKA setelah dikunci
     }
 
     function handleSaveAccessSettings() {
@@ -1878,14 +1870,16 @@
         else lblAdmin.classList.add('hidden');
       }
 
-      // Pastikan modul aktif yang terlihat saat ini tidak sedang di-NONAKTIF-kan
       if (APP_STATE.menuAccess[APP_STATE.currentModule] === false && APP_STATE.currentModule !== 'Pengaturan') {
+        var switched = false;
         for (var j = 0; j < menus.length; j++) {
           if (APP_STATE.menuAccess[menus[j]] !== false) {
-            APP_STATE.currentModule = menus[j];
+            switchModule(menus[j]);
+            switched = true;
             break;
           }
         }
+        if (!switched) switchModule('Pengaturan');
       }
     }
 
@@ -1930,24 +1924,40 @@
     }
 
     function switchModule(modName) {
-      if (modName === 'Pengaturan' && !APP_STATE.adminUnlocked) {
-        requestSwitchToPengaturan();
+      
+      // ZETTBOT: Modul Admin Master dilindungi Password Admin (Sekali buka, terbuka selama sesi).
+      if ((modName === 'Pengaturan' || modName === 'Madrasah' || modName === 'Tim') && !APP_STATE.adminUnlocked) {
+        APP_STATE.pendingAdminModule = modName;
+        var m = document.getElementById('adminAuthModal');
+        var p = document.getElementById('inpAdminPassPrompt');
+        if (m) m.classList.add('show');
+        if (p) {
+          p.value = '';
+          setTimeout(function() { p.focus(); }, 100);
+        }
         return;
       }
       
-      // ZETTBOT LOGIC 1: Blokir mutlak akses ke menu yang sedang di-set NONAKTIF
       if (modName !== 'Pengaturan' && APP_STATE.menuAccess[modName] === false) {
         showToast('Akses ditolak: Menu ini sedang dinonaktifkan oleh Admin.', 'error');
         return;
       }
       
-      // ZETTBOT LOGIC 2: Pengecekan PIN untuk Modul Monev (Mencegah tampilan tabel dan form bocor)
+      // ZETTBOT: Modul Monev dilindungi PIN (Mengunci ulang setiap pindah menu).
       if ((modName === 'TKA' || modName === 'BOS' || modName === 'UjianAkhir') && !APP_STATE.unlockedModules[modName]) {
         promptModulePin(modName);
-        return; // Hentikan render UI sampai PIN dimasukkan
+        return; 
       }
 
       APP_STATE.currentModule = modName;
+      
+      // RESET MONEV PINS: Mengunci otomatis semua menu Monev yang ditinggalkan.
+      var monevMods = ['TKA', 'BOS', 'UjianAkhir'];
+      for (var k = 0; k < monevMods.length; k++) {
+        if (monevMods[k] !== modName) {
+          APP_STATE.unlockedModules[monevMods[k]] = false;
+        }
+      }
       
       var menus = ['TKA', 'BOS', 'UjianAkhir', 'Madrasah', 'Tim', 'Pengaturan'];
       for (var i = 0; i < menus.length; i++) {
@@ -1958,7 +1968,6 @@
         }
       }
 
-      // Auto-Close Mobile Menu
       var sidebar = document.getElementById('sidebarNav');
       var backdrop = document.getElementById('sidebarBackdrop');
       var closeBtn = document.getElementById('btnCloseMobileSidebar');
