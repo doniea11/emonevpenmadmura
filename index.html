@@ -266,7 +266,7 @@
 
       <div class="rekap-section-title">Rekap Pelaksanaan Monitoring &amp; Evaluasi</div>
 
-      <section class="stats-grid">
+      <section class="stats-grid" id="statsGrid">
         <div class="stat-card">
           <div class="stat-icon-box stat-icon-blue">🏢</div>
           <div class="stat-info">
@@ -322,7 +322,6 @@
           <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFormPanel()">← Kembali / Tutup</button>
         </div>
 
-        <!-- FORM DIPERBAIKI: Hapus validasi kaku browser (prevent default manual murni) -->
         <form id="formMonev" onsubmit="event.preventDefault(); handleSaveMonev();">
           <div class="form-grid">
             <div class="form-group">
@@ -395,7 +394,8 @@
             </div>
           </div>
 
-          <div id="fields-TKA">
+          <!-- HIDDEN BY DEFAULT TO PREVENT LEAK BEFORE PIN -->
+          <div id="fields-TKA" class="hidden">
             <div class="sub-card-box">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
                 <div>
@@ -495,7 +495,7 @@
             </div>
           </div>
 
-          <div id="fields-SharedNotes" class="form-grid" style="margin-top:14px;">
+          <div id="fields-SharedNotes" class="form-grid hidden" style="margin-top:14px;">
             <div class="form-group">
               <label class="form-label">Catatan Monitoring</label>
               <textarea id="inpCatatanTemuan" class="textarea-control" placeholder="Tuliskan catatan...">Pelaksanaan tertib dan sesuai juknis.</textarea>
@@ -517,7 +517,8 @@
         </form>
       </section>
 
-      <section class="glass-panel" id="monevListPanel">
+      <!-- HIDDEN BY DEFAULT -->
+      <section class="glass-panel hidden" id="monevListPanel">
         <div class="panel-header">
           <div class="panel-title">
             <span class="accent-bar"></span>
@@ -715,7 +716,7 @@
 
           <form id="formAccessSettings" onsubmit="event.preventDefault(); handleSaveAccessSettings();">
             <div style="margin-bottom:14px; font-size:0.85rem; color:var(--text-secondary);">
-              Atur aktivasi menu aplikasi, unggah logo instansi untuk PDF, dan ubah password admin:
+              Atur aktivasi menu aplikasi, setel PIN keamanan untuk modul Monev, unggah logo instansi, dan ubah password admin:
             </div>
             <div class="access-toggle-grid">
               <div class="access-card">
@@ -724,6 +725,7 @@
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
                 </select>
+                <input type="text" id="setPinTKA" class="input-control" placeholder="PIN Akses TKA (Default: 1234)" style="margin-top:8px;">
               </div>
               <div class="access-card">
                 <label class="form-label">2. Menu / Modul Monev Dana BOS</label>
@@ -731,6 +733,7 @@
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
                 </select>
+                <input type="text" id="setPinBOS" class="input-control" placeholder="PIN Akses BOS (Default: 1234)" style="margin-top:8px;">
               </div>
               <div class="access-card">
                 <label class="form-label">3. Menu / Modul Monev Ujian Akhir</label>
@@ -738,6 +741,7 @@
                   <option value="AKTIF">🟢 AKTIF</option>
                   <option value="NONAKTIF">🔴 NON-AKTIF</option>
                 </select>
+                <input type="text" id="setPinUjian" class="input-control" placeholder="PIN Akses Ujian (Default: 1234)" style="margin-top:8px;">
               </div>
               <div class="access-card">
                 <label class="form-label">4. Menu Data Madrasah</label>
@@ -813,6 +817,7 @@
     </div>
   </div>
 
+  <!-- POPUP PASSWORD ADMIN -->
   <div class="modal-backdrop" id="adminAuthModal">
     <div class="modal-card modal-card-sm">
       <div class="panel-header" style="margin-bottom:12px;">
@@ -826,6 +831,26 @@
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
           <button type="button" class="btn btn-ghost" onclick="closeAdminAuthModal()">Batal</button>
           <button type="submit" class="btn btn-neon" id="btnVerifyAdminPass">🔓 Masuk</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- POPUP PIN AKSES MONEV -->
+  <div class="modal-backdrop" id="pinPromptModal">
+    <div class="modal-card modal-card-sm">
+      <div class="panel-header" style="margin-bottom:12px;">
+        <div class="panel-title"><span class="accent-bar"></span><span>MASUKKAN PIN AKSES !</span></div>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closePinPromptModal()">✕</button>
+      </div>
+      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:14px;">Menu ini dikunci. Silakan masukkan PIN rahasia untuk melanjutkan.</p>
+      <form onsubmit="event.preventDefault(); submitModulePin();">
+        <div class="form-group">
+          <input type="password" id="inpModulePin" class="input-control" placeholder="Masukkan PIN disini...">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+          <button type="button" class="btn btn-ghost" onclick="closePinPromptModal()">Batal</button>
+          <button type="submit" class="btn btn-neon">🔓 Buka Menu</button>
         </div>
       </form>
     </div>
@@ -871,7 +896,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycby91l2adC_y4MAbjsFlSIFM1BXAjPpG_gZ7j6QRaXIp0IhJavDUCTbtwuNKXXgFKNsChQ/exec";
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbwrXaZboh2R3EiP7TC_IlFZ0RVlUnhD0Drz75z5OF9D9l3vm87Gx0vehz27o0Pi8rpsAw/exec";
 
     var TKA_MASTER_ITEMS = [
       { group: 'I', groupTitle: 'Persiapan Tes Kemampuan Akademik (TKA)', no: 1, text: 'Print Out Juknis TKA' },
@@ -913,6 +938,9 @@
       adminUnlocked: false,
       localAdminPass: '123456',
       menuAccess: { TKA: true, BOS: true, UjianAkhir: true, Madrasah: true, Tim: true },
+      pins: { TKA: '1234', BOS: '1234', UjianAkhir: '1234' }, // Menyimpan PIN rahasia dari backend
+      unlockedModules: { TKA: false, BOS: false, UjianAkhir: false }, // Status apakah user sudah memasukkan PIN di sesi ini
+      pendingModuleSwitch: null, // Menyimpan target navigasi saat terhalang PIN
       madrasah: [],
       pegawai: [],
       timMonev: [],
@@ -946,6 +974,38 @@
     function closeAlertModal() {
       var m = document.getElementById('alertModal');
       if (m) m.classList.remove('show');
+    }
+
+    /* -- PIN Modal Controls -- */
+    function promptModulePin(modName) {
+      APP_STATE.pendingModuleSwitch = modName;
+      var m = document.getElementById('pinPromptModal');
+      var p = document.getElementById('inpModulePin');
+      if (m) m.classList.add('show');
+      if (p) {
+        p.value = '';
+        setTimeout(function() { p.focus(); }, 100);
+      }
+    }
+    
+    function closePinPromptModal() {
+      var m = document.getElementById('pinPromptModal');
+      if (m) m.classList.remove('show');
+    }
+    
+    function submitModulePin() {
+      var p = document.getElementById('inpModulePin').value;
+      var targetMod = APP_STATE.pendingModuleSwitch;
+      if (p === APP_STATE.pins[targetMod]) {
+        APP_STATE.unlockedModules[targetMod] = true; // Tandai bahwa PIN untuk modul ini sudah dibuka
+        closePinPromptModal();
+        showToast('Akses Modul ' + targetMod + ' Berhasil Dibuka!', 'success');
+        switchModule(targetMod); // Lanjutkan eksekusi pindah modul yang tertunda
+      } else {
+        showToast('PIN salah! Silakan coba lagi.', 'error');
+        document.getElementById('inpModulePin').value = '';
+        document.getElementById('inpModulePin').focus();
+      }
     }
 
     /* -- Spinner -- */
@@ -1506,7 +1566,10 @@
           APP_STATE.pegawai = res.pegawai || [];
           APP_STATE.timMonev = res.timMonev || [];
           APP_STATE.stats = res.stats || APP_STATE.stats;
+          
           if (res.menuAccess) APP_STATE.menuAccess = res.menuAccess;
+          if (res.pins) APP_STATE.pins = res.pins; // Injeksi PIN dari backend
+
           if (res.customLogo) {
             APP_STATE.customLogoBase64 = res.customLogo;
             var customLogoEl = document.getElementById('inpCustomLogoBase64');
@@ -1514,14 +1577,17 @@
             var previewBox = document.getElementById('logoPreviewContainer');
             if (previewBox) previewBox.innerHTML = '<img src="' + res.customLogo + '" width="80" height="75" style="object-fit:contain; border:1px solid #ccc; padding:2px; background:#fff; border-radius:4px;" /><div style="font-size:0.72rem; color:var(--tka-green); font-weight:700; margin-top:2px;">Logo aktif tersimpan</div>';
           }
+          
           syncAccessSelectControls();
           renderStatsAndDropdowns();
           applyMenuVisibility();
           renderMadrasahTable();
           renderAdminTables();
           populateTimPegawaiSlotsOptions();
-          resetAndLoadMonev();
           loadMonevDropdownForCancellation();
+
+          // Trigger switchModule agar filter PIN otomatis berjalan pada load pertama
+          switchModule(APP_STATE.currentModule);
         } else {
           hideMainLoader();
           showToast(res ? res.message : 'Gagal memuat data awal.', 'error');
@@ -1732,6 +1798,9 @@
         AKSES_UJIAN: document.getElementById('menuToggleUjian').value,
         AKSES_MADRASAH: document.getElementById('menuToggleMadrasah').value,
         AKSES_TIM: document.getElementById('menuToggleTim').value,
+        PIN_TKA: document.getElementById('setPinTKA').value,
+        PIN_BOS: document.getElementById('setPinBOS').value,
+        PIN_UJIAN: document.getElementById('setPinUjian').value,
         NEW_ADMIN_PASS: document.getElementById('setNewAdminPass').value,
         CUSTOM_LOGO_BASE64: APP_STATE.customLogoBase64
       };
@@ -1742,11 +1811,11 @@
         if (res && res.status === 'success') {
           showToast(res.message, 'success');
           document.getElementById('setNewAdminPass').value = '';
-          if (res.menuAccess) {
-            APP_STATE.menuAccess = res.menuAccess;
-            applyMenuVisibility();
-            updateModuleAccessUI();
-          }
+          if (res.moduleAccess) APP_STATE.menuAccess = res.moduleAccess;
+          if (res.pins) APP_STATE.pins = res.pins;
+          
+          applyMenuVisibility();
+          updateModuleAccessUI();
         } else {
           showToast(res ? res.message : 'Gagal.', 'error');
         }
@@ -1762,12 +1831,20 @@
       var ujian = document.getElementById('menuToggleUjian');
       var mad = document.getElementById('menuToggleMadrasah');
       var tim = document.getElementById('menuToggleTim');
+      
+      var pinT = document.getElementById('setPinTKA');
+      var pinB = document.getElementById('setPinBOS');
+      var pinU = document.getElementById('setPinUjian');
 
       if (tka) tka.value = APP_STATE.menuAccess.TKA !== false ? 'AKTIF' : 'NONAKTIF';
       if (bos) bos.value = APP_STATE.menuAccess.BOS !== false ? 'AKTIF' : 'NONAKTIF';
       if (ujian) ujian.value = APP_STATE.menuAccess.UjianAkhir !== false ? 'AKTIF' : 'NONAKTIF';
       if (mad) mad.value = APP_STATE.menuAccess.Madrasah !== false ? 'AKTIF' : 'NONAKTIF';
       if (tim) tim.value = APP_STATE.menuAccess.Tim !== false ? 'AKTIF' : 'NONAKTIF';
+      
+      if (pinT) pinT.value = APP_STATE.pins.TKA || '1234';
+      if (pinB) pinB.value = APP_STATE.pins.BOS || '1234';
+      if (pinU) pinU.value = APP_STATE.pins.UjianAkhir || '1234';
     }
 
     function applyMenuVisibility() {
@@ -1801,10 +1878,11 @@
         else lblAdmin.classList.add('hidden');
       }
 
+      // Pastikan modul aktif yang terlihat saat ini tidak sedang di-NONAKTIF-kan
       if (APP_STATE.menuAccess[APP_STATE.currentModule] === false && APP_STATE.currentModule !== 'Pengaturan') {
         for (var j = 0; j < menus.length; j++) {
           if (APP_STATE.menuAccess[menus[j]] !== false) {
-            switchModule(menus[j]);
+            APP_STATE.currentModule = menus[j];
             break;
           }
         }
@@ -1856,8 +1934,21 @@
         requestSwitchToPengaturan();
         return;
       }
+      
+      // ZETTBOT LOGIC 1: Blokir mutlak akses ke menu yang sedang di-set NONAKTIF
+      if (modName !== 'Pengaturan' && APP_STATE.menuAccess[modName] === false) {
+        showToast('Akses ditolak: Menu ini sedang dinonaktifkan oleh Admin.', 'error');
+        return;
+      }
+      
+      // ZETTBOT LOGIC 2: Pengecekan PIN untuk Modul Monev (Mencegah tampilan tabel dan form bocor)
+      if ((modName === 'TKA' || modName === 'BOS' || modName === 'UjianAkhir') && !APP_STATE.unlockedModules[modName]) {
+        promptModulePin(modName);
+        return; // Hentikan render UI sampai PIN dimasukkan
+      }
 
       APP_STATE.currentModule = modName;
+      
       var menus = ['TKA', 'BOS', 'UjianAkhir', 'Madrasah', 'Tim', 'Pengaturan'];
       for (var i = 0; i < menus.length; i++) {
         var b = document.getElementById('nav-' + menus[i]);
@@ -1872,12 +1963,8 @@
       var backdrop = document.getElementById('sidebarBackdrop');
       var closeBtn = document.getElementById('btnCloseMobileSidebar');
       
-      if (sidebar && sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open');
-      }
-      if (backdrop && backdrop.classList.contains('show')) {
-        backdrop.classList.remove('show');
-      }
+      if (sidebar && sidebar.classList.contains('open')) sidebar.classList.remove('open');
+      if (backdrop && backdrop.classList.contains('show')) backdrop.classList.remove('show');
       if (closeBtn) closeBtn.style.display = 'none';
 
       var listPanel = document.getElementById('monevListPanel');
@@ -1913,7 +2000,7 @@
       if (modName === 'Pengaturan') {
         if (setSection) setSection.classList.remove('hidden');
         if (modHeading) modHeading.textContent = 'Pengaturan Akses Menu & Keamanan';
-        if (modSubheading) modSubheading.textContent = 'Kontrol aktivasi menu aplikasi dan ubah password admin';
+        if (modSubheading) modSubheading.textContent = 'Kontrol aktivasi menu aplikasi, PIN keamanan, dan password admin';
         syncAccessSelectControls();
         loadMonevDropdownForCancellation();
         return;
